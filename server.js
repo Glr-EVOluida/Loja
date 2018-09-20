@@ -22,8 +22,26 @@ console.log(connection);
 app.use(cors());
 
 app.get('/show', (req, res) => {
+    let order = '';
+    let limit = '';
+    let where = '';
+
+    if(req.query.order) {
+        order = 'ORDER BY '+req.query.order;
+    }
+    
+    if(req.query.where) {
+        where = 'WHERE '+req.query.where;
+    }
+
+    if(req.query.limit) {
+        limit = 'LIMIT '+req.query.limit;
+    }
+
+
     const { table } = req.query;
-    const select = `SELECT * FROM ${table}`;
+
+    const select = `SELECT * FROM ${table} ${where} ${order} ${limit}`;
     connection.query(select, (err,results) =>{
         if(err){
             return res.send(err);

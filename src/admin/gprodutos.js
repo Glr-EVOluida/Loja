@@ -397,12 +397,9 @@ export class Gprodutos extends Component{
                             value:'"@@@'+e.target.value+'@@@"'
                              }})
                             }/>
-                        <Button 
-                        componentClass={InputGroup.Button}
-                        id='buscar-id'
-                        title='Buscar'
-                        onClick={()=>this.getBusca()}
-                        >Buscar</Button>
+                            <InputGroup.Button>
+                            <Button onClick={()=>this.getBusca()}>Buscar</Button>
+                            </InputGroup.Button>
                         </InputGroup>
                     </FormGroup>
                     </div>

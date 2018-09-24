@@ -16,21 +16,21 @@ export class Gpedidos extends Component{
     }
 
     getPedidos = _ =>{
-        fetch(`http://192.168.200.147:4000/show?table=compras&order=id desc`)
+        fetch(`http://localhost:4000/show?table=compras&order=id desc`)
         .then(response => response.json())
         .then(response => this.setState({ pedidos:response.data }))
         .catch(err => console.error(err))
     }
 
     getUsuario = _ =>{
-        fetch(`http://192.168.200.147:4000/show?table=clientes`)
+        fetch(`http://localhost:4000/show?table=clientes`)
         .then(response => response.json())
         .then(response => this.setState({ clientes:response.data }))
         .catch(err => console.error(err))
     }
 
     updatePedido = (id) =>{
-        fetch(`http://192.168.200.147:4000/update?table=compras&alt=estado='Em Processamento'&id=${id}`)
+        fetch(`http://localhost:4000/update?table=compras&alt=estado='Em Processamento'&id=${id}`)
         .then(this.getPedidos)
         .catch(err => console.error(err))
     }

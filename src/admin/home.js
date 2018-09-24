@@ -34,14 +34,14 @@ export class Home extends Component{
   }
 
   getProdutos = _ =>{
-    fetch('http://192.168.200.147:4000/show?table=produtos')
+    fetch('http://localhost:4000/show?table=produtos')
     .then(response => response.json())
     .then(response => this.setState({ produtos:response.data },() => {this.semEstoque(this.state.produtos)},()=>{this.calcVendas(this.state.produtos)}))
     .catch(err => console.error(err))
   }
 
   getVendas = _ =>{
-    fetch('http://192.168.200.147:4000/show?table=compras')
+    fetch('http://localhost:4000/show?table=compras')
     .then(response => response.json())
     .then(response => this.setState({ vendas:response.data },()=>{this.calcVendas(this.state.vendas)}))
     .catch(err => console.error(err))

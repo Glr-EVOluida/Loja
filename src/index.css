@@ -39,11 +39,12 @@ hr.hrStyle {
   background: linear-gradient(to right, #fff, rgb(224, 224, 224,.4),#fff);
 }
 
-.a { line-height: 35px }
+.a { line-height: 35px; text-align: center }
 .a .aa {padding-left: 30px}
 
 .produtos {
   width: 100%;
+  height: 600px;
   padding: 10px 20px 10px 20px;
   border: 1px solid rgb(33, 37, 41,.5);
   border-radius: 5px;
@@ -51,52 +52,255 @@ hr.hrStyle {
   margin-bottom: 10px;
   margin-top: 10px;
   transition: .2s;
+  overflow: hidden
 }
-.produtos:hover {
-  background: linear-gradient(to bottom, rgba(0,0,0,0),
-    rgba(131, 167, 185, 0.1),rgba(131, 167, 185, 0.4));
-  border: 1px solid rgb(21, 142, 202);
+
+  .produtos:hover {
+    background: linear-gradient(to bottom, rgba(0,0,0,0),
+      rgba(131, 167, 185, 0.1),rgba(131, 167, 185, 0.4));
+    border: 1px solid rgb(21, 142, 202);
+    transition: .2s;
+  }
+
+  .produtos .titulo{
+    font-size: 20px;
+    color: #005b88;
+    font-family: 'prohibition';
+  }
+  .produtos .titulo a{
+    color: #005b88;
+    text-decoration: none
+  }
+
+  .produtos img{
+    width: 100%;
+    height: 100%;
+  }
+
+  .produtos .NomeDesc {
+    height: 120px;
+    overflow: hidden;
+  }
+
+  .produtos .preco{
+    font-size: 25px;
+    color: #005b88;
+    font-family: 'prohibition',sans-serif;
+  }
+
+  .produtos .categoria a {
+    font-family: 'prohibition',sans-serif; 
+    transition: .3s; 
+    color: #005b88;
+    text-decoration: none  
+  }
+
+  .produtos .categoria a:hover {
+    color: #093c55;
+    transition: .3s;
+  }
+
+  .produtos .btn {
+    box-shadow: 2px 2px 2px rgb(33, 37, 41,.5);
+    margin-bottom: 5px;
+    font-size: 13px;
+    font-family: 'prohibition';
+  }
+
+  .produtos .desc{ font-size: 11px; }
+  .produtos .avista{ font-size: 9px }
+  .produtos .vistapreco{ font-size: 15px }
+  .produtos .parcelado{ font-size: 15px; color: #005b88 }
+
+  .produtos .Precos {
+    height: 120px;
+    overflow: hidden
+  }
+
+  .produtos .ButtonCat {
+    height: 150px;
+    overflow: hidden
+  }
+
+  .paginationDiv {
+    text-align: center;
+    width: 100%
+  }
+
+.produtosDetalhes {
+  width: 100%;
+  padding: 10px 20px 10px 20px;
+  border: 1px solid rgb(33, 37, 41,.5);
+  border-radius: 5px;
+  color: #212529;
   transition: .2s;
 }
+  .produtosDetalhes:hover {
+    background: linear-gradient(to bottom, rgba(0,0,0,0),rgba(131, 167, 185, 0.1));
+    border: 1px solid rgb(21, 142, 202);
+    transition: .2s;
+  }
 
-.produtos .titulo{
-  font-size: 20px;
-  color: #005b88;
-  font-family: 'prohibition';
+  .produtosDetalhes .titulo{
+    font-size: 30px;
+    color: #005b88;
+    font-family: 'prohibition';
+  }
+
+  .produtosDetalhes img{
+    margin-top:20px;
+    width: 80%;
+    height: 80%;
+  }
+
+  .produtosDetalhes .preco{
+    font-size: 30px;
+    color: #005b88;
+    margin-left: 20px;
+    font-family: 'prohibition',sans-serif;
+  }
+
+  .produtosDetalhes .categoria a {
+    font-family: 'prohibition',sans-serif; 
+    transition: .3s; 
+    text-decoration: none;
+    color: #005b88;
+    font-size: 20px
+  }
+
+  .produtosDetalhes .categoria a:hover {
+    color: #093c55;
+    transition: .3s;
+  }
+
+  .produtosDetalhes .comprar {
+    box-shadow: 2px 2px 2px rgb(33, 37, 41,.5);
+    font-size: 30px;
+    width: 80%;
+    font-family: 'prohibition';
+  }
+  
+  .fas {margin-right: 10px}
+
+  .produtosDetalhes .precos { margin-top: 15px}
+  .produtosDetalhes .check{font-size: 25px} 
+  .produtosDetalhes .cancel {font-size: 25px}
+  .produtosDetalhes .check {color: #229b22}
+  .produtosDetalhes .cancel {color: #dc143c}
+
+  .produtosDetalhes .desc{ font-size: 11px }
+  .produtosDetalhes .avista{ font-size: 25px; color: #229b22 }
+  .produtosDetalhes .precoAvista {font-family: 'prohibition'; font-size: 50px; margin-left: 20px}
+  .produtosDetalhes .vistapreco{ font-size: 15px; }
+  .produtosDetalhes .parcelado{ font-size: 15px; color: #005b88 }
+  .parcelamento { font-size: 15px; color: #005b88; font-family: 'prohibition'; margin-top: 20px}
+
+  .desc{margin:20px 0px 20px 0px}
+  .desc .descri {color: #005b88; font-size: 20px;font-family: 'prohibition';}
+  .desc p{margin-top: 15px}
+
+.tabela {
+  width: 100%
+}
+.tabela img{width: 50px; height: 50px;}
+  
+
+@media only screen and (max-width: 992px) {
+  .produtos{
+    height: 100%;
+    overflow: visible
+  }
+  .produtos .NomeDesc {
+    height: 100%;
+  }
+  .produtos .Precos {
+    height: 100%;
+  }
+  .produtos .ButtonCat {
+    height: 100%;
+  }
+  .produtos .comprar {
+    margin-right: 20px
+  }
+
+  .produtosDetalhes .check{font-size: 13px} 
+  .produtosDetalhes .cancel {font-size: 13px}
+  .produtosDetalhes .comprar {font-size: 13px;}
+  .produtosDetalhes .avista{ font-size: 13px;}
+  .produtosDetalhes .preco{font-size: 18px;}
+  .produtosDetalhes .precoAvista {font-size: 20px; }
+  .produtosDetalhes .vistapreco{ font-size: 13px; }
+  .produtosDetalhes .parcelado{ font-size: 12px; }
+  .produtosDetalhes .table {font-size: 8px}
 }
 
-.produtos .preco{
-  font-size: 25px;
-  color: #005b88;
-  font-family: 'prohibition',sans-serif;
+@media only screen and (max-width: 500px) {
+  .tabela{font-size: 8px; position: relative;right: 25px;}
+  .tabela img{width: 25px; height: 25px;}
+  .paginationDiv ul li a{width: 30px}
 }
 
-.produtos .marca a {
-  font-family: 'prohibition',sans-serif; 
-  transition: .3s; 
-  text-decoration: none  
+@keyframes flip {
+  from {
+    -webkit-transform: perspective(400px) scale3d(1, 1, 1) translate3d(0, 0, 0)
+      rotate3d(0, 1, 0, -360deg);
+    transform: perspective(400px) scale3d(1, 1, 1) translate3d(0, 0, 0) rotate3d(0, 1, 0, -360deg);
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+  }
+
+  40% {
+    -webkit-transform: perspective(400px) scale3d(1, 1, 1) translate3d(0, 0, 150px)
+      rotate3d(0, 1, 0, -190deg);
+    transform: perspective(400px) scale3d(1, 1, 1) translate3d(0, 0, 150px)
+      rotate3d(0, 1, 0, -190deg);
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+  }
+
+  50% {
+    -webkit-transform: perspective(400px) scale3d(1, 1, 1) translate3d(0, 0, 150px)
+      rotate3d(0, 1, 0, -170deg);
+    transform: perspective(400px) scale3d(1, 1, 1) translate3d(0, 0, 150px)
+      rotate3d(0, 1, 0, -170deg);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+
+  80% {
+    -webkit-transform: perspective(400px) scale3d(0.95, 0.95, 0.95) translate3d(0, 0, 0)
+      rotate3d(0, 1, 0, 0deg);
+    transform: perspective(400px) scale3d(0.95, 0.95, 0.95) translate3d(0, 0, 0)
+      rotate3d(0, 1, 0, 0deg);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+
+  to {
+    -webkit-transform: perspective(400px) scale3d(1, 1, 1) translate3d(0, 0, 0)
+      rotate3d(0, 1, 0, 0deg);
+    transform: perspective(400px) scale3d(1, 1, 1) translate3d(0, 0, 0) rotate3d(0, 1, 0, 0deg);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
 }
 
-.produtos .marca a:hover {
-  color: #093c55;
-  transition: .3s;
+.dollar{
+  margin-left: 35px;
+  margin-top:10px;
+  font-size: 50px;
+  position: absolute;
+  text-shadow: 1px 2px rgb(33, 37, 41,.8);
 }
 
-.produtos .btn {
-  box-shadow: 2px 2px 2px rgb(33, 37, 41,.5);
-  margin-bottom: 5px;
-  font-size: 13px;
-  font-family: 'prohibition';
+.produtosDetalhes .dollar{
+  margin-left: -370px;
+  margin-top:-250px;
+  font-size: 300px;
+  position: absolute;
+  text-shadow: 3px 6px rgb(33, 37, 41,.8);
 }
 
-.produtos .desc{ font-size: 11px }
-.produtos .avista{ font-size: 9px }
-.produtos .vistapreco{ font-size: 15px }
-.produtos .parcelado{ font-size: 15px; color: #005b88 }
-
-.produtos img{
-  width: 150px;
-  height: 150px;
-}
+.none{display: none}
 
 /* #005b88 */

@@ -13,15 +13,15 @@ export class FilterFields extends Component {
     render(){
         
         return (
-            <div className='col-md-12 filterFields justify-align-center'>
+            <div className='col-md-12 col-sm-12 col-xs-12 filterFields justify-align-center'>
           
                 <div className='col-md-1'></div>
-                <div className='col-md-3 a'>
+                <div className='col-md-3 col-sm-12 col-xs-12 a'>
                     <i className='fa fa-bars aa'></i>
                     <span className='aa'>Listar por</span>
                 </div>
 
-                <div className='col-md-3'>
+                <div className='col-md-3 col-sm-6 col-xs-12'>
                     <select className="form-control" value={this.props.order} name='order' onChange={this.props.handleChange}>
                         <option value="views DESC">Mais procurados</option>
                         <option value="preco ASC">Menor preço</option>
@@ -31,7 +31,7 @@ export class FilterFields extends Component {
                     </select>
                 </div>
 
-                <div className='col-md-3'>
+                <div className='col-md-3 col-sm-6 col-xs-12'>
                     <select className="form-control" value={this.props.limit} name='limit' onChange={this.props.handleChange}>
                         <option value="16">16 itens por pagina</option>
                         <option value="32">32 itens por pagina</option>

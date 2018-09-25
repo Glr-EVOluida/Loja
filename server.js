@@ -32,6 +32,7 @@ app.get('/show', (req, res) => {
     
     if(req.query.where) {
         where = 'WHERE '+req.query.where;
+        where = where.replace(/@@@/g, "%");
     }
 
     if(req.query.limit) {

@@ -11,18 +11,18 @@ export class Gprodutos extends Component{
             showDel:false,
             showNew:false,
             produto:{
-                id:null,
-                nome:null,
-                categoria:null,
-                marca:null,
-                img:null,
-                preco:null,
-                quantidade:null,
-                descricao:null
+                id:'',
+                nome:'',
+                categoria:'',
+                marca:'',
+                img:'',
+                preco:'',
+                quantidade:'',
+                descricao:''
             },
             busca:{
-                buscar:null,
-                value:null
+                buscar:'',
+                value:''
             }
         }
     }
@@ -70,7 +70,7 @@ export class Gprodutos extends Component{
     }
     addProduto = _ =>{
         const { produto } = this.state;
-        fetch(`http://192.168.200.147:4000/add?table=produtos&campos=nome,preco,descricao,marca,categoria,views,img,quantidade&valores='${produto.nome}',${produto.preco},'${produto.descricao}','${produto.marca}','${produto.categoria}',${0},'${produto.img}',${produto.quantidade}`)
+        fetch(`http://192.168.200.147:4000/add?table=produtos&campos=nome,preco,descricao,marca,categoria,views,img,quantidade&valores='${produto.nome}',${produto.preco},'${produto.descricao}','${produto.marca}','${produto.categoria}',0,'${produto.img}',${produto.quantidade}`)
         .then(this.getProdutos)
         .then(this.handleClose())
         .catch(err => console.error(err))
@@ -97,13 +97,13 @@ export class Gprodutos extends Component{
             showDel:false,
             showNew:false,
             produto:{
-                id:null,
-                nome:null,
-                preco:null,
-                categoria:null,
-                marca:null,
-                descricao:null,
-                quantidade:null
+                id:'',
+                nome:'',
+                preco:'',
+                categoria:'',
+                marca:'',
+                descricao:'',
+                quantidade:''
             } 
         });
     }
@@ -164,7 +164,7 @@ export class Gprodutos extends Component{
                             <label>Nome:</label>           
                             <input className='form-control' type='text' value={produto.nome} onChange={(e)=>
                                 this.setState({
-                                produto:{...produto,nome:e.target.value}    
+                                produto:{nome:e.target.value}    
                                 })
                             }/>
                         </div>
@@ -172,7 +172,7 @@ export class Gprodutos extends Component{
                             <label>Marca:</label>           
                             <input className='form-control' type='text' value={produto.marca} onChange={(e)=>
                                 this.setState({
-                                produto:{...produto,marca:e.target.value}    
+                                produto:{marca:e.target.value}    
                                 })
                             }/>
                         </div>
@@ -182,7 +182,7 @@ export class Gprodutos extends Component{
                             <label>Categoria:</label> 
                             <select className='form-control' value={produto.categoria} onChange={(e)=>
                                 this.setState({
-                                produto:{...produto,categoria:e.target.value}    
+                                produto:{categoria:e.target.value}    
                                 })
                             }>
                                 <option>Selecione uma opção</option>
@@ -195,7 +195,7 @@ export class Gprodutos extends Component{
                             <label>Imagem destaque:</label>           
                             <input className='form-control' type='text' value={produto.img} onChange={(e)=>
                                 this.setState({
-                                produto:{...produto,img:e.target.value}    
+                                produto:{img:e.target.value}    
                                 })
                             }/>
                         </div>
@@ -205,7 +205,7 @@ export class Gprodutos extends Component{
                             <label>Preço:</label>           
                             <input type='number' className='form-control' value={produto.preco} onChange={(e)=>
                                 this.setState({
-                                produto:{...produto,preco:e.target.value}    
+                                produto:{preco:e.target.value}    
                                 })
                             }/>
                         </div>
@@ -213,7 +213,7 @@ export class Gprodutos extends Component{
                             <label>Quantidade:</label>           
                             <input type='number' className='form-control' value={produto.quantidade} onChange={(e)=>
                                 this.setState({
-                                produto:{...produto,quantidade:e.target.value}    
+                                produto:{quantidade:e.target.value}    
                                 })
                             }/>
                         </div>
@@ -252,7 +252,7 @@ export class Gprodutos extends Component{
                     <div className='row'>
                         <div className='col-md-6'>
                             <label>Nome:</label>           
-                            <input className='form-control' type='text' value={produto.nome} onChange={(e)=>
+                            <input className='form-control' type='text' value={produto.nome} onChange={ e=>
                                 this.setState({
                                 produto:{...produto,nome:e.target.value}    
                                 })

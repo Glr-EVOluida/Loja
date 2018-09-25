@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 import './index.css';
+// import { User } from './User/User';
+
+// import { Admin } from './Admin/Admin';
+// import { Register } from './User/Register'
+
 import { MainProdutos } from './Produtos/MainProdutos';
 import { Details } from './Produtos/Details';
 import { Carrinho } from './Compra/Carrinho';
+
 import { Categorias } from './Categorias';
 
 export class App extends Component {

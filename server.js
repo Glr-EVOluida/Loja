@@ -17,7 +17,6 @@ connection.connect(err =>{
     }
 });
 
-console.log(connection);
 
 app.use(cors());
 
@@ -90,4 +89,6 @@ app.get('/remove', (req, res) => {
     })
 });
 
+
 app.listen(4000, () => {})
+console.log("4000");

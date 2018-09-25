@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Home } from './home';
-import { Gprodutos } from './gprodutos';
+import { Gprodutos } from './gprodutos'
 import { Gpedidos } from './gpedidos';
 
 export class Admin extends Component{

@@ -9,6 +9,8 @@ body {
   font-family: 'Exo',sans-serif;
 }
 
+
+
 .container {
   padding-top: 30px
 }
@@ -101,3 +103,52 @@ hr.hrStyle {
 ul li{
   cursor: pointer;
 }
+
+
+/* css -  Register */
+
+
+.main label{
+  font-size: 20px;
+  color:#776;
+}
+.main{
+  padding-left: 16%;
+  padding-right: 16%;
+}
+.slogan{
+  margin-top: 10px;
+  margin: 60px;
+}
+.input-line{
+  outline: none;
+  border-left:none;
+  border-right:none;
+  border-top:none;
+}
+.input-line:focus{
+  border-color: lightseagreen;
+}
+
+.btn-submit{
+  margin: 10px 0px 10px 0px;
+  height: 40px;
+  width: auto;
+  padding: 0px 15% 0px 15%;
+}
+
+.icon-user{
+ font-size: 180px;
+ text-align: end;
+ margin-top: 10px;
+}
+.imagePreview img{
+  margin-top: 10px;
+  border-radius: 100%;
+  height: 180px;
+  width: 180px;
+}
+
+
+
+/*///// */

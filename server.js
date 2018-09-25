@@ -5,7 +5,7 @@ const mysql = require('mysql');
 const app = express();
 
 const connection = mysql.createConnection({
-    host: '192.168.200.147',
+    host: 'localhost',
     user: 'root',
     password: '',
     database: 'loja'
@@ -17,7 +17,6 @@ connection.connect(err =>{
     }
 });
 
-console.log(connection);
 
 app.use(cors());
 
@@ -89,4 +88,6 @@ app.get('/remove', (req, res) => {
     })
 });
 
+
 app.listen(4000, () => {})
+console.log("4000");

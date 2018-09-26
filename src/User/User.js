@@ -1,25 +1,28 @@
 import React, { Component } from 'react';
-import { Modal, Button } from 'react-bootstrap';
-
+import { Modal, Button,Image } from 'react-bootstrap';
+import Md5 from 'md5';
 export class User extends Component {
     constructor(){
         super()
         this.state={
             users:[],
-            id:85,
+            id:174,
             nome:'',
             endereco:'',
             cep:'',
             telefone:'',
             email:'',
-            senha:'',
+            oldpass:'',
+            newpass:'',
+            passcontrol:'',
             img:'',
+            confirmarSenha:'',
             editar:{
                 label:'Editar',
                 color:'warning',
             },
-            checked:false,
             showDel:false,
+            showImg:false,
             disabled:true,
             edit:false            
         }
@@ -31,13 +34,20 @@ export class User extends Component {
 
     handleClose = _ =>{
         this.setState({
-            showDel:false
+            showDel:false,
+            showImg:false
         })
     }
 
     handleShowDel = _ =>{
         this.setState({
             showDel:true
+        })
+    }
+
+    handleShowImg = _ =>{
+        this.setState({
+            showImg:true
         })
     }
     
@@ -58,10 +68,18 @@ export class User extends Component {
     }
 
     updateUser = _ =>{
-        const { id,nome,endereco,cep,telefone,email,senha,img } = this.state;
-        fetch(`http://192.168.200.147:4000/update?table=clientes&alt=nome='${nome}',endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${senha}',img='${img}'&id='${id}'`)
-        .then(this.getUser)
-        .catch(err => console.error(err))
+        const { id,nome,endereco,cep,telefone,email,newpass,oldpass,passcontrol,img } = this.state;
+        if(Md5(passcontrol)===oldpass){
+            fetch(`http://192.168.200.147:4000/update?table=clientes&alt=nome='${nome}',endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${Md5(newpass)}',img='${img}'&id='${id}'`)
+            .then(this.getUser)
+            .then(this.setState({newpass:'',passcontrol:''},()=>alert('Usuário atualizado com sucesso!!')))
+            .catch(err => console.error(err))
+            
+        }else{
+            fetch(`http://192.168.200.147:4000/update?table=clientes&alt=nome='${nome}',endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${oldpass}',img='${img}'&id='${id}'`)
+            .then(this.getUser)
+            .catch(err => console.error(err))
+        }
     }
 
     editUser = (i) =>{
@@ -106,6 +124,30 @@ export class User extends Component {
         );
     }
     
+    renderUpdateImg = _ =>{
+        return (
+            <div>     
+            <Modal show={this.state.showImg} onHide={this.handleClose}>              
+                <Modal.Header closeButton>
+                    <Modal.Title>Mudar Imagem de Perfil</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <center>
+                        <input id='file' type='file' style={{display:'none'}}/>
+                        <label for='file'>
+                        <Image src={'uploads/1537897931749.jpg'} thumbnail  style={{height:250,width:250}}/><br/>
+                        Mudar imagem</label>
+                    </center>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={()=>alert('')}>Confirmar</Button>
+                    <Button onClick={this.handleClose}>Cancelar</Button>
+                </Modal.Footer>
+            </Modal>
+            </div>
+        );
+    }
+
     renderUser = _ =>{
         const { users } = this.state;
         users.map(obj =>{
@@ -155,7 +197,7 @@ export class User extends Component {
                     cep:wordcep,
                     telefone:wordtel,
                     email:obj.email,
-                    senha:obj.senha,
+                    oldpass:obj.senha,
                     img:obj.img
             })
         })
@@ -166,10 +208,29 @@ export class User extends Component {
         return(
             <div className='container-fluid' style={{marginTop:20}}>
                 {this.renderRemoveUser()}
+                {this.renderUpdateImg()}
                 <div className='row'>
-                    <div className='col-md-3' style={{background:'red',height:250,borderRadius:150}}></div>
-                    <form>
+                <center>
+                    <div className='col-md-3' style={{height:250,borderRadius:150}}>
+                    <Image src={'uploads/1537897931749.jpg'} circle  style={{height:250,width:250,position:'relative',zIndex:2}} onMouseOver={e=> e.target.style.zIndex=0} onMouseOut={e=> e.target.style.zIndex=2}/>
+                        <div id='hover' style={{
+                                backgroundColor:'rgba(5,5,5,0.5)',
+                                color:'white',
+                                width:250,
+                                height:133,
+                                marginTop:-140,
+                                zIndex:1,
+                                position:'relative',
+                                textAlign:'center',                        
+                                borderBottomLeftRadius:125,
+                                borderBottomRightRadius:125,
+                                cursor:'pointer'}} onMouseOver={e=> e.target.style.zIndex=4} onMouseOut={e=> e.target.style.zIndex=0} onClick={this.handleShowImg}>
+                                Mudar
+                            </div>
+                    </div>
+                    </center>                   
                     <div className='col-md-9'>
+                    <form>                   
                         <div className='col-md-6' style={{marginTop:30}}>
                             <label>Nome</label>
                             <input type='text' className='form-control' value={this.state.nome} onChange={ e =>this.setState({nome:e.target.value})} disabled={this.state.disabled}/>
@@ -179,12 +240,14 @@ export class User extends Component {
                             <input type='email' className='form-control' value={this.state.email} onChange={(e)=>this.setState({email:e.target.value})} disabled={this.state.disabled}/>
                         </div>
                         <div className='col-md-6' style={{marginTop:10}}>
-                            <label>Senha</label>
-                            <input autoComplete='' type={this.state.checked? 'text':'password'} className='form-control' value={this.state.senha} onChange={(e)=> this.setState({senha:e.target.value})} disabled={this.state.disabled}/>
-                            <label>
-                            <input type='checkbox' checked={this.state.checked} onChange={(e) => this.setState({checked:!this.state.checked})}/>
-                            Mostar Senha
-                            </label>
+                            <label>Nova Senha</label>
+                            <input autoComplete='' type='text'className='form-control' value={this.state.newpass} onChange={(e)=> this.setState({newpass:e.target.value})} disabled={this.state.disabled}/>
+                            
+                        </div>
+                        <div className='col-md-6' style={{marginTop:10}}>
+                            <label>Senha Antiga</label>
+                            <input autoComplete='' type='text'className='form-control' value={this.state.passcontrol} onChange={(e)=> this.setState({passcontrol:e.target.value})} disabled={this.state.disabled}/>
+                            
                         </div>
                         <div className='col-md-7' style={{marginTop:10}}>
                             <label>Endereço</label>
@@ -233,12 +296,12 @@ export class User extends Component {
                             }                             
                             this.setState({telefone:word})}} maxLength={16} disabled={this.state.disabled}/>
                         </div>
-                        <div className='col-md-7' style={{marginTop:10}}>
+                        <div className='col-md-7' style={{marginTop:10,marginBottom:10}}>
                         <Button bsStyle={this.state.editar.color} onClick={()=>this.editUser(this.state.edit)}>{this.state.editar.label}</Button>                            
                         <Button bsStyle='danger' onClick={this.handleShowDel} style={{marginLeft:10}}>Remover Conta</Button>
                         </div>        
-                    </div>
                     </form>
+                    </div>
                 </div>
             </div>
         )

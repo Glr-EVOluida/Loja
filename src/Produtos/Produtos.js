@@ -1,142 +1,114 @@
 import React, { Component } from 'react';
-import { Headline } from './Headline';
-import { Products } from './Products';
-import { FilterFields } from './FilterFields';
-import { Pagination } from './Pagination';
-import { Categorias } from './Categorias';
+import $ from 'jquery';
 
-export class Produtos extends Component {
-  
-  constructor(props){
-    super(props);
-    this.state = {
-      produtos: [],
-      carrinho: [],
-      order: 'views DESC',
-      limit: 16,
-      limitClause: '0,16',
-      where: 'quantidade>0',
-      headline: 'Produtos Destaques',
-      page: 1
-    }
-  }
+export class Produtos extends Component {  
 
-  componentDidMount(){
-    this.getProdutos();
-    sessionStorage.getItem('carrinho') && this.getCarrinhoSession();
-  }
-  
-  getCarrinhoSession = _ => {
-    let value = sessionStorage.getItem('carrinho');
-    value = JSON.parse(value);
-    this.setState({carrinho: value});
-  }
 
-  getProdutos = _ => {
-    const { order,limitClause,where } = this.state;
-
-    fetch(`http://localhost:4000/show?table=produtos&order=${order}&limit=${limitClause}&where=${where}`)
-    .then(response => response.json())
-    .then(response => this.setState( {produtos: response.data }) )
-    .catch(err => console.error(err))
-
-  }
-
-  handleComprarClick = id => {
-    const { carrinho } = this.state;
-    this.setState({
-      carrinho: [...carrinho, id]
-    }, () =>{
-      sessionStorage.setItem('carrinho', JSON.stringify(this.state.carrinho))
-    });
-    
-  }
-
-  handlePaginationClick = num => {
-    this.setState({
-      page: num,
-      limitClause: `${this.state.limit*(num - 1)},${this.state.limit}`
-    }, () => {this.getProdutos()});
-  }
-
-  handleCategoriaClick = cat => {
-
-    let {where} = this.state;
-
-    where = `quantidade>0 AND categoria='${cat}'`;
-
-    if(cat === 'home'){
-      cat='Produtos Destaques';
-      where = 'quantidade>0';
-    }else{
-      cat='você está em > '+cat
-      
+    shouldComponentUpdate(nextProps){
+        if(this.props.prod === nextProps.prod){
+            return false;
+        }else{
+            return true;
+        }
     }
 
-    this.setState({
-      headline: cat,
-      where: where,
-      limitClause: `${this.state.limit*(this.state.page - 1)},${this.state.limit}`,
-      page: 1,
-    }, () => {this.getProdutos()})
-  }
-
-  handleChange = e =>{
-
-    const {name,value} = e.target;
-
-    if(name === 'order'){
-      this.setState({
-        order:value
-      }, () => {this.getProdutos()})
-    }else if(name === 'limit'){
-
-      this.setState({
-      
-        limit: parseInt(value,10),
-        limitClause: `${value*(this.state.page - 1)},${value}`
-      
-      }, () => {this.getProdutos()})
-    
+    limitDesc = descricao => {
+        let array = descricao.split('');
+        let word = ''; 
+        let max = 65;
+        if(array.length <65){
+            max = array.length;
+        }
+        for(let i=0; i<max; i++){
+            word += array[i];
+        }
+        const palavra = word + '...';
+        return $.parseHTML(palavra).map((i,a) => {return this.formatDesc(i,a)} );
     }
-    
-  }
 
-  changePage = page => {
-    this.setState({
-      limitClause: `${this.state.limit*(page - 1)},${this.state.limit}`,
-      page: page
-    }, () => {this.getProdutos()})
-  }
-    
-  render() {
-    const { produtos,headline,order,limit,where,page } = this.state;
+    handleComprarClick = id => {
 
-    const categorias = ['home','prost','maes','pais','Computadores'];
+        const cifrao = `cifrao${id}`;
 
-    return (
-      <div className="App">
-        <div className='container'>
-          <div className='col-md-2'>
-            <div className='categorias'>
-              { categorias.map( (cat,i) => {return (<Categorias key={i} cat={cat} i={i} handleCategoriaClick={this.handleCategoriaClick}/>)} ) }
+        this.props.handleComprarClick(id);
+        setTimeout(() => {
+            document.getElementById(cifrao).classList.remove('none');
+            document.getElementById(cifrao).style.animation = "flip .5s linear"        
+            setTimeout(() => {
+                document.getElementById(cifrao).classList.add('none');
+                document.getElementById(cifrao).style.animation = ""        
+            }, 1000);
+        }, 5);
+    }
+
+    formatDesc = (desc,i) => {
+        switch (desc.nodeName){
+            case "BR": return <br key={i}/>
+            case "B": return <b key={i}>{desc.innerText}</b>
+            case "I": return <i key={i}>{desc.innerText}</i>
+            default: return <span key={i}>{desc.data}</span>;
+        }
+    }
+
+    renderProducts = ({id, nome, preco, descricao, categoria, img}) => {
+        return (
+            <div className='col-md-3 col-sm-12 col-xs-12' key={id}>
+                <div className='produtos'>
+                    <div style={{textAlign:'center'}} >
+                        <a href="#!" onClick={()=> this.props.handleDetalhesClick(id)}>
+                            <img src={img} alt={nome}/>
+                        </a>
+                    </div> <br/>
+
+                    <div className='NomeDesc'>
+
+                        <span className='titulo'>
+                            <a href="#!" onClick={()=> this.props.handleDetalhesClick(id)}>{nome}</a>
+                        </span>
+                        <p className='desc'>{this.limitDesc(descricao)}</p> 
+
+                    </div>
+
+                    <br/>
+
+                    <p className='Precos'>
+                        <span className='vistapreco'>De R$ {(preco + preco/10.3).toFixed(2)} Por</span><br/>  
+                        <span className='preco'>R$ {preco.toFixed(2)}</span><br/>
+                        <span className='avista'>À vista no Boleto 10% de Desconto</span> <br/>
+                        <span className='parcelado'>12x de R${(preco/12).toFixed(2)}</span>
+                    </p>  
+
+                    <div className='ButtonCat'>
+
+                        <button 
+                            className='btn btn-success btn-sm comprar'
+                            onClick={()=> this.handleComprarClick(id)}>
+                            <i className='fas fa-shopping-cart'></i> Comprar
+                        </button>
+
+                        <i id={`cifrao${id}`} className="fas fa-dollar-sign dollar none" style={{color:'#229b22'}}></i>
+
+                        <button 
+                            className='btn btn-warning btn-sm'
+                            onClick={()=> this.props.handleDetalhesClick(id)}>
+                            <i className='fas fa-plus'></i> Detalhes
+                        </button>
+
+                        <p className='categoria'><a href="#!" onClick={() => this.props.handleCategoriaChange(categoria) }>+ {categoria}</a></p>
+
+                    </div>
+
+                </div>
             </div>
-          </div>
-          <div className='col-md-10'>
-            
-              <Headline headline={headline}/>
+        )
+    }
 
-              {this.state.headline !== 'Produtos Destaques' && <div><FilterFields order={order} limit={limit} handleChange={this.handleChange}/><Pagination where={where} limit={limit} page={page} handlePaginationClick={this.handlePaginationClick} changePage={this.changePage}/> </div> }
+    render(){
 
-              <Products prod={produtos} handleComprarClick={this.handleComprarClick}/>
-
-              {this.state.headline !== 'Produtos Destaques' && <div><Pagination where={where} limit={limit} page={page} handlePaginationClick={this.handlePaginationClick}  changePage={this.changePage}/> <FilterFields order={order} limit={limit} handleChange={this.handleChange}/> </div>}
-
-              <br/>
-
-          </div>
-        </div>
-      </div>
-    );
-  }
+        return (
+            <div>
+                { this.props.prod.map(this.renderProducts)}
+            </div>
+        )
+    }
 }

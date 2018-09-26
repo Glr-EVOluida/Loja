@@ -16,26 +16,26 @@ export class Gpedidos extends Component{
     }
 
     getPedidos = _ =>{
-        fetch(`http://localhost:4000/show?table=compras&order=id desc`)
+        fetch(`http://192.168.200.147:4000/show?table=compras&order=id desc`)
         .then(response => response.json())
         .then(response => this.setState({ pedidos:response.data }))
         .catch(err => console.error(err))
     }
 
     getUsuario = _ =>{
-        fetch(`http://localhost:4000/show?table=clientes`)
+        fetch(`http://192.168.200.147:4000/show?table=clientes`)
         .then(response => response.json())
         .then(response => this.setState({ clientes:response.data }))
         .catch(err => console.error(err))
     }
 
     updatePedido = (id) =>{
-        fetch(`http://localhost:4000/update?table=compras&alt=estado='Em Processamento'&id=${id}`)
+        fetch(`http://192.168.200.147:4000/update?table=compras&alt=estado='Em Processamento'&id=${id}`)
         .then(this.getPedidos)
         .catch(err => console.error(err))
     }
 
-    renderPedidos = ({id, preco, idCliente,idProdutos,frete,data,estado}) =>{
+    renderPedidos = ({id, preco, idCliente,frete,data,estado}) =>{
         const { clientes } = this.state
         let user;
         let dis;
@@ -59,11 +59,11 @@ export class Gpedidos extends Component{
                 <td>{user}</td>
                 <td>{endereco}</td>
                 <td>{cep}</td>
-                <td>R$ {preco}</td>
-                <td>R$ {frete}</td>
+                <td>{preco}</td>
+                <td>{frete}</td>
                 <td>{data}</td>
                 <td>{estado}</td>
-                <td><Button bsStyle='success' disabled={dis} onClick={()=> this.updatePedido(id)}>Processar</Button></td>
+                <td><Button className='gpedidosbtn' bsStyle='success' disabled={dis} onClick={()=> this.updatePedido(id)}>Processar</Button></td>
             </tr>
         )
     }
@@ -72,7 +72,7 @@ export class Gpedidos extends Component{
         const { pedidos } = this.state
         return(
             <div className='container-fluid'>
-               <table className='table table-hover table-striped table-responsive'>
+               <table className='gpedidos table table-hover table-striped table-responsive'>
                    <thead>
                        <tr>
                            <th>Cliente</th>

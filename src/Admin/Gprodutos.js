@@ -160,13 +160,16 @@ export class Gprodutos extends Component {
     renderDropdownButton = (i) => {
         return (
             <DropdownButton
+                className={'gprodutosdrop'}
+                pullRight
+                dropup
                 bsStyle={'info'.toLowerCase()}
                 title={'Opções'}
                 key={i}
                 id={`${i}`}
             >
-                <MenuItem onClick={() => this.handleShowEdit(i)}>Editar</MenuItem>
-                <MenuItem onClick={() => this.handleShowDel(i)}>Excluir</MenuItem>
+                <MenuItem className='gprodutosdropcontent' onClick={() => this.handleShowEdit(i)}>Editar</MenuItem>
+                <MenuItem className='gprodutosdropcontent' onClick={() => this.handleShowDel(i)}>Excluir</MenuItem>
             </DropdownButton>
         );
     }
@@ -428,8 +431,8 @@ export class Gprodutos extends Component {
                 {this.renderModalDel()}
                 {this.renderModalNew()}
                 <div className='row' style={{ marginTop: 20 }}>
-                    <div className='col-md-2'>
-                        <label>Buscar Id</label>
+                    <div className='col-md-2 col-xs-6'>
+                        <label> Buscar Id</label>
                         <FormGroup>
                             <InputGroup>
                                 <FormControl type="text" onChange={
@@ -438,12 +441,12 @@ export class Gprodutos extends Component {
                                             buscar: 'where=id=',
                                             value: e.target.value
                                         }
-                                    })
+                                    },() => this.getBusca())
                                 } />
                             </InputGroup>
                         </FormGroup>
                     </div>
-                    <div className='col-md-3'>
+                    <div className='col-md-3 col-xs-6'>
                         <label>Buscar Nome</label>
                         <FormGroup>
                             <InputGroup>
@@ -453,12 +456,12 @@ export class Gprodutos extends Component {
                                             buscar: 'where=nome LIKE',
                                             value: "'@@@" + e.target.value + "@@@'"
                                         }
-                                    })
+                                    },() => this.getBusca())
                                 } />
                             </InputGroup>
                         </FormGroup>
                     </div>
-                    <div className='col-md-4'>
+                    <div className='col-md-4 col-xs-6'>
                         <label>Buscar Marca</label>
                         <FormGroup>
                             <InputGroup>
@@ -468,21 +471,16 @@ export class Gprodutos extends Component {
                                             buscar: 'where=marca LIKE',
                                             value: '"@@@' + e.target.value + '@@@"'
                                         }
-                                    })
+                                    },() => this.getBusca())
                                 } />
-                                <InputGroup.Button>
-                                    <Button onClick={() => this.getBusca()}>Buscar</Button>
-                                </InputGroup.Button>
                             </InputGroup>
                         </FormGroup>
                     </div>
-                    <div className='col-md-3'>
-                        <button className="btn btn-success" style={{ float: 'right', marginTop: 25 }} onClick={() => this.handleShowNew()}>Novo Produto <i className="fas fa-plus"></i></button>
+                    <div className='col-md-1 col-xs-6' style={{alignItems:'right'}}>
+                        <button className="btn btn-success" style={{ marginTop: 25 }} onClick={() => this.handleShowNew()}>Novo Produto <i className="fas fa-plus"></i></button>
                     </div>
                 </div>
-
-
-                <table className='table table-hover table-striped table-responsive'>
+                <table className='gprodutos table table-hover table-striped table-responsive'>
                     <thead>
                         <tr>
                             <th>Id</th>

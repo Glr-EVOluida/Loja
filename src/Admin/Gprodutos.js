@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
-import { DropdownButton, MenuItem, Modal, FormControl, FormGroup, InputGroup, Button } from 'react-bootstrap'
+import { DropdownButton, MenuItem, Modal, FormControl, FormGroup, InputGroup, Button,Pager } from 'react-bootstrap'
 
 export class Gprodutos extends Component {
     constructor() {
         super()
         this.state = {
+            pagination:[],
+            limit_init:0,
+            limit:15,
             imagePreviewUrl: null,
             produtos: [],
             produtosEdit: [],
             showEdit: false,
             showDel: false,
             showNew: false,
+            disabledn:false,
+            disabledp:false,
             produto: {
                 id: null,
                 nome: null,
@@ -30,10 +35,52 @@ export class Gprodutos extends Component {
 
     componentDidMount() {
         this.getProdutos();
+        this.getPagination();
+    }
+
+    getPagination = _ => {
+        fetch(`http://192.168.200.147:4000/show?table=produtos`)
+            .then(response => response.json())
+            .then(response => this.setState({ pagination: response.data },()=>this.controle()))
+            .catch(err => console.error(err))
+    }
+
+    controle= _ =>{
+        if((this.state.limit_init+20)>=this.state.pagination.length){
+            this.setState({
+                disabledn:true
+            },this.getProdutos())
+        }else{
+            this.setState({
+                disabledn:false
+            },this.getProdutos())
+        }
+        if(this.state.limit_init===0){
+            this.setState({
+              disabledp:true  
+            },this.getProdutos())
+        }else{
+            this.setState({
+                disabledp:false  
+              },this.getProdutos())
+        }
+    }
+
+    renderPagination = _ =>{
+        return(
+            <Pager>
+            <Pager.Item disabled={this.state.disabledp} previous onClick={()=>this.setState({limit_init:this.state.limit_init-10},()=>this.controle())}>
+                &larr; Previous Page
+            </Pager.Item>
+            <Pager.Item disabled={this.state.disabledn} next onClick={()=>this.setState({limit_init:this.state.limit_init+10},()=>this.controle())}>
+                Next Page &rarr;
+            </Pager.Item>
+            </Pager>
+        )
     }
 
     getProdutos = _ => {
-        fetch('http://192.168.200.147:4000/show?table=produtos')
+        fetch(`http://192.168.200.147:4000/show?table=produtos&limit=${this.state.limit_init},${this.state.limit}`)
             .then(response => response.json())
             .then(response => this.setState({ produtos: response.data }))
             .catch(err => console.error(err))
@@ -49,6 +96,7 @@ export class Gprodutos extends Component {
 
     getVar = ({ id, nome, preco, categoria, marca, quantidade, descricao, img }) => {
         this.setState({
+            imagePreviewUrl:'uploads/1537892794839.jpg',
             produto: {
                 id: id,
                 nome: nome,
@@ -66,9 +114,10 @@ export class Gprodutos extends Component {
         const { busca } = this.state;
         fetch(`http://192.168.200.147:4000/show?table=produtos&${busca.buscar}${busca.value}`)
             .then(response => response.json())
-            .then(response => { !response.data ? this.getProdutos() : this.setState({ produtos: response.data }) })
+            .then(response => { !response.data ? this.setState({disabledn:false, disabledp:true },()=>this.getProdutos()) : this.setState({ produtos: response.data, disabledn:true, disabledp:true }) })
             .catch(err => console.error(err))
     }
+
     addProduto = _ => {
         const { produto } = this.state;
         
@@ -76,7 +125,7 @@ export class Gprodutos extends Component {
 
         data.append('file', this.uploadInput.files[0]);
 
-        fetch('http://localhost:8000/upload', {
+        fetch('http://192.168.200.147:4000/upload', {
             method: 'POST',
             body: data,
 
@@ -97,17 +146,13 @@ export class Gprodutos extends Component {
     updateProduto = _ => {
         const { produto } = this.state;
 
-         
+           
         const data = new FormData();
 
         data.append('file', this.uploadInput.files[0]);
 
-        fetch('http://localhost:8000/upload', {
-            method: 'POST',
-            body: data,
-
-        }).then((response) => {
-            response.json().then((body) => {
+        fetch('http://192.168.200.147:4000/upload', {method: 'POST',body: data,})
+        .then((response) => {response.json().then((body) => {
            //update de imagem
         fetch(`http://192.168.200.147:4000/update?table=produtos&alt=nome='${produto.nome}',preco=${produto.preco},descricao='${produto.descricao}',marca='${produto.marca}',categoria='${produto.categoria}',img='${body.file}',quantidade=${produto.quantidade}&id='${produto.id}'`)
             .then(this.getProdutos)
@@ -378,7 +423,7 @@ export class Gprodutos extends Component {
                                     onChange={(e) => this._handleImageChange(e)}
                                     ref={(ref) => { this.uploadInput = ref; }}
                                 /><br></br>
-                                {this.state.imagePreviewUrl == null ?
+                                {this.state.imagePreviewUrl === null ?
                                     <i style={{ fontSize: 200 }}   htmlFor="file" className=' fas fa-image'> </i>
                                     :
                                   <img style={{ width:260,height:200}} src={this.state.imagePreviewUrl} alt='Perfil' />}
@@ -496,6 +541,7 @@ export class Gprodutos extends Component {
                         {produtos.map(this.renderProdutos)}
                     </tbody>
                 </table>
+                {this.renderPagination()}
             </div>
         )
     }

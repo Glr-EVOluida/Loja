@@ -1,5 +1,129 @@
+@import url('https://fonts.googleapis.com/css?family=Exo|Nunito+Sans|Roboto+Condensed');
+
 body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+}
+
+.content {
+    min-height: calc(100vh - 245px);
+}
+.footer {
+    background: #212529;
+    color: white;
+}
+.head {
+    background: #212529;
+}
+.bus{
+    padding-top: 30px
+}
+.busca{
+    color:#005B88;
+    font-size: 20px;
+    position: absolute;   
+    top: 0; 
+    right: 20px;
+    background: none; 
+    border: none;
+    padding-top: 37px
+}
+.ico{
+    font-size: 40px;
+    color: white;
+    padding-top: 27px;
+    left: 50%;
+    position: relative;
+}
+.logo{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.logos{
+    display: none;
+    margin-left: auto;
+    margin-right: auto;
+}
+.azul{
+    color:#005b88
+}
+.branco{
+    color:white;
+}
+.ins:hover{
+    text-decoration: none;
+    color:white;
+    cursor: pointer
+}
+.titulo{
+    text-align: center;
+    font-family: 'Exo', sans-serif; 
+}
+.rs i {
+    font-size: 25px;
+    position: relative;
+    top:    50%;
+    transform: translateY(-50%);
+}
+.brs{
+    justify-content: center;
+    display: flex;
+}
+.rs{
+    display: inline-block;
+    text-align: center;
+    border-radius:100%;
+    height: 40px;
+    width: 40px; 
+    border: 1px solid;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.foo{
+    padding: 20px
+}
+.justificado{
+    text-align: justify;
+}
+.center{
+    text-align: center;
+}
+.ui-menu img{
+    width:30px;
+    height:30px;
+  }
+  .ui-menu li span{
+    font-size:13px;
+    font-family: 'Exo', sans-serif;
+    padding:0 0 10px 10px;
+    margin:0 0 10px 0 !important;
+    white-space:nowrap;
+  }
+.cat{
+    background:#212529;
+    min-height: calc(100vh - 245px);
+    color:white;
+    font-family: 'Exo', sans-serif;
+}
+.fotoUser{
+    width: 40px;
+    height: 40px;
+    border-radius:100%; 
+}
+@media only screen and (max-width:911px){
+    .head{
+        padding-bottom: 20px
+    }
+    .logo{
+        display: none;
+    }
+    .logos{
+        display: block;
+    }
+    .cam{
+        padding-bottom:30px
+    }
 }

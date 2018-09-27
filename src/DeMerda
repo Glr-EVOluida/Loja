@@ -1,0 +1,114 @@
+import React from 'react';
+import './index.css';
+import BaraTudo from './img/Baratudo.png';
+import BT from './img/BT.png';
+import $ from 'jquery';
+import 'jquery-ui-bundle';
+
+
+export class Head extends React.Component{
+
+    state = {
+        produtos:[],
+        products:{
+            name:'',
+            imgs:''
+        }
+    }
+
+    componentDidMount() {
+        const { products,imgs } = this.state;
+        this.getProducts();
+        $( "#tags" ).autocomplete({
+            minLength: 2,
+            source:products,
+            
+            select: function( event, ui ) {
+              $( "#tags" ).val( ui.item.label );
+              $( "#project-icon" ).attr( "src", "img/" + ui.item.icon );
+       
+              return false;
+            }
+          })
+          .autocomplete( "instance" )._renderItem = function( ul, item ) {
+            return $( "<li>" )
+              .append( "<div>" + item.label + "</div>" )
+              .appendTo( ul );
+          }; 
+    }
+
+    getProducts = _ =>{
+        const {products} = this.state;
+        fetch('http://localhost:4000/show?table=produtos')
+        .then(response => response.json())
+        .then(response => 
+            this.setState({
+                products: {...products,name:response.data.nome},
+                products: {...products,imgs:response.data.img},
+            },() => console.log(products))
+        )
+        .catch(err => console.error(err))
+    }
+
+    busca =({nome,img})=>{
+
+        let { products,imgs } = this.state;
+
+        
+
+        
+    }
+
+    render(){
+        return(
+            <div className="head">
+                <div className="container">
+                    <div className="col-md-3 col-xs-12">
+                        <img className="logo" src={BaraTudo} alt="BaraTudo" height="100" width="150"/>
+                        <img className="logos" src={BT} alt="BaraTudo" height="100" width="150"/>
+                    </div>
+                    
+                    <div className="col-md-5 col-xs-12 bus">
+                        <div className="ui-widget">
+                            <img id="project-icon" src="" class="ui-state-default" alt=""/>
+                            <input id="tags" className="form-control"/>
+                            <a type="submit"><i className="fas fa-search busca"></i></a>
+                        </div>
+                    </div>
+
+                    <div className="col-md-1"></div>
+
+                    <div className="col-md-1 col-xs-6">
+                        <i className="fas fa-shopping-cart ico"></i>
+                    </div>
+
+                    <div  className="col-md-2 col-xs-6">
+                        <div className="dropdown">
+                            <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <i className="fas fa-user-circle ico"></i> 
+                            </a>
+                            <div style={{padding:'20px',width: '200px'}} className="dropdown-menu">
+                                <div className="form-group">
+                                    <label htmlFor="exampleDropdownFormEmail1">Endereço de Email</label>
+                                    <input type="email" className="form-control" id="exampleDropdownFormEmail1" placeholder="email@example.com"/>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="exampleDropdownFormPassword1">Senha</label>
+                                    <input type="password" className="form-control" id="exampleDropdownFormPassword1" placeholder="Password"/>
+                                </div>
+                                <button type="submit" className="form-control btn btn-primary">Sign in</button>
+                                <hr/>
+                                <div className="center">
+                                    <label>Cadastre-se</label>
+                                    <button type="submit" className="form-control btn btn-warning">Sign up</button>
+                                    <div className="dropdown-divider"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+}

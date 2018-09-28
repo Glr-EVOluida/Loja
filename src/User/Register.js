@@ -118,8 +118,8 @@ export class Register extends React.Component {
 
         return (
             <div className="container-fluid">
-                <div className="col-md-12"  >
-                    <form className="col-md-12 main"  onSubmit={this.handleRegister}>
+                <div className="col-md-12 col-sm-12 col-xs-12"  >
+                    <form  className="col-md-12 main"  onSubmit={this.handleRegister}>
                         <div className="row">
                             <center>
                                 <div className="select-main">
@@ -131,9 +131,9 @@ export class Register extends React.Component {
 
                                     <div className="imagePreview" >
                                         {view}
-                                        { this.state.errUpload === true && <span style={{position:"absolute",zIndex:999}}>Selecione um arquivo</span>}
+                                        { this.state.errUpload === true && < span  style={{position:"relative"}}><i style={{color:'orange'}} className="fas fa-exclamation-triangle"></i> Selecione um arquivo</span>}
                                     </div>
-                                </div>
+                                 </div>
                             </center>
                         </div>
                         <div className="row">
@@ -152,6 +152,7 @@ export class Register extends React.Component {
                         <div className="row">
                             <div className="col s12">
                                 <label >Nome</label>
+                                <br></br>
                                 <input
                                     onChange={(e) =>
                                         this.setState({
@@ -159,10 +160,10 @@ export class Register extends React.Component {
                                         })
                                     }
                                     value={user.nome}
-                                    className="col-md-12 input-line"
+                                    className="form-control input-line"
                                     type="text"
                                     required />
-                            </div>
+                                </div>
                         </div>
                         <div className="row">
                             <div className="col s12">
@@ -174,7 +175,7 @@ export class Register extends React.Component {
                                         })
                                     }
                                     value={user.endereco}
-                                    className="col-md-12 input-line"
+                                    className="form-control input-line"
                                     type="text"
                                     required />
                             </div>
@@ -192,7 +193,7 @@ export class Register extends React.Component {
                                     onBlur={() =>  user.cep.length < 9 && this.setState({user:{...user,cep:''}})}
                                     value={user.cep}
                                     mask={[/\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/]}
-                                    className="col-md-12 input-line"
+                                    className="form-control input-line"
                                     type="text"
                                     required
                                 />
@@ -209,7 +210,7 @@ export class Register extends React.Component {
                                     onBlur={() =>  user.telefone.length < 16 && this.setState({user:{...user,telefone:''}})}
                                     value={user.telefone}
                                     mask={['(', /\d/, /\d/, ')', ' ', /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/]}
-                                    className="col-md-12 input-line"
+                                    className="form-control input-line"
                                     type="text"
                                     required />
                             </div>
@@ -224,7 +225,7 @@ export class Register extends React.Component {
                                         })
                                     }
                                     value={user.email}
-                                    className="col-md-12 input-line"
+                                    className="form-control input-line"
                                     type="email"
                                     required />
                             </div>
@@ -241,12 +242,13 @@ export class Register extends React.Component {
                                         })
                                     }
                                     value={user.senha}
-                                    className="col-md-12 input-line"
+                                    className="col-md-12 col-sm-12 col-xs-12 form-group input-line"
                                     type={this.state.inputType}
                                     required />
                             </div>
                         </div>
 
+                       
                        
 
 

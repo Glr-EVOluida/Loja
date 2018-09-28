@@ -83,7 +83,7 @@ export class Home extends Component{
   var myPieChart = new Chart(don,{
   type: 'doughnut',
   data: {
-    labels:["Primeiro Cemestre","Segundo Semestre"],
+    labels:["Primeiro Semestre","Segundo Semestre"],
     datasets: [{
       data: [this.state.venda.first, this.state.venda.second],    
       backgroundColor:[

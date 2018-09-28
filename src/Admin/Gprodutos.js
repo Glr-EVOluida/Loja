@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DropdownButton, MenuItem, Modal, FormControl, FormGroup, InputGroup, Button } from 'react-bootstrap'
+import { DropdownButton, MenuItem, Modal, FormControl, FormGroup, InputGroup, Button,Pager } from 'react-bootstrap'
 
 export class Gprodutos extends Component {
     constructor() {
@@ -8,13 +8,18 @@ export class Gprodutos extends Component {
             errUpload : false,
             idremove: '',
             imageName: '',
-            imagePreviewUrl: '',
+            pagination:[],
+            limit_init:0,
+            limit:15,
+            imagePreviewUrl:"",
             produtos: [],
             remove: [],
             produtosEdit: [],
             showEdit: false,
             showDel: false,
             showNew: false,
+            disabledn:false,
+            disabledp:false,
             produto: {
                 id: '',
                 nome: '',
@@ -34,10 +39,52 @@ export class Gprodutos extends Component {
 
     componentDidMount() {
         this.getProdutos();
+        this.getPagination();
+    }
+
+    getPagination = _ => {
+        fetch(`http://192.168.200.147:4000/show?table=produtos`)
+            .then(response => response.json())
+            .then(response => this.setState({ pagination: response.data },()=>this.controle()))
+            .catch(err => console.error(err))
+    }
+
+    controle= _ =>{
+        if((this.state.limit_init+20)>=this.state.pagination.length){
+            this.setState({
+                disabledn:true
+            },this.getProdutos())
+        }else{
+            this.setState({
+                disabledn:false
+            },this.getProdutos())
+        }
+        if(this.state.limit_init===0){
+            this.setState({
+              disabledp:true  
+            },this.getProdutos())
+        }else{
+            this.setState({
+                disabledp:false  
+              },this.getProdutos())
+        }
+    }
+
+    renderPagination = _ =>{
+        return(
+            <Pager>
+            <Pager.Item disabled={this.state.disabledp} previous onClick={()=>this.setState({limit_init:this.state.limit_init-10},()=>this.controle())}>
+                &larr; Previous Page
+            </Pager.Item>
+            <Pager.Item disabled={this.state.disabledn} next onClick={()=>this.setState({limit_init:this.state.limit_init+10},()=>this.controle())}>
+                Next Page &rarr;
+            </Pager.Item>
+            </Pager>
+        )
     }
 
     getProdutos = _ => {
-        fetch('http://192.168.200.147:4000/show?table=produtos')
+        fetch(`http://192.168.200.147:4000/show?table=produtos&limit=${this.state.limit_init},${this.state.limit}`)
             .then(response => response.json())
             .then(response => this.setState({ produtos: response.data }))
             .catch(err => console.error(err))
@@ -53,6 +100,7 @@ export class Gprodutos extends Component {
 
     getVar = ({ id, nome, preco, categoria, marca, quantidade, descricao, img }) => {
         this.setState({
+            imagePreviewUrl:"http://192.168.200.147:3000/uploads/"+img,
             produto: {
                 id: id,
                 nome: nome,
@@ -70,9 +118,10 @@ export class Gprodutos extends Component {
         const { busca } = this.state;
         fetch(`http://192.168.200.147:4000/show?table=produtos&${busca.buscar}${busca.value}`)
             .then(response => response.json())
-            .then(response => { !response.data ? this.getProdutos() : this.setState({ produtos: response.data }) })
+            .then(response => { !response.data ? this.setState({disabledn:false, disabledp:true },()=>this.getProdutos()) : this.setState({ produtos: response.data, disabledn:true, disabledp:true }) })
             .catch(err => console.error(err))
     }
+
     addProduto = _ => {
         const { produto } = this.state;
         const data = new FormData();
@@ -170,19 +219,11 @@ export class Gprodutos extends Component {
 
             }))
             .catch(err => console.error(err))
-
-
-
-
-
-
-
-
-
-    }
+ }
 
     handleClose = () => {
         this.setState({
+            errUpload: false,
             imagePreviewUrl: "",
             showEdit: false,
             showDel: false,
@@ -215,13 +256,16 @@ export class Gprodutos extends Component {
     renderDropdownButton = (i) => {
         return (
             <DropdownButton
+                className={'gprodutosdrop'}
+                pullRight
+                dropup
                 bsStyle={'info'.toLowerCase()}
                 title={'Opções'}
                 key={i}
                 id={`${i}`}
             >
-                <MenuItem onClick={() => this.handleShowEdit(i)}>Editar</MenuItem>
-                <MenuItem onClick={() => this.handleShowDel(i)}>Excluir</MenuItem>
+                <MenuItem className='gprodutosdropcontent' onClick={() => this.handleShowEdit(i)}>Editar</MenuItem>
+                <MenuItem className='gprodutosdropcontent' onClick={() => this.handleShowDel(i)}>Excluir</MenuItem>
             </DropdownButton>
         );
     }
@@ -268,7 +312,7 @@ export class Gprodutos extends Component {
                         <div className='row'>
                             <div className='col-md-6'>
                                 <label>Nome:</label>
-                                <input className='form-control' type='text' value={produto.nome} onChange={(e) =>
+                                <input className='form-control' required type='text' value={produto.nome} onChange={(e) =>
                                     this.setState({
                                         produto: { ...produto, nome: e.target.value }
                                     })
@@ -276,7 +320,7 @@ export class Gprodutos extends Component {
                             </div>
                             <div className='col-md-6'>
                                 <label>Marca:</label>
-                                <input className='form-control' type='text' value={produto.marca} onChange={(e) =>
+                                <input  required className='form-control' type='text' value={produto.marca} onChange={(e) =>
                                     this.setState({
                                         produto: { ...produto, marca: e.target.value }
                                     })
@@ -301,7 +345,7 @@ export class Gprodutos extends Component {
                         <div className='row'>
                             <div className='col-md-6'>
                                 <label>Preço:</label>
-                                <input type='number' className='form-control' value={produto.preco} onChange={(e) =>
+                                <input  required type='number' className='form-control' value={produto.preco} onChange={(e) =>
                                     this.setState({
                                         produto: { ...produto, preco: e.target.value }
                                     })
@@ -309,7 +353,7 @@ export class Gprodutos extends Component {
                             </div>
                             <div className='col-md-6'>
                                 <label>Quantidade:</label>
-                                <input type='number' className='form-control' value={produto.quantidade} onChange={(e) =>
+                                <input required type='number' className='form-control' value={produto.quantidade} onChange={(e) =>
                                     this.setState({
                                         produto: { ...produto, quantidade: e.target.value }
                                     })
@@ -318,34 +362,39 @@ export class Gprodutos extends Component {
 
                         </div>
                         <div className='row'>
-                            <div className='col-md-6'>
-                                <label htmlFor="file">
-                                    Imagem do Produto:  <i className="fas fa-download"></i>
+                            <div className='col-md-6 '>
+                                <div>
+                                { this.state.errUpload === true && < span  style={{position:"absolute",zIndex:999,marginTop:-6,padding:10,marginLeft:25}}><i style={{color:'orange'}} className="fas fa-exclamation-triangle"></i> Selecione um arquivo</span>}
+                                    
+                                     <label className="select-image-admin"  htmlFor="file"><i className="fas fa-camera"></i>  Imagem do Produto </label>  
+                                        <div className="imagePreview" >
+                                             {this.state.imagePreviewUrl === "" ?
+                                                <i style={{ fontSize: 246 }} htmlFor="file" className=' fas fa-image'> </i> :  <img style={{marginTop:30,  borderRadius: 10, width: 240, height: 180 }} src={"" + this.state.imagePreviewUrl} alt='Perfil' />}
+                                        </div>
+                                </div>
 
-                                </label>
 
-                                <input
+
+                                 <input
+                                   required   
                                     style={{ display: "none" }}
                                     id="file"
                                     type="file"
                                     onChange={(e) => this._handleImageChange(e)}
                                     ref={(ref) => { this.uploadInput = ref; }}
-                                /><br></br>
-
-                                {this.state.imagePreviewUrl === "" ?
-                                    <i style={{ fontSize: 200 }} htmlFor="file" className=' fas fa-image'> </i>
-                                    :
-                                    <img style={{ borderRadius: 10, width: 260, height: 200 }} src={"" + this.state.imagePreviewUrl} alt='Perfil' />}
-                                 { this.state.errUpload === true &&< span  style={{position:"absolute",zIndex:999}}>Selecione um arquivo</span>}
+                                />
+                                <br></br>
+                                 <hr></hr>
                             </div>
-                            <div className='col-md-6'>
-                                <label>Descrição:</label>
-                                <FormControl style={{ resize: "none", width: 270, height: 180 }} componentClass="textarea" value={produto.descricao} onChange={(e) =>
-                                    this.setState({
-                                        produto: { ...produto, descricao: e.target.value }
-                                    })
-                                } />
-                            </div>
+                            
+                                <div className='col-md-6'>
+                                    <label>Descrição:</label>
+                                    <FormControl style={{ resize: "none", width: 270, height: 180 }} componentClass="textarea" value={produto.descricao} onChange={(e) =>
+                                        this.setState({
+                                            produto: { ...produto, descricao: e.target.value }
+                                        })
+                                    } />
+                                </div>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
@@ -353,6 +402,7 @@ export class Gprodutos extends Component {
                         <Button onClick={this.handleClose}>Close</Button>
                     </Modal.Footer>
                 </Modal>
+
             </div>
         );
     }
@@ -370,7 +420,7 @@ export class Gprodutos extends Component {
                         <div className='row'>
                             <div className='col-md-6'>
                                 <label>Nome:</label>
-                                <input className='form-control' type='text' value={produto.nome} onChange={(e) =>
+                                <input required className='form-control' type='text' value={produto.nome} onChange={(e) =>
                                     this.setState({
                                         produto: { ...produto, nome: e.target.value }
                                     })
@@ -378,7 +428,7 @@ export class Gprodutos extends Component {
                             </div>
                             <div className='col-md-6'>
                                 <label>Marca:</label>
-                                <input className='form-control' type='text' value={produto.marca} onChange={(e) =>
+                                <input required className='form-control' type='text' value={produto.marca} onChange={(e) =>
                                     this.setState({
                                         produto: { ...produto, marca: e.target.value }
                                     })
@@ -403,7 +453,7 @@ export class Gprodutos extends Component {
                         <div className='row'>
                             <div className='col-md-6'>
                                 <label>Preço:</label>
-                                <input type='number' className='form-control' value={produto.preco} onChange={(e) =>
+                                <input required type='number' className='form-control' value={produto.preco} onChange={(e) =>
                                     this.setState({
                                         produto: { ...produto, preco: e.target.value }
                                     })
@@ -411,7 +461,7 @@ export class Gprodutos extends Component {
                             </div>
                             <div className='col-md-6'>
                                 <label>Quantidade:</label>
-                                <input type='number' className='form-control' value={produto.quantidade} onChange={(e) =>
+                                <input required  type='number' className='form-control' value={produto.quantidade} onChange={(e) =>
                                     this.setState({
                                         produto: { ...produto, quantidade: e.target.value }
                                     })
@@ -420,26 +470,28 @@ export class Gprodutos extends Component {
 
                         </div>
                         <div className='row'>
-                            <div className='col-md-6'>
-                                <label htmlFor="file">
-                                    Imagem do Produto:  <i className="fas fa-download"></i>
-
-                                </label>
-
-                                <input
+                        <div className='col-md-6 '>
+                                <div>
+                                { this.state.errUpload === true && < span  style={{position:"absolute",zIndex:999,marginTop:-6,padding:10,marginLeft:25}}><i style={{color:'orange'}} className="fas fa-exclamation-triangle"></i> Selecione um arquivo</span>}
+                                    
+                                     <label className="select-image-admin"  htmlFor="file"><i className="fas fa-camera"></i>  Imagem do Produto </label>  
+                                        <div className="imagePreview" >
+                                             {this.state.imagePreviewUrl === "" ?
+                                                <i style={{ fontSize: 246 }} htmlFor="file" className=' fas fa-image'> </i> :  <img style={{marginTop:30,  borderRadius: 10, width: 240, height: 180 }} src={"" + this.state.imagePreviewUrl} alt='Perfil' />}
+                                        </div>
+                                </div>
+                                   <input
+                                   required   
                                     style={{ display: "none" }}
                                     id="file"
                                     type="file"
                                     onChange={(e) => this._handleImageChange(e)}
                                     ref={(ref) => { this.uploadInput = ref; }}
-                                /><br></br>
-                                {this.state.imagePreviewUrl === "" ?
-                                    <i style={{ fontSize: 200 }} htmlFor="file" className=' fas fa-image'> </i>
-                                    :
-                                    <img style={{ width: 260, height: 200 }} src={this.state.imagePreviewUrl} alt='Perfil' />
-                                }
-
+                                />
+                                <br></br>
+                                 <hr></hr>
                             </div>
+
                             <div className='col-md-6'>
                                 <label>Descrição:</label>
                                 <FormControl style={{ resize: "none", width: 270, height: 180 }} componentClass="textarea" value={produto.descricao} onChange={(e) =>
@@ -487,8 +539,8 @@ export class Gprodutos extends Component {
                 {this.renderModalDel()}
                 {this.renderModalNew()}
                 <div className='row' style={{ marginTop: 20 }}>
-                    <div className='col-md-2'>
-                        <label>Buscar Id</label>
+                    <div className='col-md-2 col-xs-6'>
+                        <label> Buscar Id</label>
                         <FormGroup>
                             <InputGroup>
                                 <FormControl type="text" onChange={
@@ -497,12 +549,12 @@ export class Gprodutos extends Component {
                                             buscar: 'where=id=',
                                             value: e.target.value
                                         }
-                                    })
+                                    },() => this.getBusca())
                                 } />
                             </InputGroup>
                         </FormGroup>
                     </div>
-                    <div className='col-md-3'>
+                    <div className='col-md-3 col-xs-6'>
                         <label>Buscar Nome</label>
                         <FormGroup>
                             <InputGroup>
@@ -512,12 +564,12 @@ export class Gprodutos extends Component {
                                             buscar: 'where=nome LIKE',
                                             value: "'@@@" + e.target.value + "@@@'"
                                         }
-                                    })
+                                    },() => this.getBusca())
                                 } />
                             </InputGroup>
                         </FormGroup>
                     </div>
-                    <div className='col-md-4'>
+                    <div className='col-md-4 col-xs-6'>
                         <label>Buscar Marca</label>
                         <FormGroup>
                             <InputGroup>
@@ -527,21 +579,16 @@ export class Gprodutos extends Component {
                                             buscar: 'where=marca LIKE',
                                             value: '"@@@' + e.target.value + '@@@"'
                                         }
-                                    })
+                                    },() => this.getBusca())
                                 } />
-                                <InputGroup.Button>
-                                    <Button onClick={() => this.getBusca()}>Buscar</Button>
-                                </InputGroup.Button>
                             </InputGroup>
                         </FormGroup>
                     </div>
-                    <div className='col-md-3'>
-                        <button className="btn btn-success" style={{ float: 'right', marginTop: 25 }} onClick={() => this.handleShowNew()}>Novo Produto <i className="fas fa-plus"></i></button>
+                    <div className='col-md-1 col-xs-6' style={{alignItems:'right'}}>
+                        <button className="btn btn-success" style={{ marginTop: 25 }} onClick={() => this.handleShowNew()}>Novo Produto <i className="fas fa-plus"></i></button>
                     </div>
                 </div>
-
-
-                <table className='table table-hover table-striped table-responsive'>
+                <table className='gprodutos table table-hover table-striped table-responsive'>
                     <thead>
                         <tr>
                             <th>Id</th>
@@ -557,6 +604,7 @@ export class Gprodutos extends Component {
                         {produtos.map(this.renderProdutos)}
                     </tbody>
                 </table>
+                {this.renderPagination()}
             </div>
         )
     }

@@ -118,7 +118,6 @@ ul li{
 }
 .slogan{
   margin-top: 10px;
-  margin: 60px;
 }
 .input-line{
   outline: none;
@@ -138,17 +137,93 @@ ul li{
 }
 
 .icon-user{
- font-size: 180px;
+ font-size: 187px;
  text-align: end;
- margin-top: 10px;
 }
+
+
+
+.select-image:hover{
+  opacity: 0.8;
+}
+.select-image{
+  z-index: 999;
+  opacity: 0;
+  margin-left:-89px;
+  color:white !important;
+  font-size: 16px !important;
+  margin-top:91px;
+  position: absolute;
+  width: 180px;
+  height: 90px;
+  background: #333;
+  border-radius: 0px 0px 100px 100px;
+}
+
+
 .imagePreview img{
-  margin-top: 10px;
+  width: 180px;
+  height: 180px;
+  border-radius: 100%;
+}
+
+.imagePreview { 
+  position: relative;
   border-radius: 100%;
   height: 180px;
   width: 180px;
 }
 
+.errUpload{
+  pointer-events: none;
+  width: 200px;
+  z-index: 999;
+  background: #333;
+  color:white;
+  border: solid 1px #333;
+  padding: 3px;
+}
+.errUpload::after{
+   /* content necessário para a criação de um elemento vazio */
+	content: "";
+	width: 0; 
+	height: 0;
+  z-index: 999;
+	/* position: absolute para manipularmos a posição da seta */
+	
+
+	/* Right com valor negativo para ele ficar para fora do balão de dialogo */
+  position: relative;
+  top: -34px;
+  left: -80px;
+	
+	/* E aqui o truque com as bordas */
+	border-bottom: 13px solid #333;
+	border-left: 13px solid transparent;
+  border-right: 13px solid transparent;
+
+	border-radius: 0%;
+
+}
+
+.errUpload i{
+  color: orange;
+}
 
 
-/*///// */
+/* */
+
+.left-inner-addon {
+  position: relative;
+}
+.left-inner-addon i {
+  font-size: 20px;
+  z-index: 99;
+  display: block;
+  margin-left: 97%;
+  position: absolute;
+  color: #666;
+}
+.left-inner-addon input.form-control {
+  padding-left: 230px;
+}

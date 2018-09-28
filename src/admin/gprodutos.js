@@ -5,25 +5,29 @@ export class Gprodutos extends Component {
     constructor() {
         super()
         this.state = {
-            imagePreviewUrl: null,
+            errUpload : false,
+            idremove: '',
+            imageName: '',
+            imagePreviewUrl: '',
             produtos: [],
+            remove: [],
             produtosEdit: [],
             showEdit: false,
             showDel: false,
             showNew: false,
             produto: {
-                id: null,
-                nome: null,
-                categoria: null,
-                marca: null,
-                img: null,
-                preco: null,
-                quantidade: null,
-                descricao: null
+                id: '',
+                nome: '',
+                categoria: '',
+                marca: '',
+                img: '',
+                preco: '',
+                quantidade: '',
+                descricao: ''
             },
             busca: {
-                buscar: null,
-                value: null
+                buscar: '',
+                value: ''
             }
         }
     }
@@ -71,75 +75,126 @@ export class Gprodutos extends Component {
     }
     addProduto = _ => {
         const { produto } = this.state;
-        
         const data = new FormData();
+        // verificar se foi selecionado uma imagem
+        if (this.uploadInput.files[0] === undefined) {
+            this.setState({
+                errUpload: true,
+            })
+        } else {
+            data.append('file', this.uploadInput.files[0]);
 
-        data.append('file', this.uploadInput.files[0]);
+            fetch('http://192.168.200.147:4000/upload', {
+                method: 'POST',
+                body: data,
 
-        fetch('http://localhost:8000/upload', {
-            method: 'POST',
-            body: data,
-
-        }).then((response) => {
-            response.json().then((body) => {
-                // cadastrar produto
-                fetch(`http://192.168.200.147:4000/add?table=produtos&campos=nome,preco,descricao,marca,categoria,views,img,quantidade&valores='${produto.nome}',${produto.preco},'${produto.descricao}','${produto.marca}','${produto.categoria}',${0},'${body.file}',${produto.quantidade}`)
-                    .then(this.getProdutos)
-                    .then(this.handleClose())
-                    .catch(err => console.error(err))
+            }).then((response) => {
+                response.json().then((body) => {
+                    // cadastrar produto
+                    fetch(`http://192.168.200.147:4000/add?table=produtos&campos=nome,preco,descricao,marca,categoria,views,img,quantidade&valores='${produto.nome}',${produto.preco},'${produto.descricao}','${produto.marca}','${produto.categoria}',${0},'${body.file}',${produto.quantidade}`)
+                        .then(this.getProdutos)
+                        .then(this.handleClose())
+                        .catch(err => console.error(err))
+                });
             });
-        });
 
-
-
+        }
     }
 
     updateProduto = _ => {
         const { produto } = this.state;
-
-         
         const data = new FormData();
 
-        data.append('file', this.uploadInput.files[0]);
 
-        fetch('http://localhost:8000/upload', {
-            method: 'POST',
-            body: data,
+        // condição se a imagem for alterada
+        if (this.uploadInput.files[0]) {
+            data.append('file', this.uploadInput.files[0]);
 
-        }).then((response) => {
-            response.json().then((body) => {
-           //update de imagem
-        fetch(`http://192.168.200.147:4000/update?table=produtos&alt=nome='${produto.nome}',preco=${produto.preco},descricao='${produto.descricao}',marca='${produto.marca}',categoria='${produto.categoria}',img='${body.file}',quantidade=${produto.quantidade}&id='${produto.id}'`)
-            .then(this.getProdutos)
-            .then(this.handleClose())
-            .catch(err => console.error(err))
-        });
-    });
+            fetch('http://192.168.200.147:4000/upload', {
+                method: 'POST',
+                body: data,
+
+            }).then((response) => {
+                response.json().then((body) => {
+                    //Updade  Produto  Quando houver alteração de imagem
+                    fetch(`http://192.168.200.147:4000/update?table=produtos&alt=nome='${produto.nome}',preco=${produto.preco},descricao='${produto.descricao}',marca='${produto.marca}',categoria='${produto.categoria}',img='${body.file}',quantidade=${produto.quantidade}&id='${produto.id}'`)
+                        .then(this.getProdutos)
+                        .then(this.handleClose())
+                        .catch(err => console.error(err))
+                });
+            });
+        } else {
+            //Updade Produto
+            fetch(`http://192.168.200.147:4000/update?table=produtos&alt=nome='${produto.nome}',preco=${produto.preco},descricao='${produto.descricao}',marca='${produto.marca}',categoria='${produto.categoria}',img='${produto.img}',quantidade=${produto.quantidade}&id='${produto.id}'`)
+                .then(this.getProdutos)
+                .then(this.handleClose())
+                .catch(err => console.error(err))
+        }
+
+
+
+
 
 
     }
 
     removeProduto = (id) => {
-        fetch(`http://192.168.200.147:4000/remove?table=produtos&id=${id}`)
-            .then(this.getProdutos)
-            .then(this.handleClose)
+
+        let imgremove;
+        let idremove;
+        fetch(`http://192.168.200.147:4000/show?table=produtos&where=id=${id}`)
+            .then(response => response.json())
+            .then(response => this.setState({ remove: response.data }, () => {
+                this.state.remove.map(obj => {
+                    imgremove = obj.img
+                    idremove = obj.id
+                })
+                this.setState({
+                    imgremove: imgremove,
+                    idreomve: idremove
+                }, () => {
+
+                    fetch(`http://192.168.200.147:4000/remove?table=produtos&id=${idremove}`)
+                        .then(this.getProdutos)
+                        .then(this.handleClose)
+                        .catch(err => console.error(err))
+
+
+
+                    fetch(`http://192.168.200.147:4000/remove/${this.state.imgremove}`, {
+                        method: 'POST',
+                    })
+                        .catch(err => console.error(err))
+
+                })
+
+            }))
             .catch(err => console.error(err))
+
+
+
+
+
+
+
+
+
     }
 
     handleClose = () => {
         this.setState({
-            imagePreviewUrl:null,
+            imagePreviewUrl: "",
             showEdit: false,
             showDel: false,
             showNew: false,
             produto: {
-                id: null,
-                nome: null,
-                preco: null,
-                categoria: null,
-                marca: null,
-                descricao: null,
-                quantidade: null,
+                id: "",
+                nome: "",
+                preco: "",
+                categoria: "",
+                marca: "",
+                descricao: "",
+                quantidade: "",
             }
         });
     }
@@ -196,12 +251,14 @@ export class Gprodutos extends Component {
             });
         }
         reader.readAsDataURL(file)
+
+
     }
 
     //Novo Produto
     renderModalNew() {
         const { produto } = this.state;
-         return (
+        return (
             <div>
                 <Modal show={this.state.showNew} onHide={this.handleClose}>
                     <Modal.Header closeButton>
@@ -274,15 +331,16 @@ export class Gprodutos extends Component {
                                     onChange={(e) => this._handleImageChange(e)}
                                     ref={(ref) => { this.uploadInput = ref; }}
                                 /><br></br>
-                                {this.state.imagePreviewUrl == null ?
-                                    <i style={{ fontSize: 200 }}   htmlFor="file" className=' fas fa-image'> </i>
-                                    :
-                                  <img style={{ borderRadius: 10,width:260,height:200 }} src={this.state.imagePreviewUrl} alt='Perfil' />}
 
+                                {this.state.imagePreviewUrl === "" ?
+                                    <i style={{ fontSize: 200 }} htmlFor="file" className=' fas fa-image'> </i>
+                                    :
+                                    <img style={{ borderRadius: 10, width: 260, height: 200 }} src={"" + this.state.imagePreviewUrl} alt='Perfil' />}
+                                 { this.state.errUpload === true &&< span  style={{position:"absolute",zIndex:999}}>Selecione um arquivo</span>}
                             </div>
                             <div className='col-md-6'>
                                 <label>Descrição:</label>
-                                <FormControl style={{resize:"none",width:270,height:180}}   componentClass="textarea" value={produto.descricao} onChange={(e) =>
+                                <FormControl style={{ resize: "none", width: 270, height: 180 }} componentClass="textarea" value={produto.descricao} onChange={(e) =>
                                     this.setState({
                                         produto: { ...produto, descricao: e.target.value }
                                     })
@@ -362,7 +420,7 @@ export class Gprodutos extends Component {
 
                         </div>
                         <div className='row'>
-                        <div className='col-md-6'>
+                            <div className='col-md-6'>
                                 <label htmlFor="file">
                                     Imagem do Produto:  <i className="fas fa-download"></i>
 
@@ -375,15 +433,16 @@ export class Gprodutos extends Component {
                                     onChange={(e) => this._handleImageChange(e)}
                                     ref={(ref) => { this.uploadInput = ref; }}
                                 /><br></br>
-                                {this.state.imagePreviewUrl == null ?
-                                    <i style={{ fontSize: 200 }}   htmlFor="file" className=' fas fa-image'> </i>
+                                {this.state.imagePreviewUrl === "" ?
+                                    <i style={{ fontSize: 200 }} htmlFor="file" className=' fas fa-image'> </i>
                                     :
-                                  <img style={{ width:260,height:200}} src={this.state.imagePreviewUrl} alt='Perfil' />}
+                                    <img style={{ width: 260, height: 200 }} src={this.state.imagePreviewUrl} alt='Perfil' />
+                                }
 
                             </div>
                             <div className='col-md-6'>
                                 <label>Descrição:</label>
-                                <FormControl style={{resize:"none",width:270,height:180}}   componentClass="textarea" value={produto.descricao} onChange={(e) =>
+                                <FormControl style={{ resize: "none", width: 270, height: 180 }} componentClass="textarea" value={produto.descricao} onChange={(e) =>
                                     this.setState({
                                         produto: { ...produto, descricao: e.target.value }
                                     })

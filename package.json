@@ -3,8 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "body-parser": "^1.18.3",
+    "chart.js": "^2.7.2",
     "cors": "^2.8.4",
     "express": "^4.16.3",
+    "express-fileupload": "^0.4.0",
+    "file-system": "^2.2.2",
     "jquery": "^3.3.1",
     "jquery-ui-bundle": "^1.12.1-migrate",
     "md5": "^2.2.1",

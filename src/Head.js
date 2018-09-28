@@ -5,6 +5,7 @@ import BT from './img/BT.png';
 import $ from 'jquery';
 import 'jquery-ui-bundle';
 import md5 from 'md5';
+
 import {Modal,Button,FormGroup,ControlLabel,FormControl} from 'react-bootstrap';
 
 export class Head extends React.Component{
@@ -19,7 +20,8 @@ export class Head extends React.Component{
         cliente:[],
         login:false,
         largura:0,
-        show:false
+        show:false,
+        //pesquisa:''
     }
 
     componentDidMount() {
@@ -35,39 +37,43 @@ export class Head extends React.Component{
     }
 
     getProducts = () =>{
-        fetch('http://localhost:4000/show?table=produtos')
+        fetch('http://192.168.200.147:4000/show?table=produtos')
         .then(response => response.json())
         .then(response => this.setState({produtos:response.data}, () => this.busca(this.state.produtos)))
         .catch(err => console.error(err));
     }
 
     busca = prod => {
+
         let prood = '[';
 
         let num = prod.length;
 
-        prod.map((prod,i) => { 
-            prood += `{"label":"${prod.nome}","icon":"${prod.img}"}${i === num-1 ? ']' : ','}`
+        const string = prod.map((prod,i) => { 
+            return `{"label":"${prod.nome}","icon":"${prod.img}"}${i === num-1 ? ']' : ','}`
         });
+
+        for (let a = 0; a < string.length; a++) {
+            prood += string[a];
+        }
 
         let p = JSON.parse(prood);
 
         $( "#tags" ).autocomplete({
-            minLength: 0,
-            source: p,
-            focus: function( event, ui ) {
-              $( "#tags" ).val( ui.item.nome );
-              return false;
+            minLength: 4,
+            source: function (request, response) {
+                var results = $.ui.autocomplete.filter(p, request.term);
+                response(results.slice(0, 8));
             },
             html: true, 
             open: function(event, ui) {
-            $(".ui-autocomplete").css("z-index", 1000);
+                $(".ui-autocomplete").css("z-index", 1000);
 
             }
         })
         .autocomplete( "instance" )._renderItem = function( ul, item ) {
         return $( "<li>" )
-            .append( "<div> <img src='img/"+item.icon+"'/><span>"+ item.label + "</span></div>" )
+            .append( "<div> <img style='border-radius:3px' src='http://192.168.200.147:3000/uploads/"+item.icon+"'/><span>"+ item.label + "</span></div>" )
             .appendTo( ul );
         };
     }
@@ -79,7 +85,7 @@ export class Head extends React.Component{
         if(user === "" || pass === ""){
             alert("Email/Senha em brancos")
         }else{
-            fetch(`http://localhost:4000/show?table=clientes&where=email="${user}" AND senha="${passCrypto}"`)
+            fetch(`http://192.168.200.147:4000/show?table=clientes&where=email="${user}" AND senha="${passCrypto}"`)
             .then(response => response.json())
             .then(response => response.data.length === 0 ? alert("Email/Senha incorreto") : this.setState({cliente:response.data},() => cliente.map(this.Verificacao)))
             .catch(err => console.log(err));
@@ -93,18 +99,19 @@ export class Head extends React.Component{
         }else{
             this.setState({nome:nome,email:email,img:img,login:true},() => {
                 sessionStorage.setItem('usuario', JSON.stringify(cliente));
+                this.props.handleLogar()
             });
         }
     }
 
     Logado = () =>{
         
-        const {nome,img} = this.state;
+        const {nome,img,cliente} = this.state;
             return(
                 <div id="dropdown">
                     <div className="dropdown">
                         <a href="#!">
-                            <img src={img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUser"/>
+                            <img src={`http://192.168.200.147:3000/uploads/`+img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUser"/>
                         </a>
                     </div>
                     <div className="dropdown-content">
@@ -112,12 +119,13 @@ export class Head extends React.Component{
                             <div className="center">
                                 <label>Bem-Vindo <br/> {nome}</label>
                                 <hr/>
-                                <a className="menuUser"><i className="fas fa-user"></i> Meu Perfil</a><br/>
+                                <a className="menuUser" onClick={() => this.props.handleChangePage('perfil')}><i className="fas fa-user"></i> Meu Perfil</a><br/>
+                                {cliente[0].admin === 1 ? <a className="menuUser" onClick={() => this.props.handleAdmin(true)}><i className="fas fa-user-tie"></i> Admin</a> : ""}
                             </div>
                         </div>
                         <hr/>
                         <div className="center">
-                            <button onClick={() => this.setState({login:false,user:'',pass:''}, () => sessionStorage.clear('usuario'))} type="submit" className="form-control btn btn-danger"><i className="fas fa-sign-out-alt"></i> Sair</button>
+                            <button onClick={() => this.setState({login:false,user:'',pass:''}, () => { sessionStorage.clear('usuario'); this.props.handleChangePage('')})} type="submit" className="form-control btn btn-danger"><i className="fas fa-sign-out-alt"></i> Sair</button>
                         </div>
                     </div>
                 </div>
@@ -127,11 +135,11 @@ export class Head extends React.Component{
         return(
             <div id="dropdown">
                 <div className="dropdown">
-                    <a href="#!">
+                    <a className="carro" href="#!">
                         <i className="fas fa-user-circle ico"></i> 
                     </a>
                 </div>
-                <div className="dropdown-content">
+                <div className="dropdown-content" style={{zIndex:29}}>
                     <div className="form-group">
                         <label htmlFor="exampleDropdownFormEmail1">Endereço de Email</label>
                         <input type="email" onChange={(e) => this.setState({user:e.target.value})} className="form-control" id="exampleDropdownFormEmail1" placeholder="email@example.com"/>
@@ -144,14 +152,13 @@ export class Head extends React.Component{
                     <hr/>
                     <div className="center">
                         <label>Cadastre-se</label>
-                        <input type="button" value="Sign Up" className="form-control btn btn-warning"/>
+                        <input type="button" onClick={() => this.props.handleChangePage('signup')} value="Sign Up" className="form-control btn btn-warning"/>
                         <div className="dropdown-divider"></div>
                     </div>
                 </div>
             </div>
         )
     } 
-
 
     handleClose = () =>{
         this.setState({show:false})
@@ -160,7 +167,7 @@ export class Head extends React.Component{
     LoginMobile = () =>{
         return(
             <div>
-                <a href="#!" onClick={() => this.setState({show:true})}>
+                <a className="carro" href="#!" onClick={() => this.setState({show:true})}>
                         <i className="fas fa-user-circle ico"></i>
                     </a>
                 <div className="static-modal">
@@ -182,7 +189,7 @@ export class Head extends React.Component{
                             <hr/>
                             <FormGroup className="center">
                                 <ControlLabel>Cadastre-se</ControlLabel>
-                                <Button bsStyle="warning" className="form-control">Sing Up</Button>
+                                <Button bsStyle="warning" onClick={() => this.props.handleChangePage('signup')} className="form-control">Sing Up</Button>
                             </FormGroup>
                         </Modal.Body>
                     </Modal>
@@ -192,21 +199,22 @@ export class Head extends React.Component{
     } 
 
     LogadoMobile = () =>{
-        const {nome,img} = this.state;
+        const {nome,img,cliente} = this.state;
         return(
             <div>
                 <a href="#!" onClick={() => this.setState({show:true})}>
-                    <img src={img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUser"/>
+                    <img src={`http://192.168.200.147:3000/uploads/`+img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUser"/>
                 </a>
                 <div className="static-modal">
                     <Modal bsSize="small" show={this.state.show} onHide={this.handleClose}>
                         <Modal.Body className="center">
-                            <img src={img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUserMenu"/>
+                            <img src={`http://192.168.200.147:3000/uploads/`+img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUserMenu"/>
                             <ControlLabel>Bem-Vindo<br/> {nome}</ControlLabel>
                             <hr/>
-                            <ControlLabel><a className="menuUser"><i className="fas fa-user"></i> Meu Perfil</a></ControlLabel>
+                            <ControlLabel><a className="menuUser" onClick={() => this.props.handleChangePage('perfil')}><i className="fas fa-user"></i> Meu Perfil</a></ControlLabel><br/>
+                            <ControlLabel>{cliente[0].admin === 1 ? <a className="menuUser" onClick={() => this.props.handleAdmin(true)}><i className="fas fa-user-tie"></i> Admin</a> : ""}</ControlLabel>
                             <hr/>
-                            <Button className="form-control center" bsStyle="danger" type="submit" onClick={() => this.setState({login:false,user:'',pass:''}, () => sessionStorage.clear('usuario'))}><i className="fas fa-sign-out-alt"></i> Sair</Button>
+                            <Button className="form-control center" bsStyle="danger" type="submit" onClick={() => this.setState({login:false,user:'',pass:''}, () => {sessionStorage.clear('usuario'); this.props.handleChangePage('')})}><i className="fas fa-sign-out-alt"></i> Sair</Button>
                         </Modal.Body>
                     </Modal>
                 </div>
@@ -234,30 +242,44 @@ export class Head extends React.Component{
 
     render(){
         
+        const {largura} = this.state;
+
         return(
             <div className="head">
                 <div className="container">
                     <div className="col-md-1 col-xs-12">
-                        <img className="logo" src={BaraTudo} alt="BaraTudo" height="100" width="150"/>
-                        <img className="logos" src={BT} alt="BaraTudo" height="100" width="150"/>
+                        <a href="#!" onClick={() => this.props.handleChangePage('')}><img className="logo" src={BaraTudo} alt="BaraTudo" height="100" width="150"/></a>
+                        <a href="#!" onClick={() => this.props.handleChangePage('')}><img className="logos" src={BT} alt="BaraTudo" height="100" width="150"/></a>
                     </div>
                     
                     <div className="col-md-2"></div>
 
                     <div className="col-md-5 col-xs-12 bus">
                         <div className="ui-widget">
-                            <input id="tags" className="form-control"/>
-                            <a type="submit"><i className="fas fa-search busca"></i></a>
+
+                            <input 
+                                //onChange={(e) => this.setState({pesquisa:e.target.value})} 
+                                id="tags" className="form-control"/>
+                                
+                            <a onClick={() => {
+                                this.props.handleSearch(document.getElementById('tags').value)
+                                document.getElementById('tags').value = ''
+                            }} type="submit"><i className="fas fa-search busca"></i></a>
+                        
                         </div>
                     </div>
 
                     <div className="col-md-1"></div>
 
-                    <div className="cart col-md-1 col-xs-5">
-                        <i className="fas fa-shopping-cart ico"></i>
+                    <div className="nada col-md-1 col-xs-6">
+                        
+                        <a href="#!" className='carro' onClick={() => this.props.handleChangePage('carrinho')}>
+                            <i className={largura < 992 ?"fas fa-shopping-cart ico" : "fas fa-shopping-cart icoo"}></i>
+                            <span className={largura < 992 ?"pcarte" : "prodcarte"}>{this.props.qntCart}</span>
+                        </a>
                     </div>
 
-                    <div  className="col-md-2 col-xs-7">
+                    <div  className="col-md-2 col-xs-6" >
                         {this.detectar_mobile()}
                     </div>
                 </div>

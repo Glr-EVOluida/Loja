@@ -98,7 +98,7 @@ export class DetailsProdutos extends Component {
                             <i id={`cifrao${id}`} className="fas fa-dollar-sign dollar none" style={{color:'#229b22'}}></i>
                         </div> <br/>
                         <p className='categoria'>
-                            <a href="#!" onClick={() => this.props.handleCategoriaClick(categoria)}>+ {categoria}</a>
+                            <a href="#!" onClick={() => this.props.handleChangePage('',categoria)}>+ {categoria}</a>
                         </p>
                     </div>
 

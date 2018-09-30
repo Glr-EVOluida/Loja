@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Exo|Nunito+Sans|Roboto+Condensed');
+
 @font-face{
   font-family: 'prohibition';
   src: url('Prohibition.ttf')
@@ -202,10 +203,8 @@ hr.hrStyle {
   .fas {margin-right: 10px}
 
   .produtosDetalhes .precos { margin-top: 15px}
-  .produtosDetalhes .check{font-size: 25px} 
-  .produtosDetalhes .cancel {font-size: 25px}
-  .produtosDetalhes .check {color: #229b22}
-  .produtosDetalhes .cancel {color: #dc143c}
+  .produtosDetalhes .check{font-size: 25px;color: #229b22} 
+  .produtosDetalhes .cancel {font-size: 25px;color: #dc143c}
 
   .produtosDetalhes .desc{ font-size: 11px }
   .produtosDetalhes .avista{ font-size: 25px; color: #229b22 }
@@ -335,16 +334,17 @@ ul li{
 }
 .slogan{
   margin-top: 10px;
-  margin: 60px;
 }
 .input-line{
+  border-radius: 0 !important;
+  box-shadow: none !important;
   outline: none;
   border-left:none;
   border-right:none;
   border-top:none;
 }
 .input-line:focus{
-  border-color: lightseagreen;
+ border-bottom: solid 2px lightseagreen;
 }
 
 .btn-submit{
@@ -355,17 +355,67 @@ ul li{
 }
 
 .icon-user{
- font-size: 180px;
+ font-size: 187px;
  text-align: end;
- margin-top: 10px;
 }
+
+
+
+.select-image:hover{
+  opacity: 0.8;
+}
+.select-image{
+  z-index: 90;
+  opacity: 0;
+  margin-left:-89px;
+  color:white !important;
+  font-size: 16px !important;
+  margin-top:91px;
+  position: absolute;
+  width: 180px;
+  height: 90px;
+  background: #333;
+  border-radius: 0px 0px 100px 100px;
+}
+
+
 .imagePreview img{
+  width: 180px;
+  height: 180px;
+  border-radius: 100%;
+}
+
+.imagePreview { 
   margin-top: 10px;
+  margin-bottom: 30px;
+  position: relative;
   border-radius: 100%;
   height: 180px;
   width: 180px;
 }
+
 /* Rudinilly*/
+
+.select-image-admin:hover{
+  opacity: 0.8;
+}
+.select-image-admin{
+  padding: 50px;
+  z-index: 90;
+  opacity: 0;
+  margin-left:0px;
+  color:white !important;
+  font-size: 16px !important;
+  margin-top:30px;
+  border-radius: 9%;
+  text-align: center;
+  position: absolute;
+  width: 240px;
+  height: 180px;
+  background: #333;
+  
+}
+
 @media only screen and (max-width:900px){
   .gprodutos{font-size: 7px}
   .gprodutosdrop{width:50px;font-size:7px;}
@@ -381,86 +431,59 @@ ul li{
   .gpedidosbtn{width:50px;font-size:4px;}
 }
 
-/* Olhar */
+.errUpload{
+  pointer-events: none;
+  width: 200px;
+  z-index: 999;
+  background: #333;
+  color:white;
+  border: solid 1px #333;
+  padding: 3px;
+}
+.errUpload::after{
+   /* content necessário para a criação de um elemento vazio */
+	content: "";
+	width: 0; 
+	height: 0;
+  z-index: 999;
+	/* position: absolute para manipularmos a posição da seta */
+	
 
-.content {
-    min-height: calc(100vh - 245px);
-}
-.footer {
-    background: #212529;
-    color: white;
-}
-.head {
-    background: #212529;
-}
-.bus{
-    padding-top: 30px
-}
-.busca{
-    color:#005B88;
-    font-size: 20px;
-    position: absolute;   
-    top: 0; 
-    right: 20px;
-    background: none; 
-    border: none;
-    padding-top: 37px
-}
-.logo{
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-.logos{
-    display: none;
-    margin-left: auto;
-    margin-right: auto;
-}
-.azul{
-    color:#005b88
-}
-.branco{
-    color:white;
-}
-.ins:hover{
-    text-decoration: none;
-    color:white;
-    cursor: pointer
-}
-.titulo{
-    text-align: center;
-    font-family: 'Exo', sans-serif; 
-}
-.rs i {
-    font-size: 25px;
-    position: relative;
-    top:    50%;
-    transform: translateY(-50%);
-}
-.brs{
-    justify-content: center;
-    display: flex;
-}
-.rs{
-    display: inline-block;
-    text-align: center;
-    border-radius:100%;
-    height: 40px;
-    width: 40px; 
-    border: 1px solid;
-    margin-left: 3px;
-    margin-right: 3px;
+	/* Right com valor negativo para ele ficar para fora do balão de dialogo */
+  position: relative;
+  top: -34px;
+  left: -80px;
+	
+	/* E aqui o truque com as bordas */
+	border-bottom: 13px solid #333;
+	border-left: 13px solid transparent;
+  border-right: 13px solid transparent;
+
+	border-radius: 0%;
+
 }
 
-.foo{
-    padding: 20px
+
+
+
+
+
+/* */
+
+.left-inner-addon i {
+  font-size: 20px;
+  z-index: 90;
+  background: white;
+  margin-left: 68%;
+  position: absolute;;
+  color: #666;
 }
-.justificado{
-    text-align: justify;
+.left-inner-addon input.form-control {
+  padding-left: 230px;
 }
-.center{
-    text-align: center;
-}
+
+/* Parei aqui*/
+
 .ui-menu img{
   width:30px;
   height:30px;

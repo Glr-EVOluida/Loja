@@ -5,6 +5,8 @@ export class User extends Component {
     constructor(){
         super()
         this.state={
+            errUpload : false,
+            imagePreview: "",
             cliente:[],
             users:[],
             id:'',
@@ -133,29 +135,7 @@ export class User extends Component {
         );
     }
     
-    renderUpdateImg = _ =>{
-        return (
-            <div>     
-            <Modal show={this.state.showImg} onHide={this.handleClose}>              
-                <Modal.Header closeButton>
-                    <Modal.Title>Mudar Imagem de Perfil</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <center>
-                        <input id='file' type='file' style={{display:'none'}}/>
-                        <label htmlFor='file'>
-                        <Image src={'http://192.168.200.147:3000/uploads/'+this.state.img} thumbnail  style={{height:250,width:250}}/><br/>
-                        Mudar imagem</label>
-                    </center>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button onClick={()=>alert('')}>Confirmar</Button>
-                    <Button onClick={this.handleClose}>Cancelar</Button>
-                </Modal.Footer>
-            </Modal>
-            </div>
-        );
-    }
+    
 
     renderUser = _ =>{
         const { users } = this.state;
@@ -213,31 +193,58 @@ export class User extends Component {
 
     }
 
+
+    _handleImageChange(e) {
+
+        let reader = new FileReader();
+        let file = e.target.files[0];
+       
+
+        reader.onloadend = () => {
+            this.setState({
+                imagePreviewUrl: reader.result,
+                errUpload:false
+            })
+        }
+        reader.readAsDataURL(file)
+    }
+
+
     render(){
+        const { user } = this.state;
+        let { view } = "";
+        
+        if (this.state.imagePreviewUrl === "") {
+            view = <i style={{ zIndex:999}} className='icon-user  fas fa-user-circle'></i>;
+        } else {
+            view = <img  src={this.state.imagePreviewUrl} alt='Perfil' />;
+        }
         return(
             <div className='container-fluid' style={{marginTop:20}}>
                 {this.renderRemoveUser()}
-                {this.renderUpdateImg()}
                 <div className='row'>
                 <center>
-                    <div className='col-md-3' style={{height:250,borderRadius:150}}>
-                    <Image src={`http://192.168.200.147:3000/uploads/${this.state.img}`} circle  style={{height:230,width:230,position:'relative',zIndex:2}} onMouseOver={e=> e.target.style.zIndex=0} onMouseOut={e=> e.target.style.zIndex=2}/>
-                        <div id='hover' style={{
-                                backgroundColor:'rgba(5,5,5,0)',
-                                color:'white',
-                                width:230,
-                                height:117,
-                                marginTop:-130,
-                                zIndex:1,
-                                position:'relative',
-                                textAlign:'center',                        
-                                borderBottomLeftRadius:125,
-                                borderBottomRightRadius:125,
-                                cursor:'pointer'}} onMouseOver={e=> {e.target.style.zIndex=4;e.target.style.backgroundColor='rgba(5,5,5,0.5)'}} onMouseOut={e=> {e.target.style.zIndex=0;e.target.style.backgroundColor='rgba(5,5,5,0)'}} onClick={this.handleShowImg}>
-                                Mudar
+                        <div className='col-md-3' style={{height:250,borderRadius:150}}>
+                            <div className="select-main">
+
+                                <label className="select-image"  htmlFor="file">
+                                <i className="fas fa-camera"></i>  Carregar  foto do Perfil 
+                                </label>  
+
+                                <div className="imagePreview" >
+                                    {view}
+                                    { this.state.errUpload === true && < span  style={{position:"relative"}}><i style={{color:'orange'}} className="fas fa-exclamation-triangle"></i> Selecione um arquivo</span>}
+                                </div>
                             </div>
-                    </div>
-                    </center>                   
+                        </div>
+                        <input  
+                                    style={{ display: "none" }}
+                                    id="file"
+                                    type="file"
+                                    onChange={(e) => this._handleImageChange(e)}
+                                    ref={(ref) => { this.uploadInput = ref; }}
+                                />
+                    </center>                 
                     <div className='col-md-9'>
                     <form>                   
                         <div className='col-md-6' style={{marginTop:30}}>

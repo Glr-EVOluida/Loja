@@ -86,7 +86,6 @@ export class Details extends Component {
               key={i} 
               produto={produtos} 
               handleComprarClick={this.handleComprarClick}
-              handleCategoriaClick={this.props.handleCategoriaClick}
               handleChangePage={this.props.handleChangePage}
             />
           ) 

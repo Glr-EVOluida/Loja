@@ -19,6 +19,7 @@ export class Body extends React.Component{
     componentWillReceiveProps(nextProps){
         
         let pesquisa,info = '';
+
         if(nextProps.info){
             info = nextProps.info;
         }
@@ -33,14 +34,6 @@ export class Body extends React.Component{
 
         this.setState({page:nextProps.page, info:info, pesquisa:pesquisa})
     }      
-    
-    handleDetalhesClick = id => {
-        this.props.handleChangePage('detalhes',id)
-    }
-
-    handleCategoriaClick = cat => {
-        this.props.handleChangePage('',cat)
-    } 
 
     componentDidMount(){
         let a = window.innerWidth;
@@ -51,12 +44,12 @@ export class Body extends React.Component{
         return(
             <div className="catego">
                 <ul className="categ">
-                    <li><a href="#!" onClick={() => this.handleCategoriaClick('console')}>Console</a></li>
-                    <li><a href="#!" onClick={() => this.handleCategoriaClick('pcs')}>PCs</a></li>
-                    <li><a href="#!" onClick={() => this.handleCategoriaClick('notebook')}>Notebooks</a></li>
-                    <li><a href="#!" onClick={() => this.handleCategoriaClick('smartphones')}>Smartphones</a></li>
-                    <li><a href="#!" onClick={() => this.handleCategoriaClick('gadgets')}>Gadgets</a></li>
-                    <li><a href="#!" onClick={() => this.handleCategoriaClick('perifericos')}>Perifericos</a></li>
+                    <li><a href="#!" onClick={() => this.props.handleChangePage('','console')}>Console</a></li>
+                    <li><a href="#!" onClick={() => this.props.handleChangePage('','pcs')}>PCs</a></li>
+                    <li><a href="#!" onClick={() => this.props.handleChangePage('','notebook')}>Notebooks</a></li>
+                    <li><a href="#!" onClick={() => this.props.handleChangePage('','smartphones')}>Smartphones</a></li>
+                    <li><a href="#!" onClick={() => this.props.handleChangePage('','gadgets')}>Gadgets</a></li>
+                    <li><a href="#!" onClick={() => this.props.handleChangePage('','perifericos')}>Perifericos</a></li>
                 </ul> 
             </div>
         )
@@ -74,12 +67,12 @@ export class Body extends React.Component{
                         </a>
                     </div>
                     <div className="dropdown-cate">
-                        <a href="#!" onClick={() => this.handleCategoriaClick('console')}>Console</a><br/>
-                        <a href="#!" onClick={() => this.handleCategoriaClick('pcs')}>PCs</a><br/>
-                        <a href="#!" onClick={() => this.handleCategoriaClick('notebook')}>Notebooks</a><br/>
-                        <a href="#!" onClick={() => this.handleCategoriaClick('smartphones')}>Smartphones</a><br/>
-                        <a href="#!" onClick={() => this.handleCategoriaClick('gadgets')}>Gadgets</a><br/>
-                        <a href="#!" onClick={() => this.handleCategoriaClick('perifericos')}>Perifericos</a>
+                        <a href="#!" onClick={() => this.props.handleChangePage('','console')}>Console</a><br/>
+                        <a href="#!" onClick={() => this.props.handleChangePage('','pcs')}>PCs</a><br/>
+                        <a href="#!" onClick={() => this.props.handleChangePage('','notebook')}>Notebooks</a><br/>
+                        <a href="#!" onClick={() => this.props.handleChangePage('','smartphones')}>Smartphones</a><br/>
+                        <a href="#!" onClick={() => this.props.handleChangePage('','gadgets')}>Gadgets</a><br/>
+                        <a href="#!" onClick={() => this.props.handleChangePage('','perifericos')}>Perifericos</a>
                     </div>
                 </div>
             </div>
@@ -103,7 +96,7 @@ export class Body extends React.Component{
                 return <User/>
 
             default:
-                return <MainProdutos changeQnt={this.props.changeQnt} pesquisa={pesquisa} categoria={info} handleDetalhesClick={this.handleDetalhesClick}/>
+                return <MainProdutos changeQnt={this.props.changeQnt} pesquisa={pesquisa} categoria={info} handleChangePage={this.props.handleChangePage}/>
         }
     }
 

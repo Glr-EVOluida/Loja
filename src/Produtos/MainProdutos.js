@@ -29,8 +29,9 @@ export class MainProdutos extends Component {
     if((nextProps.pesquisa !== '') && (nextProps.pesquisa !== this.props.pesquisa)){
       this.setState({
         pesquisa:nextProps.pesquisa
-      }, () => {this.handleCategoriaChange('all')})
+      }, () => {this.handleCategoriaChange('all');})
     }
+
   }
 
   componentDidMount(){
@@ -173,9 +174,8 @@ export class MainProdutos extends Component {
 
           <Produtos 
             prod={produtos} 
-            handleDetalhesClick={this.props.handleDetalhesClick} 
             handleComprarClick={this.handleComprarClick}
-            handleCategoriaChange={this.handleCategoriaChange}
+            handleChangePage={this.props.handleChangePage}
           />
 
           {this.state.headline !== 'Produtos Destaques' && <div><Pagination where={where} limit={limit} page={page} handlePaginationClick={this.handlePaginationClick}  changePage={this.changePage}/> <FilterFields order={order} limit={limit} handleChange={this.handleChange}/> </div>}

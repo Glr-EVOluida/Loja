@@ -17,16 +17,20 @@ export class App extends Component {
 
   handleChangePage = (page,info) => {this.setState({page:page, info:info})}
 
-  handleSearch = (pesquisa) => {this.setState({page:'', pesquisa:pesquisa})}
+  handleSearch = (pesquisa) => {
+    if(!pesquisa){pesquisa=''}
+    this.setState({page:'', pesquisa:pesquisa})}
 
   changeQnt = (qnt) => {this.setState({qntCart:qnt})}
 
   handleAdmin = (a) =>{this.setState({admin:a},() => {if(this.state.admin === false){window.location.reload()}})}
 
-  handleLogar = () =>{this.setState({logar:true})}
+ handleLogar = () =>{this.setState({logar:true})}
 
   render() {
-    
+
+    console.log(pesquisa)
+
     const {admin,page, pesquisa, qntCart, logar, info} = this.state;
 
     return (

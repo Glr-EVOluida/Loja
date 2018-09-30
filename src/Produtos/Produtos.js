@@ -55,7 +55,7 @@ export class Produtos extends Component {
             <div className='col-md-3 col-sm-12 col-xs-12' style={{zIndex:19}} key={id}>
                 <div className='produtos'>
                     <div style={{textAlign:'center'}}>
-                        <a href="#!" className="DivImg" onClick={()=> this.props.handleDetalhesClick(id)}>
+                        <a href="#!" className="DivImg" onClick={()=> this.props.handleChangePage('detalhes',id)}>
                             <img src={`http://192.168.200.147:3000/uploads/`+img} alt={nome}/>
                             <i id={`cifrao${id}`} className="fas fa-dollar-sign dollar none" style={{color:'#229b22'}}></i>
                         </a>
@@ -64,7 +64,7 @@ export class Produtos extends Component {
                     <div className='NomeDesc'>
 
                         <span className='titulo'>
-                            <a href="#!" onClick={()=> this.props.handleDetalhesClick(id)}>{nome}</a>
+                            <a href="#!" onClick={()=> this.props.handleChangePage('detalhes',id)}>{nome}</a>
                         </span>
                         <p className='desc'>{this.limitDesc(descricao)}</p> 
 
@@ -89,11 +89,11 @@ export class Produtos extends Component {
 
                         <button 
                             className='btn btn-warning btn-sm'
-                            onClick={()=> this.props.handleDetalhesClick(id)}>
+                            onClick={()=> this.props.handleChangePage('detalhes',id)}>
                             <i className='fas fa-plus'></i> Detalhes
                         </button>
 
-                        <p className='categoria'><a href="#!" onClick={() => this.props.handleCategoriaChange(categoria) }>+ {categoria}</a></p>
+                        <p className='categoria'><a href="#!" onClick={() => this.props.handleChangePage('',categoria) }>+ {categoria}</a></p>
 
                     </div>
 

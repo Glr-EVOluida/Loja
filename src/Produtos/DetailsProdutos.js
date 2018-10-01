@@ -94,7 +94,7 @@ export class DetailsProdutos extends Component {
                     <div className='col-md-7'>
                         <span className='titulo'>{nome}</span> <br/> 
                         <div className='img' style={{textAlign:'center'}} >
-                            <img src={`http://192.168.200.147:3000/uploads/`+img} alt={nome}/>
+                            <img src={`http://localhost:3000/uploads/`+img} alt={nome}/>
                             <i id={`cifrao${id}`} className="fas fa-dollar-sign dollar none" style={{color:'#229b22'}}></i>
                         </div> <br/>
                         <p className='categoria'>

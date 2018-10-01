@@ -17,15 +17,16 @@ export class Body extends React.Component{
     }
 
     componentWillReceiveProps(nextProps){
-        
-        let pesquisa,info = '';
+
+        let pesquisa = '';
+        let info = '';
 
         if(nextProps.info){
             info = nextProps.info;
         }
 
         if(info === '' && nextProps.page === ''){
-            info = 'home'
+            info = 'home';
         }
 
         if(nextProps.pesquisa !== ''){
@@ -102,7 +103,7 @@ export class Body extends React.Component{
 
     render(){
         const { largura} = this.state;
-        
+
         return(
             <div className="content">
                 <div className="container">

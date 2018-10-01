@@ -56,7 +56,7 @@ export class Produtos extends Component {
                 <div className='produtos'>
                     <div style={{textAlign:'center'}}>
                         <a href="#!" className="DivImg" onClick={()=> this.props.handleChangePage('detalhes',id)}>
-                            <img src={`http://192.168.200.147:3000/uploads/`+img} alt={nome}/>
+                            <img src={`http://localhost:3000/uploads/`+img} alt={nome}/>
                             <i id={`cifrao${id}`} className="fas fa-dollar-sign dollar none" style={{color:'#229b22'}}></i>
                         </a>
                     </div> <br/>

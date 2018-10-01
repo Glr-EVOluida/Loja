@@ -43,7 +43,7 @@ export class Gprodutos extends Component {
     }
 
     getPagination = _ => {
-        fetch(`http://192.168.200.147:4000/show?table=produtos`)
+        fetch(`http://localhost:4000/show?table=produtos`)
             .then(response => response.json())
             .then(response => this.setState({ pagination: response.data },()=>this.controle()))
             .catch(err => console.error(err))
@@ -84,14 +84,14 @@ export class Gprodutos extends Component {
     }
 
     getProdutos = _ => {
-        fetch(`http://192.168.200.147:4000/show?table=produtos&limit=${this.state.limit_init},${this.state.limit}`)
+        fetch(`http://localhost:4000/show?table=produtos&limit=${this.state.limit_init},${this.state.limit}`)
             .then(response => response.json())
             .then(response => this.setState({ produtos: response.data }))
             .catch(err => console.error(err))
     }
 
     getProdutosEdit = (id) => {
-        fetch(`http://192.168.200.147:4000/show?table=produtos&where=id=${id}`)
+        fetch(`http://localhost:4000/show?table=produtos&where=id=${id}`)
             .then(response => response.json())
             .then(response => this.setState({ produtosEdit: response.data }))
             .then(() => this.state.produtosEdit.map(this.getVar))
@@ -100,7 +100,7 @@ export class Gprodutos extends Component {
 
     getVar = ({ id, nome, preco, categoria, marca, quantidade, descricao, img }) => {
         this.setState({
-            imagePreviewUrl:"http://192.168.200.147:3000/uploads/"+img,
+            imagePreviewUrl:"http://localhost:3000/uploads/"+img,
             produto: {
                 id: id,
                 nome: nome,
@@ -116,7 +116,7 @@ export class Gprodutos extends Component {
 
     getBusca = () => {
         const { busca } = this.state;
-        fetch(`http://192.168.200.147:4000/show?table=produtos&${busca.buscar}${busca.value}`)
+        fetch(`http://localhost:4000/show?table=produtos&${busca.buscar}${busca.value}`)
             .then(response => response.json())
             .then(response => { !response.data ? this.setState({disabledn:false, disabledp:true },()=>this.getProdutos()) : this.setState({ produtos: response.data, disabledn:true, disabledp:true }) })
             .catch(err => console.error(err))
@@ -133,14 +133,14 @@ export class Gprodutos extends Component {
         } else {
             data.append('file', this.uploadInput.files[0]);
 
-            fetch('http://192.168.200.147:4000/upload', {
+            fetch('http://localhost:4000/upload', {
                 method: 'POST',
                 body: data,
 
             }).then((response) => {
                 response.json().then((body) => {
                     // cadastrar produto
-                    fetch(`http://192.168.200.147:4000/add?table=produtos&campos=nome,preco,descricao,marca,categoria,views,img,quantidade&valores='${produto.nome}',${produto.preco},'${produto.descricao}','${produto.marca}','${produto.categoria}',${0},'${body.file}',${produto.quantidade}`)
+                    fetch(`http://localhost:4000/add?table=produtos&campos=nome,preco,descricao,marca,categoria,views,img,quantidade&valores='${produto.nome}',${produto.preco},'${produto.descricao}','${produto.marca}','${produto.categoria}',${0},'${body.file}',${produto.quantidade}`)
                         .then(this.getProdutos)
                         .then(this.handleClose())
                         .catch(err => console.error(err))
@@ -159,14 +159,14 @@ export class Gprodutos extends Component {
         if (this.uploadInput.files[0]) {
             data.append('file', this.uploadInput.files[0]);
 
-            fetch('http://192.168.200.147:4000/upload', {
+            fetch('http://localhost:4000/upload', {
                 method: 'POST',
                 body: data,
 
             }).then((response) => {
                 response.json().then((body) => {
                     //Updade  Produto  Quando houver alteração de imagem
-                    fetch(`http://192.168.200.147:4000/update?table=produtos&alt=nome='${produto.nome}',preco=${produto.preco},descricao='${produto.descricao}',marca='${produto.marca}',categoria='${produto.categoria}',img='${body.file}',quantidade=${produto.quantidade}&id='${produto.id}'`)
+                    fetch(`http://localhost:4000/update?table=produtos&alt=nome='${produto.nome}',preco=${produto.preco},descricao='${produto.descricao}',marca='${produto.marca}',categoria='${produto.categoria}',img='${body.file}',quantidade=${produto.quantidade}&id='${produto.id}'`)
                         .then(this.getProdutos)
                         .then(this.handleClose())
                         .catch(err => console.error(err))
@@ -174,7 +174,7 @@ export class Gprodutos extends Component {
             });
         } else {
             //Updade Produto
-            fetch(`http://192.168.200.147:4000/update?table=produtos&alt=nome='${produto.nome}',preco=${produto.preco},descricao='${produto.descricao}',marca='${produto.marca}',categoria='${produto.categoria}',img='${produto.img}',quantidade=${produto.quantidade}&id='${produto.id}'`)
+            fetch(`http://localhost:4000/update?table=produtos&alt=nome='${produto.nome}',preco=${produto.preco},descricao='${produto.descricao}',marca='${produto.marca}',categoria='${produto.categoria}',img='${produto.img}',quantidade=${produto.quantidade}&id='${produto.id}'`)
                 .then(this.getProdutos)
                 .then(this.handleClose())
                 .catch(err => console.error(err))
@@ -191,7 +191,7 @@ export class Gprodutos extends Component {
 
         let imgremove;
         let idremove;
-        fetch(`http://192.168.200.147:4000/show?table=produtos&where=id=${id}`)
+        fetch(`http://localhost:4000/show?table=produtos&where=id=${id}`)
             .then(response => response.json())
             .then(response => this.setState({ remove: response.data }, () => {
                 this.state.remove.map(obj => {
@@ -204,16 +204,15 @@ export class Gprodutos extends Component {
                     idreomve: idremove
                 }, () => {
 
-                    fetch(`http://192.168.200.147:4000/remove?table=produtos&id=${idremove}`)
+                    fetch(`http://localhost:4000/remove?table=produtos&id=${idremove}`)
+                        .then(
+                            fetch(`http://localhost:4000/removeImg/${this.state.imgremove}`, {
+                                method: 'POST',
+                            })
+                                .catch(err => console.error(err))
+                        )
                         .then(this.getProdutos)
                         .then(this.handleClose)
-                        .catch(err => console.error(err))
-
-
-
-                    fetch(`http://192.168.200.147:4000/remove/${this.state.imgremove}`, {
-                        method: 'POST',
-                    })
                         .catch(err => console.error(err))
 
                 })

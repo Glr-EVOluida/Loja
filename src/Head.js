@@ -37,7 +37,7 @@ export class Head extends React.Component{
     }
 
     getProducts = () =>{
-        fetch('http://192.168.200.147:4000/show?table=produtos')
+        fetch('http://localhost:4000/show?table=produtos')
         .then(response => response.json())
         .then(response => this.setState({produtos:response.data}, () => this.busca(this.state.produtos)))
         .catch(err => console.error(err));
@@ -73,7 +73,7 @@ export class Head extends React.Component{
         })
         .autocomplete( "instance" )._renderItem = function( ul, item ) {
         return $( "<li>" )
-            .append( "<div> <img style='border-radius:3px' src='http://192.168.200.147:3000/uploads/"+item.icon+"'/><span>"+ item.label + "</span></div>" )
+            .append( "<div> <img style='border-radius:3px' src='http://localhost:3000/uploads/"+item.icon+"'/><span>"+ item.label + "</span></div>" )
             .appendTo( ul );
         };
     }
@@ -85,7 +85,7 @@ export class Head extends React.Component{
         if(user === "" || pass === ""){
             alert("Email/Senha em brancos")
         }else{
-            fetch(`http://192.168.200.147:4000/show?table=clientes&where=email="${user}" AND senha="${passCrypto}"`)
+            fetch(`http://localhost:4000/show?table=clientes&where=email="${user}" AND senha="${passCrypto}"`)
             .then(response => response.json())
             .then(response => response.data.length === 0 ? alert("Email/Senha incorreto") : this.setState({cliente:response.data},() => cliente.map(this.Verificacao)))
             .catch(err => console.log(err));
@@ -111,7 +111,7 @@ export class Head extends React.Component{
                 <div id="dropdown">
                     <div className="dropdown">
                         <a href="#!">
-                            <img src={`http://192.168.200.147:3000/uploads/`+img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUser"/>
+                            <img src={`http://localhost:3000/uploads/`+img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUser"/>
                         </a>
                     </div>
                     <div className="dropdown-content">
@@ -203,12 +203,12 @@ export class Head extends React.Component{
         return(
             <div>
                 <a href="#!" onClick={() => this.setState({show:true})}>
-                    <img src={`http://192.168.200.147:3000/uploads/`+img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUser"/>
+                    <img src={`http://localhost:3000/uploads/`+img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUser"/>
                 </a>
                 <div className="static-modal">
                     <Modal bsSize="small" show={this.state.show} onHide={this.handleClose}>
                         <Modal.Body className="center">
-                            <img src={`http://192.168.200.147:3000/uploads/`+img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUserMenu"/>
+                            <img src={`http://localhost:3000/uploads/`+img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUserMenu"/>
                             <ControlLabel>Bem-Vindo<br/> {nome}</ControlLabel>
                             <hr/>
                             <ControlLabel><a className="menuUser" onClick={() => this.props.handleChangePage('perfil')}><i className="fas fa-user"></i> Meu Perfil</a></ControlLabel><br/>

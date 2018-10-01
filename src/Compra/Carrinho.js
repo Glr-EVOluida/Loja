@@ -28,7 +28,7 @@ export class Carrinho extends Component {
 
   getProdutos = _ => {
 
-    fetch(`http://192.168.200.147:4000/show?table=produtos`)
+    fetch(`http://localhost:4000/show?table=produtos`)
     .then(response => response.json())
     .then(response => this.setState( {produtos: response.data }) )
     .catch(err => console.error(err))
@@ -119,7 +119,7 @@ export class Carrinho extends Component {
       return(
         <tr key={i}>
           <td width='70'>
-            <img src={`http://192.168.200.147:3000/uploads/${item.img}`} style={{borderRadius:'3px'}} alt={item.nome}/>
+            <img src={`http://localhost:3000/uploads/${item.img}`} style={{borderRadius:'3px'}} alt={item.nome}/>
           </td>
           <td>
             <span>{item.nome}</span>

@@ -22,25 +22,40 @@ export class MainProdutos extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    if(nextProps.categoria !== ''){
-      this.handleCategoriaChange(nextProps.categoria);
+
+    let pesquisa = '';
+    let categoria = '';
+    
+    if(nextProps.pesquisa && (nextProps.pesquisa !== '')){
+      pesquisa = nextProps.pesquisa;
     }
     
-    if((nextProps.pesquisa !== '') && (nextProps.pesquisa !== this.props.pesquisa)){
-      this.setState({
-        pesquisa:nextProps.pesquisa
-      }, () => {this.handleCategoriaChange('all');})
+    if(nextProps.categoria && nextProps.categoria !== ''){
+      categoria = nextProps.categoria;
     }
+
+    this.setState({
+      pesquisa: pesquisa
+    }, () => {this.handleCategoriaChange(categoria);})
 
   }
 
   componentDidMount(){
     
-    if(this.props.categoria !== ''){
-      this.handleCategoriaChange(this.props.categoria);
-    }else{
-      this.getProdutos();
+    let pesquisa = '';
+    let categoria = '';
+    
+    if(this.props.pesquisa && (this.props.pesquisa !== '')){
+      pesquisa = this.props.pesquisa;
     }
+    
+    if(this.props.categoria && this.props.categoria !== ''){
+      categoria = this.props.categoria;
+    }
+
+    this.setState({
+      pesquisa: pesquisa
+    }, () => {this.handleCategoriaChange(categoria);})
     
     sessionStorage.getItem('carrinho') && this.getCarrinhoSession();
   }
@@ -54,7 +69,7 @@ export class MainProdutos extends Component {
   getProdutos = _ => {
     const { order,limitClause,where } = this.state;
 
-    fetch(`http://192.168.200.147:4000/show?table=produtos&order=${order}&limit=${limitClause}&where=${where}`)
+    fetch(`http://localhost:4000/show?table=produtos&order=${order}&limit=${limitClause}&where=${where}`)
     .then(response => response.json())
     .then(response => this.setState( {produtos: response.data }) )
     .catch(err => console.error(err))

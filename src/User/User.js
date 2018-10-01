@@ -60,7 +60,7 @@ export class User extends Component {
     
     getUser = _ =>{
         const { id } = this.state;
-        fetch(`http://192.168.200.147:4000/show?table=clientes&where=id=${id}`)
+        fetch(`http://localhost:4000/show?table=clientes&where=id=${id}`)
         .then(response =>response.json())
         .then(response => this.setState({users:response.data}, ()=> this.renderUser()))
         .catch(err => console.error(err))
@@ -68,7 +68,7 @@ export class User extends Component {
    
     removeUser = _ =>{
         const { id } = this.state;
-        fetch(`http://192.168.200.147:4000/remove?table=clientes&id=${id}`)
+        fetch(`http://localhost:4000/remove?table=clientes&id=${id}`)
         .then(this.getUser)
         .then(this.handleClose)
         .catch(err => console.error(err))
@@ -77,15 +77,51 @@ export class User extends Component {
     updateUser = _ =>{
         const { id,nome,endereco,cep,telefone,email,newpass,oldpass,passcontrol,img } = this.state;
         if(Md5(passcontrol)===oldpass&&newpass!==''){
-            fetch(`http://192.168.200.147:4000/update?table=clientes&alt=nome='${nome}',endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${Md5(newpass)}',img='${img}'&id='${id}'`)
+            fetch(`http://localhost:4000/update?table=clientes&alt=nome='${nome}',endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${Md5(newpass)}',img='${img}'&id='${id}'`)
             .then(this.getUser)
             .then(this.setState({newpass:'',passcontrol:''},()=>alert('Usuário atualizado com sucesso!!')))
             .catch(err => console.error(err))
             
         }else if(Md5(passcontrol)===oldpass){
-            fetch(`http://192.168.200.147:4000/update?table=clientes&alt=nome='${nome}',endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${oldpass}',img='${img}'&id='${id}'`)
+            
+            
+            if(this.uploadInput.files[0] === undefined){
+                
+
+            fetch(`http://localhost:4000/update?table=clientes&alt=nome='${nome}',endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${oldpass}',img='${img}'&id='${id}'`)
             .then(this.getUser)
             .catch(err => console.error(err))
+                
+            }else{
+                
+ 
+             const data = new FormData();
+
+             data.append('file', this.uploadInput.files[0]);
+            // upload de imagem
+            fetch('http://localhost:4000/upload', {
+                method: 'POST',
+                body: data,
+            }).then((response) => {
+                response.json().then((body) => {
+
+
+            fetch(`http://localhost:4000/update?table=clientes&alt=nome='${nome}',endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${oldpass}',img='${body.file}'&id='${id}'`)
+            .then(this.getUser)
+            .then(
+                fetch(`http://localhost:4000/removeImg/${img}`, {
+                    method: 'POST',
+                })
+                .then( console.log("apagouu"))
+                    .catch(err => console.error(err))
+            )
+            .catch(err => console.error(err))
+                });
+
+            });
+    
+            }
+
         }else if(Md5(passcontrol)===""){
             alert('Para salvar as alterações confirme sua senha')
         }
@@ -140,7 +176,9 @@ export class User extends Component {
     renderUser = _ =>{
         const { users } = this.state;
         users.map(obj =>{
-            
+        
+        let valueimg = "http://localhost:3000/uploads/"+obj.img;
+       
         let valuecep = obj.cep;
         let valuetel = obj.telefone;
 
@@ -181,6 +219,7 @@ export class User extends Component {
             }
         }
             return this.setState({
+                    imagePreviewUrl:valueimg,
                     nome:obj.nome,
                     endereco:obj.endereco,
                     cep:wordcep,

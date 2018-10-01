@@ -26,11 +26,11 @@ export class Details extends Component {
   getProdutos = _ => {
     const { id } = this.props;
 
-    fetch(`http://192.168.200.147:4000/show?table=produtos&where=id=${id}`)
+    fetch(`http://localhost:4000/show?table=produtos&where=id=${id}`)
     .then(response => response.json())
     .then(response => this.setState( {produtos: response.data }, () => {
       const views = response.data[0].views+1;
-      fetch(`http://192.168.200.147:4000/update?table=produtos&alt=views=${views}&id=${id}`)
+      fetch(`http://localhost:4000/update?table=produtos&alt=views=${views}&id=${id}`)
       .catch(err => console.error(err))
     }) )
     .catch(err => console.error(err))

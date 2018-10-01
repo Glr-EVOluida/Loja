@@ -23,7 +23,7 @@ export class Pagination extends Component {
 
         let pagina = page;
 
-        fetch(`http://192.168.200.147:4000/show?table=produtos&where=${where}`)
+        fetch(`http://localhost:4000/show?table=produtos&where=${where}`)
         .then(response => response.json())
         .then(response => this.setState({total:response.data.length}, () => {
             while((page - 1) * limit > this.state.total){

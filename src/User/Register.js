@@ -26,7 +26,6 @@ export class Register extends React.Component {
 
     
     handleRegister = e => {
-     console.log();
         e.preventDefault();
         const data = new FormData();
         const { user } = this.state;
@@ -39,17 +38,15 @@ export class Register extends React.Component {
             data.append('file', this.uploadInput.files[0]);
 
             // upload de imagem
-            fetch('http://192.168.200.147:4000/upload', {
+            fetch('http://localhost:4000/upload', {
                 method: 'POST',
                 body: data,
             }).then((response) => {
                 response.json().then((body) => {
-                    console.log(body.file);
                     // cadastrar de usuario
-                    fetch(`http://192.168.200.147:4000/add?table=clientes&campos=nome,endereco,cep,telefone,email,senha,img&valores='${user.nome}','${user.endereco}','${user.cep}','${user.telefone}','${user.email}','${Md5(user.senha)}','${body.file}'`)
+                    fetch(`http://localhost:4000/add?table=clientes&campos=nome,endereco,cep,telefone,email,senha,img&valores='${user.nome}','${user.endereco}','${user.cep}','${user.telefone}','${user.email}','${Md5(user.senha)}','${body.file}'`)
                         .then(() => {
                             // limpar campos
-                            this.uploadInput.files = "";
                             this.setState({
                                 imagePreviewUrl: "",
                                 user: {
@@ -60,8 +57,6 @@ export class Register extends React.Component {
                                     email: '',
                                     senha: ''
                                 }
-                            },() => {
-                                console.log(this.uploadInput.files)
                             });
                         })
                         .catch(err => console.error(err))
@@ -72,7 +67,6 @@ export class Register extends React.Component {
     }
     
     handleClickIcon = _ => {
-        console.log("opa");
         if(this.state.typeIcon === "fas fa-eye"){
             this.setState({
                 inputType:"password",

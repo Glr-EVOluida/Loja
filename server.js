@@ -4,6 +4,8 @@ const bodyParcer = require("body-parser");
 const cors = require('cors');
 const mysql = require('mysql');
 
+var fs = require('file-system');
+
 const app = express();
 
 app.use(fileUpload());
@@ -116,19 +118,21 @@ app.get('/remove', (req, res) => {
 app.use('/uploads', express.static(__dirname + '/uploads'));
 
 //remover imagem da pasta do diretorio
-app.post('/remove/:name',(req,res,next) => {
+app.post('/removeImg/:name',(req,res,next) => {
     // nome do arquivo que serar removido
     const filename = req.params.name;
 
     // verificação se existe o arquivo na pasta 
-    fs.stat(`/public/uploads/${filename}`, function (err, stats) {
+    fs.stat(`http://localhost:3000/uploads/${filename}`, function (err, stats) {
         // console.log(stats); aqui temos todas as informações do arquivo na variável stats
      
+        console.log('a')
+
         if (err) {
             return console.error(err);
         }
         // remover arquivo
-        fs.unlink(`/public/uploads/${filename}`,function(err){
+        fs.unlink(`http://localhost:3000/uploads/${filename}`,function(err){
              if(err) return console.log(err);
         });  
      });

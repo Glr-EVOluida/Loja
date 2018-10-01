@@ -29,7 +29,7 @@ export class Finish extends React.Component{
 
     getProdutos = _ => {
 
-        fetch(`http://192.168.200.147:4000/show?table=produtos`)
+        fetch(`http://localhost:4000/show?table=produtos`)
         .then(response => response.json())
         .then(response => this.setState( {produtos: response.data }) )
         .catch(err => console.error(err))
@@ -73,7 +73,7 @@ export class Finish extends React.Component{
                 <div className="col-md-12 col-sm-12 col-xs-12" style={{padding:"10px"}}> 
                     <div className="col-md-12 col-sm-12 col-xs-12">
                         <div className="col-md-2 col-sm-2 col-xs-2">
-                            <img src={`http://192.168.200.147:3000/uploads/${item.img}`} alt={item.nome} style={{width:"30px",height:"30px",padding:"0px",borderRadius:'3px'}}/>
+                            <img src={`http://localhost:3000/uploads/${item.img}`} alt={item.nome} style={{width:"30px",height:"30px",padding:"0px",borderRadius:'3px'}}/>
                         </div>
                         <div className="col-md-4 col-sm-4 col-xs-4" style={{paddingTop:"8px"}}>
                             <span>{item.nome}</span>
@@ -157,7 +157,7 @@ export class Finish extends React.Component{
                         
                         bool = true;
 
-                        fetch(`http://192.168.200.147:4000/update?table=produtos&alt=quantidade="${total}"&id="${idProd}"`)
+                        fetch(`http://localhost:4000/update?table=produtos&alt=quantidade="${total}"&id="${idProd}"`)
                         .then(this.setState({show:false}, ()=>{this.props.handleChangePage('')}))
                         .then(sessionStorage.clear())
                         .then(sessionStorage.setItem('usuario',JSON.stringify(cliente)))
@@ -169,7 +169,7 @@ export class Finish extends React.Component{
         }
         
         if(bool){
-            fetch(`http://192.168.200.147:4000/add?table=compras&campos=preco,idCliente,idProdutos,qntProdutos,data&valores='${tot}','${id_cliente}','${id}','${qnt}','${data}'`)
+            fetch(`http://localhost:4000/add?table=compras&campos=preco,idCliente,idProdutos,qntProdutos,data&valores='${tot}','${id_cliente}','${id}','${qnt}','${data}'`)
             .catch(err => console.error(err))
         }
         

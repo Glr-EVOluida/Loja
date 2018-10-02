@@ -1,16 +1,8 @@
 const express = require('express');
-const fileUpload = require("express-fileupload");
-const bodyParcer = require("body-parser");
 const cors = require('cors');
 const mysql = require('mysql');
 
-var fs = require('file-system');
-
 const app = express();
-
-app.use(fileUpload());
-app.use(bodyParcer.json());
-app.use(bodyParcer .urlencoded({ extended: false }));
 
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -62,16 +54,7 @@ app.get('/show', (req, res) => {
 });
 
 app.get('/add', (req, res) => {
-    const { table, campos } = req.query;
-
-    let { valores } = req.query;
-
-    valores = valores.replace(/@br/g, "<br/>");
-    valores = valores.replace(/@b/g, "<b>");
-    valores = valores.replace(/~b/g, "</b>");
-    valores = valores.replace(/@i/g, "<i>");
-    valores = valores.replace(/~i/g, "</i>");
-
+    const { table, campos, valores } = req.query;
     const insert = `INSERT INTO ${table} (${campos}) VALUES (${valores})`;
     connection.query(insert, (err, results) =>{
         if(err){
@@ -83,16 +66,7 @@ app.get('/add', (req, res) => {
 });
 
 app.get('/update', (req, res) => {
-    const { table, id } = req.query;
-
-    let {alt} = req.query;
-
-    alt = alt.replace(/@br/g, "<br/>");
-    alt = alt.replace(/@b/g, "<b>");
-    alt = alt.replace(/~b/g, "</b>");
-    alt = alt.replace(/@i/g, "<i>");
-    alt = alt.replace(/~i/g, "</i>");
-
+    const { table, alt, id } = req.query;
     const update = `UPDATE ${table} SET ${alt} WHERE id=${id}`;
     connection.query(update, (err, results) =>{
         if(err){
@@ -115,24 +89,42 @@ app.get('/remove', (req, res) => {
     })
 });
 
-app.use('/uploads', express.static(__dirname + '/uploads'));
+
+
+
+//////////////////////////
+
+
+
+const fileUpload = require("express-fileupload");
+const bodyParcer = require("body-parser");
+
+//npm install file-system --save
+var fs = require('file-system');
+
+
+
+
+app.use(fileUpload());
+app.use(bodyParcer.json());
+app.use(bodyParcer .urlencoded({ extended: false }));
+
+app.use('/public/uploads', express.static(__dirname + '/uploads'));
 
 //remover imagem da pasta do diretorio
-app.post('/removeImg/:name',(req,res,next) => {
+app.post('/remove/:name',(req,res,next) => {
     // nome do arquivo que serar removido
     const filename = req.params.name;
 
     // verificação se existe o arquivo na pasta 
-    fs.stat(`http://localhost:3000/uploads/${filename}`, function (err, stats) {
+    fs.stat(`public/uploads/${filename}`, function (err, stats) {
         // console.log(stats); aqui temos todas as informações do arquivo na variável stats
      
-        console.log('a')
-
         if (err) {
             return console.error(err);
         }
         // remover arquivo
-        fs.unlink(`http://localhost:3000/uploads/${filename}`,function(err){
+        fs.unlink(`public/uploads/${filename}`,function(err){
              if(err) return console.log(err);
         });  
      });
@@ -156,6 +148,5 @@ app.post('/upload', (req, res, next) => {
 
 });
 
-app.listen(4000, () => {
-    console.log("4000");
-})
+app.listen(4000, () => {})
+console.log("4000");

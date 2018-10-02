@@ -93,7 +93,11 @@ export class User extends Component {
             .catch(err => console.error(err))
                 
             }else{
-                
+             console.log(img);
+                fetch(`http://localhost:4000/remove/${img}`, {
+                    method: 'POST',
+                })
+                .catch(err => console.error(err))
  
              const data = new FormData();
 
@@ -108,13 +112,7 @@ export class User extends Component {
 
             fetch(`http://localhost:4000/update?table=clientes&alt=nome='${nome}',endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${oldpass}',img='${body.file}'&id='${id}'`)
             .then(this.getUser)
-            .then(
-                fetch(`http://localhost:4000/removeImg/${img}`, {
-                    method: 'POST',
-                })
-                .then( console.log("apagouu"))
-                    .catch(err => console.error(err))
-            )
+          
             .catch(err => console.error(err))
                 });
 

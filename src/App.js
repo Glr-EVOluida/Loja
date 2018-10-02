@@ -25,13 +25,10 @@ export class App extends Component {
 
   handleLogar = () =>{this.setState({logar:true})}
 
-  render() {
+/*
 
-    const {admin,page, pesquisa, qntCart, logar, info} = this.state;
 
-    return (
-      <div className="App">
-          {!admin ?
+  {!admin ?
             <div>
               <Head handleLogar={this.handleLogar} handleAdmin={this.handleAdmin} handleChangePage={this.handleChangePage} qntCart={qntCart} handleSearch={this.handleSearch}/>
               <Body logar={logar} handleChangePage={this.handleChangePage} page={page} info={info} pesquisa={pesquisa} changeQnt={this.changeQnt}/>
@@ -40,7 +37,25 @@ export class App extends Component {
           :
             <Admin handleAdmin={this.handleAdmin} handleChangePage={this.handleChangePage}/>
           }
-          
+*/
+
+  render() {
+
+    const {admin,page, pesquisa, qntCart, logar, info} = this.state;
+
+    return (
+      <div className="App">
+
+      
+  {!admin ?
+            <div>
+              <Head handleLogar={this.handleLogar} handleAdmin={this.handleAdmin} handleChangePage={this.handleChangePage} qntCart={qntCart} handleSearch={this.handleSearch}/>
+              <Body logar={logar} handleChangePage={this.handleChangePage} page={page} info={info} pesquisa={pesquisa} changeQnt={this.changeQnt}/>
+              <Footer/>
+            </div>
+          :
+            <Admin handleAdmin={this.handleAdmin} handleChangePage={this.handleChangePage}/>
+          }    
       </div>
     )
   }

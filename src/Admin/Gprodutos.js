@@ -157,7 +157,15 @@ export class Gprodutos extends Component {
 
         // condição se a imagem for alterada
         if (this.uploadInput.files[0]) {
-            data.append('file', this.uploadInput.files[0]);
+
+            data.append('file', this.uploadInput.files[0]);            
+
+            fetch(`http://localhost:4000/remove/${produto.img}`, {
+                method: 'POST',
+            })
+            .then(
+
+
 
             fetch('http://localhost:4000/upload', {
                 method: 'POST',
@@ -171,7 +179,11 @@ export class Gprodutos extends Component {
                         .then(this.handleClose())
                         .catch(err => console.error(err))
                 });
-            });
+            })
+    
+            )
+            .catch(err => console.error(err))
+
         } else {
             //Updade Produto
             fetch(`http://localhost:4000/update?table=produtos&alt=nome='${produto.nome}',preco=${produto.preco},descricao='${produto.descricao}',marca='${produto.marca}',categoria='${produto.categoria}',img='${produto.img}',quantidade=${produto.quantidade}&id='${produto.id}'`)
@@ -197,7 +209,6 @@ export class Gprodutos extends Component {
                 this.state.remove.map(obj => {
                     imgremove = obj.img
                     idremove = obj.id
-                    return null;
                 })
                 this.setState({
                     imgremove: imgremove,
@@ -205,14 +216,15 @@ export class Gprodutos extends Component {
                 }, () => {
 
                     fetch(`http://localhost:4000/remove?table=produtos&id=${idremove}`)
-                        .then(
-                            fetch(`http://localhost:4000/removeImg/${this.state.imgremove}`, {
-                                method: 'POST',
-                            })
-                                .catch(err => console.error(err))
-                        )
                         .then(this.getProdutos)
                         .then(this.handleClose)
+                        .catch(err => console.error(err))
+
+
+
+                    fetch(`http://localhost:4000/remove/${this.state.imgremove}`, {
+                        method: 'POST',
+                    })
                         .catch(err => console.error(err))
 
                 })
@@ -449,8 +461,8 @@ export class Gprodutos extends Component {
                                     <option>Selecione uma opção</option>
                                     <option>Console</option>
                                     <option>PCs</option>
-                                    <option>Notebooks</option>
-                                    <option>Smartphone</option>
+                                    <option>Notebook</option>
+                                    <option>Smartphones</option>
                                     <option>Gaddets</option>
                                     <option>Perifericos</option>
                                 </select>
@@ -483,7 +495,7 @@ export class Gprodutos extends Component {
                                      <label className="select-image-admin"  htmlFor="file"><i className="fas fa-camera"></i>  Imagem do Produto </label>  
                                         <div className="imagePreview" >
                                              {this.state.imagePreviewUrl === "" ?
-                                                <i style={{ fontSize: 246 }} htmlFor="file" className=' fas fa-image'> </i> :  <img style={{marginTop:30,  borderRadius: 10, width: 240, height: 180 }} src={"" + this.state.imagePreviewUrl} alt='Perfil' />}
+                                                <i style={{ fontSize: 246 }} htmlFor="file" className=' fas fa-image'> </i> :  <img style={{marginTop:30,  borderRadius: 10, width: 240, height: 180 }} src={this.state.imagePreviewUrl} alt='Perfil' />}
                                         </div>
                                 </div>
                                    <input

@@ -90,20 +90,11 @@ app.get('/remove', (req, res) => {
 });
 
 
-
-
-//////////////////////////
-
-
-
 const fileUpload = require("express-fileupload");
 const bodyParcer = require("body-parser");
 
 //npm install file-system --save
 var fs = require('file-system');
-
-
-
 
 app.use(fileUpload());
 app.use(bodyParcer.json());

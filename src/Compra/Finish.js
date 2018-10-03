@@ -67,7 +67,7 @@ export class Finish extends React.Component{
           }
         }
         if(bool){
-        let total = compra.quantidade * item.preco;
+        let total = (compra.quantidade * item.preco).toFixed(2);
           return(
             <div key={compra.id}>
                 <div className="col-md-12 col-sm-12 col-xs-12" style={{padding:"10px"}}> 
@@ -82,10 +82,10 @@ export class Finish extends React.Component{
                             <span>{compra.quantidade}</span>
                         </div>
                         <div className="center col-md-2 col-sm-2 col-xs-2" style={{paddingTop:"8px"}}>
-                            <span>{item.preco}</span>
+                            <span>R$ {(item.preco).toFixed(2)}</span>
                         </div>
                         <div className="center col-md-2 col-sm-2 col-xs-2" style={{paddingTop:"8px"}}>
-                            <span>{total}</span>
+                            <span>R$ {total}</span>
                         </div>
                     </div>
                 </div>
@@ -140,10 +140,10 @@ export class Finish extends React.Component{
         
         for (let u = 0; u < compra.length; u++) {
             id += `${compra[u].id}${u+1 !== a ? ',' : ''}`;
-            qnt += `${compra[u].quantidade}${u+1 !== a ? ',':''}`;
+            qnt += `${compra[u].quantidade}${u+1 !== a ? ',':''}`
         }
 
-        let bool = false;
+        let bool = true;
 
         //erro nas quantidades, ta subtraindo apenas um 
         for (let i = 0; i < produtos.length; i++) {
@@ -153,12 +153,13 @@ export class Finish extends React.Component{
                     idProd = compra[u].id;
                     if(total < 0){
                         alert("Estoque não possui a quantidade desejada")
+                        bool = false;
                     }else{
-                        
-                        bool = true;
 
                         fetch(`http://localhost:4000/update?table=produtos&alt=quantidade="${total}"&id="${idProd}"`)
-                        .then(this.setState({show:false}, ()=>{this.props.handleChangePage('')}))
+                        .then(this.setState({show:false}))
+                        .then(this.props.handleChangePage(''))
+                        .then(this.props.changeQnt(0))
                         .then(sessionStorage.clear())
                         .then(sessionStorage.setItem('usuario',JSON.stringify(cliente)))
                         .catch(err => console.error(err))
@@ -167,9 +168,8 @@ export class Finish extends React.Component{
                 }
             }
         }
-        
         if(bool){
-            fetch(`http://localhost:4000/add?table=compras&campos=preco,idCliente,idProdutos,qntProdutos,data&valores='${tot}','${id_cliente}','${id}','${qnt}','${data}'`)
+            fetch(`http://localhost:4000/add?table=compras&campos=preco,idCliente,idProdutos,qntProdutos,data,estado&valores='${tot}','${id_cliente}','${id}','${qnt}','${data}','Pedido Pendente'`)
             .catch(err => console.error(err))
         }
         
@@ -277,7 +277,7 @@ export class Finish extends React.Component{
                     </div>
                     <div className="col-md-2 col-sm-2 col-xs-4">
                         <input id="total" type="hidden" value={this.Total()}></input>
-                        <h4>{sessionStorage.getItem('compra') ? this.Total() : '0.00'}</h4>
+                        <h4>{sessionStorage.getItem('compra') ?`R$` + this.Total() : 'R$ 0.00'}</h4>
                     </div>
                 </div>
                 <div className="fin col-md-12 col-sm-12 col-xs-12">

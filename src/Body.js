@@ -10,7 +10,6 @@ import { User } from './User/User';
 export class Body extends React.Component{
 
     state = {
-        largura:0,
         page: '',
         info: '',
         pesquisa: '',
@@ -34,34 +33,23 @@ export class Body extends React.Component{
         }
 
         this.setState({page:nextProps.page, info:info, pesquisa:pesquisa})
-    }      
-
-    componentDidMount(){
-        let a = window.innerWidth;
-        this.setState({largura:a})
     }
+
 
     Categorias =_=>{
         return(
-            <div className="catego">
-                <ul className="categ">
-                    <li><a href="#!" onClick={() => this.props.handleChangePage('','console')}>Console</a></li>
-                    <li><a href="#!" onClick={() => this.props.handleChangePage('','pcs')}>PCs</a></li>
-                    <li><a href="#!" onClick={() => this.props.handleChangePage('','notebook')}>Notebooks</a></li>
-                    <li><a href="#!" onClick={() => this.props.handleChangePage('','smartphones')}>Smartphones</a></li>
-                    <li><a href="#!" onClick={() => this.props.handleChangePage('','gadgets')}>Gadgets</a></li>
-                    <li><a href="#!" onClick={() => this.props.handleChangePage('','perifericos')}>Perifericos</a></li>
-                </ul> 
-            </div>
-        )
-    }
-
-    
-
-    CategoriasMobile =_=>{
-        return(
             <div>
-                <div className="col-md-2 col-xs-12">
+                <div className="catego">
+                    <ul className="categ">
+                        <li><a href="#!" onClick={() => this.props.handleChangePage('','console')}>Console</a></li>
+                        <li><a href="#!" onClick={() => this.props.handleChangePage('','pcs')}>PCs</a></li>
+                        <li><a href="#!" onClick={() => this.props.handleChangePage('','notebook')}>Notebooks</a></li>
+                        <li><a href="#!" onClick={() => this.props.handleChangePage('','smartphones')}>Smartphones</a></li>
+                        <li><a href="#!" onClick={() => this.props.handleChangePage('','gadgets')}>Gadgets</a></li>
+                        <li><a href="#!" onClick={() => this.props.handleChangePage('','perifericos')}>Perifericos</a></li>
+                    </ul> 
+                </div>
+                <div className="col-xs-12 dropdownMobile">
                     <div className="cate">
                         <a href="#!">
                             Categorias
@@ -90,11 +78,11 @@ export class Body extends React.Component{
             case "detalhes":
                 return <Details id={parseInt(info,10)} handleChangePage={this.props.handleChangePage}/>
             case "finish":
-                return <Finish handleChangePage={this.props.handleChangePage}/>
+                return <Finish changeQnt={this.props.changeQnt} handleChangePage={this.props.handleChangePage}/>
             case "signup":
-                return <Register/>
+                return <Register handleChangePage={this.props.handleChangePage}/>
             case "perfil":
-                return <User/>
+                return <User handleUser={this.props.handleUser}/>
 
             default:
                 return <MainProdutos changeQnt={this.props.changeQnt} pesquisa={pesquisa} categoria={info} handleChangePage={this.props.handleChangePage}/>
@@ -102,7 +90,6 @@ export class Body extends React.Component{
     }
 
     render(){
-        const { largura} = this.state;
 
         return(
             <div className="content">
@@ -110,8 +97,9 @@ export class Body extends React.Component{
                     <div className="col-md-1">
                     
                     </div>
-                    <div className="col-md-10 col-sm-12 col-xs-12">
-                        {largura < 640 ? this.CategoriasMobile() : this.Categorias()}
+                    <div className="col-md-10 col-sm-12 col-xs-12 conteudoPag">
+
+                        {this.Categorias()}
 
                         {this.Page()}
 

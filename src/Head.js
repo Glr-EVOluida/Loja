@@ -19,7 +19,6 @@ export class Head extends React.Component{
         img:'',
         cliente:[],
         login:false,
-        largura:0,
         show:false,
         //pesquisa:''
     }
@@ -32,8 +31,15 @@ export class Head extends React.Component{
                 this.state.cliente.map(this.Verificacao);
             });
         }
-        let a = window.innerWidth;
-        this.setState({largura:a})
+    }
+
+    componentWillReceiveProps(nextProps){
+        if((nextProps.user !== this.props.cliente) && nextProps.user.length > 0){
+           this.setState({cliente:nextProps.user},() => {
+                this.state.cliente.map(this.Verificacao);
+                console.log(this.state.cliente)
+           });
+        }
     }
 
     getProducts = () =>{
@@ -79,7 +85,7 @@ export class Head extends React.Component{
     }
 
     getClientes = () =>{
-        const{user,pass,cliente} = this.state;
+        const{user,pass} = this.state;
         let passCrypto="";
         passCrypto = md5(pass);
         if(user === "" || pass === ""){
@@ -87,7 +93,7 @@ export class Head extends React.Component{
         }else{
             fetch(`http://localhost:4000/show?table=clientes&where=email="${user}" AND senha="${passCrypto}"`)
             .then(response => response.json())
-            .then(response => response.data.length === 0 ? alert("Email/Senha incorreto") : this.setState({cliente:response.data},() => cliente.map(this.Verificacao)))
+            .then(response => response.data.length === 0 ? alert("Email/Senha incorreto") : this.setState({cliente:response.data},() => response.data.map(this.Verificacao)))
             .catch(err => console.log(err));
         }
     }
@@ -108,24 +114,52 @@ export class Head extends React.Component{
         
         const {nome,img,cliente} = this.state;
             return(
-                <div id="dropdown">
-                    <div className="dropdown">
-                        <a href="#!">
-                            <img src={`http://localhost:3000/uploads/`+img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUser"/>
-                        </a>
-                    </div>
-                    <div className="dropdown-content">
-                        <div className="form-group">
+                <div>
+                    <div className='logPc' id="dropdown">
+                        <div className="dropdown">
+                            <a href="#!">
+                                <img src={`http://localhost:3000/uploads/`+img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUser"/>
+                            </a>
+                        </div>
+                        <div className="dropdown-content">
+                            <div className="form-group">
+                                <div className="center">
+                                    <label>Bem-Vindo <br/> {nome}</label>
+                                    <hr/>
+                                    <a className="menuUser" onClick={() => this.props.handleChangePage('perfil')}><i className="fas fa-user"></i> Meu Perfil</a><br/>
+                                    {cliente[0].admin === 1 ? <a className="menuUser" onClick={() => this.props.handleAdmin(true)}><i className="fas fa-user-tie"></i> Admin</a> : ""}
+                                </div>
+                            </div>
+                            <hr/>
                             <div className="center">
-                                <label>Bem-Vindo <br/> {nome}</label>
-                                <hr/>
-                                <a className="menuUser" onClick={() => this.props.handleChangePage('perfil')}><i className="fas fa-user"></i> Meu Perfil</a><br/>
-                                {cliente[0].admin === 1 ? <a className="menuUser" onClick={() => this.props.handleAdmin(true)}><i className="fas fa-user-tie"></i> Admin</a> : ""}
+                                <button onClick={() => this.setState({login:false,user:'',pass:'',nome:'',senha:'',img:''}, () => {
+                                    sessionStorage.clear();
+                                    this.props.changeQnt(0)
+                                    this.props.handleChangePage('')
+                                })} type="submit" className="form-control btn btn-danger"><i className="fas fa-sign-out-alt"></i> Sair</button>
                             </div>
                         </div>
-                        <hr/>
-                        <div className="center">
-                            <button onClick={() => this.setState({login:false,user:'',pass:''}, () => { sessionStorage.clear('usuario'); this.props.handleChangePage('')})} type="submit" className="form-control btn btn-danger"><i className="fas fa-sign-out-alt"></i> Sair</button>
+                    </div>
+                    <div className='logMobile'>
+                        <a href="#!" onClick={() => this.setState({show:true})}>
+                            <img src={`http://localhost:3000/uploads/`+img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUser"/>
+                        </a>
+                        <div className="static-modal">
+                            <Modal bsSize="small" show={this.state.show} onHide={this.handleClose}>
+                                <Modal.Body className="center">
+                                    <img src={`http://localhost:3000/uploads/`+img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUserMenu"/>
+                                    <ControlLabel>Bem-Vindo<br/> {nome}</ControlLabel>
+                                    <hr/>
+                                    <ControlLabel><a className="menuUser" onClick={() => this.props.handleChangePage('perfil')}><i className="fas fa-user"></i> Meu Perfil</a></ControlLabel><br/>
+                                    <ControlLabel>{cliente[0].admin === 1 ? <a className="menuUser" onClick={() => this.props.handleAdmin(true)}><i className="fas fa-user-tie"></i> Admin</a> : ""}</ControlLabel>
+                                    <hr/>
+                                    <Button className="form-control center" bsStyle="danger" type="submit" onClick={() => this.setState({login:false,user:'',pass:''}, () => {
+                                        sessionStorage.clear();
+                                        this.props.changeQnt(0)
+                                        this.props.handleChangePage('')
+                                    })}><i className="fas fa-sign-out-alt"></i> Sair</Button>
+                                </Modal.Body>
+                            </Modal>
                         </div>
                     </div>
                 </div>
@@ -133,27 +167,58 @@ export class Head extends React.Component{
     }
     Login = () =>{
         return(
-            <div id="dropdown">
-                <div className="dropdown">
-                    <a className="carro" href="#!">
-                        <i className="fas fa-user-circle ico"></i> 
-                    </a>
+            <div>
+                <div className='logPc' id="dropdown">
+                    <div className="dropdown">
+                        <a className="carro" href="#!">
+                            <i className="fas fa-user-circle icoL"></i> 
+                        </a>
+                    </div>
+                    <div className="dropdown-content" style={{zIndex:29}}>
+                        <div className="form-group">
+                            <label htmlFor="exampleDropdownFormEmail1">Endereço de Email</label>
+                            <input type="email" onChange={(e) => this.setState({user:e.target.value})} className="form-control" id="exampleDropdownFormEmail1" placeholder="email@example.com"/>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="exampleDropdownFormPassword1">Senha</label>
+                            <input type="password" onChange={(e) => this.setState({pass:e.target.value})} className="form-control" id="exampleDropdownFormPassword1" placeholder="Password"/>
+                        </div>
+                        <button type="submit" className="form-control btn btn-primary" onClick={this.getClientes}>Sign In</button>
+                        <hr/>
+                        <div className="center">
+                            <label>Cadastre-se</label>
+                            <input type="button" onClick={() => this.props.handleChangePage('signup')} value="Sign Up" className="form-control btn btn-warning"/>
+                            <div className="dropdown-divider"></div>
+                        </div>
+                    </div>
                 </div>
-                <div className="dropdown-content" style={{zIndex:29}}>
-                    <div className="form-group">
-                        <label htmlFor="exampleDropdownFormEmail1">Endereço de Email</label>
-                        <input type="email" onChange={(e) => this.setState({user:e.target.value})} className="form-control" id="exampleDropdownFormEmail1" placeholder="email@example.com"/>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="exampleDropdownFormPassword1">Senha</label>
-                        <input type="password" onChange={(e) => this.setState({pass:e.target.value})} className="form-control" id="exampleDropdownFormPassword1" placeholder="Password"/>
-                    </div>
-                    <button type="submit" className="form-control btn btn-primary" onClick={this.getClientes}>Sign In</button>
-                    <hr/>
-                    <div className="center">
-                        <label>Cadastre-se</label>
-                        <input type="button" onClick={() => this.props.handleChangePage('signup')} value="Sign Up" className="form-control btn btn-warning"/>
-                        <div className="dropdown-divider"></div>
+                <div className='logMobile'>
+                    <a className="carro" href="#!" onClick={() => this.setState({show:true})}>
+                        <i className="fas fa-user-circle icoL"></i>
+                    </a>
+                    <div className="static-modal">
+                        <Modal bsSize="small" show={this.state.show} onHide={this.handleClose}>
+                            <Modal.Header className="center">
+                                <Modal.Title>Login</Modal.Title>
+                            </Modal.Header>
+
+                            <Modal.Body>
+                                <FormGroup>
+                                    <ControlLabel>Endereço de Email:</ControlLabel>
+                                    <FormControl type="email" placeholder="email@example.com" onChange={(e) => this.setState({user:e.target.value})}/>
+                                </FormGroup>
+                                <FormGroup>
+                                    <ControlLabel>Senha:</ControlLabel>
+                                    <FormControl type="password" placeholder="Password" onChange={(e) => this.setState({pass:e.target.value})}/>
+                                </FormGroup>
+                                <Button onClick={this.getClientes} type="submit" className="form-control" bsStyle="primary">Sign In</Button>
+                                <hr/>
+                                <FormGroup className="center">
+                                    <ControlLabel>Cadastre-se</ControlLabel>
+                                    <Button bsStyle="warning" onClick={() => this.props.handleChangePage('signup')} className="form-control">Sing Up</Button>
+                                </FormGroup>
+                            </Modal.Body>
+                        </Modal>
                     </div>
                 </div>
             </div>
@@ -163,86 +228,18 @@ export class Head extends React.Component{
     handleClose = () =>{
         this.setState({show:false})
     }
-    
-    LoginMobile = () =>{
-        return(
-            <div>
-                <a className="carro" href="#!" onClick={() => this.setState({show:true})}>
-                        <i className="fas fa-user-circle ico"></i>
-                    </a>
-                <div className="static-modal">
-                    <Modal bsSize="small" show={this.state.show} onHide={this.handleClose}>
-                        <Modal.Header className="center">
-                            <Modal.Title>Login</Modal.Title>
-                        </Modal.Header>
 
-                        <Modal.Body>
-                            <FormGroup>
-                                <ControlLabel>Endereço de Email:</ControlLabel>
-                                <FormControl type="email" placeholder="email@example.com" onChange={(e) => this.setState({user:e.target.value})}/>
-                            </FormGroup>
-                            <FormGroup>
-                                <ControlLabel>Senha:</ControlLabel>
-                                <FormControl type="password" placeholder="Password" onChange={(e) => this.setState({pass:e.target.value})}/>
-                            </FormGroup>
-                            <Button onClick={this.getClientes} type="submit" className="form-control" bsStyle="primary">Sign In</Button>
-                            <hr/>
-                            <FormGroup className="center">
-                                <ControlLabel>Cadastre-se</ControlLabel>
-                                <Button bsStyle="warning" onClick={() => this.props.handleChangePage('signup')} className="form-control">Sing Up</Button>
-                            </FormGroup>
-                        </Modal.Body>
-                    </Modal>
-                </div>
-            </div>
-        )
-    } 
+    detectarLogin =_=> { 
+        const { login } = this.state;
 
-    LogadoMobile = () =>{
-        const {nome,img,cliente} = this.state;
-        return(
-            <div>
-                <a href="#!" onClick={() => this.setState({show:true})}>
-                    <img src={`http://localhost:3000/uploads/`+img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUser"/>
-                </a>
-                <div className="static-modal">
-                    <Modal bsSize="small" show={this.state.show} onHide={this.handleClose}>
-                        <Modal.Body className="center">
-                            <img src={`http://localhost:3000/uploads/`+img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUserMenu"/>
-                            <ControlLabel>Bem-Vindo<br/> {nome}</ControlLabel>
-                            <hr/>
-                            <ControlLabel><a className="menuUser" onClick={() => this.props.handleChangePage('perfil')}><i className="fas fa-user"></i> Meu Perfil</a></ControlLabel><br/>
-                            <ControlLabel>{cliente[0].admin === 1 ? <a className="menuUser" onClick={() => this.props.handleAdmin(true)}><i className="fas fa-user-tie"></i> Admin</a> : ""}</ControlLabel>
-                            <hr/>
-                            <Button className="form-control center" bsStyle="danger" type="submit" onClick={() => this.setState({login:false,user:'',pass:''}, () => {sessionStorage.clear('usuario'); this.props.handleChangePage('')})}><i className="fas fa-sign-out-alt"></i> Sair</Button>
-                        </Modal.Body>
-                    </Modal>
-                </div>
-            </div>
-        )
-    } 
-
-    detectar_mobile =_=> { 
-        const { login,largura } = this.state;
-
-        if(largura < 992){
-            if(login === true){
-                return( this.LogadoMobile()) 
-             }else{
-                 return( this.LoginMobile())
-             }
-        }else {
-           if(login === true){
-               return( this.Logado()) 
-            }else{
-                return( this.Login())
-            }
+        if(login === true){
+            return( this.Logado()) 
+        }else{
+            return( this.Login())
         }
     }
 
     render(){
-        
-        const {largura} = this.state;
 
         return(
             <div className="head">
@@ -269,18 +266,18 @@ export class Head extends React.Component{
                         </div>
                     </div>
 
-                    <div className="col-md-1"></div>
+                    <div className="col-md-1 col-xs-3"></div>
 
-                    <div className="nada col-md-1 col-xs-6">
-                        
+                    <div className="nada col-md-1 col-xs-2">
                         <a href="#!" className='carro' onClick={() => this.props.handleChangePage('carrinho')}>
-                            <i className={largura < 992 ?"fas fa-shopping-cart ico" : "fas fa-shopping-cart icoo"}></i>
-                            <span className={largura < 992 ?"pcarte" : "prodcarte"}>{this.props.qntCart}</span>
+                            <i className="fas fa-shopping-cart ico"></i>
+                            <span className="prodcarte">{this.props.qntCart}</span>
                         </a>
+
                     </div>
 
-                    <div  className="col-md-2 col-xs-6" >
-                        {this.detectar_mobile()}
+                    <div  className="col-md-2 col-xs-7" >
+                        {this.detectarLogin()}
                     </div>
                 </div>
             </div>

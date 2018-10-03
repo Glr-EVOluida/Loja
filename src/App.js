@@ -12,7 +12,8 @@ export class App extends Component {
     pesquisa:'',
     qntCart:0,
     admin:false,
-    logar:false
+    logar:false,
+    user:[]
   }
 
   handleChangePage = (page,info) => {this.setState({page:page, info:info})}
@@ -25,32 +26,19 @@ export class App extends Component {
 
   handleLogar = () =>{this.setState({logar:true})}
 
-/*
-
-
-  {!admin ?
-            <div>
-              <Head handleLogar={this.handleLogar} handleAdmin={this.handleAdmin} handleChangePage={this.handleChangePage} qntCart={qntCart} handleSearch={this.handleSearch}/>
-              <Body logar={logar} handleChangePage={this.handleChangePage} page={page} info={info} pesquisa={pesquisa} changeQnt={this.changeQnt}/>
-              <Footer/>
-            </div>
-          :
-            <Admin handleAdmin={this.handleAdmin} handleChangePage={this.handleChangePage}/>
-          }
-*/
+  handleUser = (user) =>{this.setState({user:user})}
 
   render() {
 
-    const {admin,page, pesquisa, qntCart, logar, info} = this.state;
+    const {admin,page, pesquisa, qntCart, logar, info, user} = this.state;
 
     return (
       <div className="App">
 
-      
-  {!admin ?
-            <div>
-              <Head handleLogar={this.handleLogar} handleAdmin={this.handleAdmin} handleChangePage={this.handleChangePage} qntCart={qntCart} handleSearch={this.handleSearch}/>
-              <Body logar={logar} handleChangePage={this.handleChangePage} page={page} info={info} pesquisa={pesquisa} changeQnt={this.changeQnt}/>
+      {!admin ?
+            <div className='notAdmin'>
+              <Head handleLogar={this.handleLogar} user={user} handleAdmin={this.handleAdmin} handleChangePage={this.handleChangePage} changeQnt={this.changeQnt} qntCart={qntCart} handleSearch={this.handleSearch}/>
+              <Body logar={logar} handleUser={this.handleUser} handleChangePage={this.handleChangePage} page={page} info={info} pesquisa={pesquisa} changeQnt={this.changeQnt}/>
               <Footer/>
             </div>
           :

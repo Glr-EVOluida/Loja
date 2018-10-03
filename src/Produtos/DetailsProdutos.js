@@ -81,7 +81,15 @@ export class DetailsProdutos extends Component {
 
     render(){
 
-        const {id, nome, preco, descricao, categoria, img, quantidade} = this.props.produto;
+        const {id, nome, preco, categoria, img, quantidade} = this.props.produto;
+
+        let {descricao} = this.props.produto;
+
+        descricao = descricao.replace(/@br/g, "<br/>");
+        descricao = descricao.replace(/@b/g, "<b>");
+        descricao = descricao.replace(/~b/g, "</b>");
+        descricao = descricao.replace(/@i/g, "<i>");
+        descricao = descricao.replace(/~i/g, "</i>");
 
         return (
 

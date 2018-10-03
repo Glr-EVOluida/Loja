@@ -51,6 +51,13 @@ export class Produtos extends Component {
     }
 
     renderProducts = ({id, nome, preco, descricao, categoria, img}) => {
+
+        descricao = descricao.replace(/@br/g, "<br/>");
+        descricao = descricao.replace(/@b/g, "<b>");
+        descricao = descricao.replace(/~b/g, "</b>");
+        descricao = descricao.replace(/@i/g, "<i>");
+        descricao = descricao.replace(/~i/g, "</i>");
+
         return (
             <div className='col-md-3 col-sm-12 col-xs-12' style={{zIndex:19}} key={id}>
                 <div className='produtos'>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DropdownButton, MenuItem, Modal, FormControl, FormGroup, InputGroup, Button,Pager } from 'react-bootstrap'
+import { DropdownButton, MenuItem, Modal, FormControl, FormGroup, InputGroup, Button,Pager, Popover, OverlayTrigger } from 'react-bootstrap'
 
 export class Gprodutos extends Component {
     constructor() {
@@ -50,7 +50,7 @@ export class Gprodutos extends Component {
     }
 
     controle= _ =>{
-        if((this.state.limit_init+20)>=this.state.pagination.length){
+        if((this.state.limit_init+15)>=this.state.pagination.length){
             this.setState({
                 disabledn:true
             },this.getProdutos())
@@ -73,10 +73,10 @@ export class Gprodutos extends Component {
     renderPagination = _ =>{
         return(
             <Pager>
-            <Pager.Item disabled={this.state.disabledp} previous onClick={()=>this.setState({limit_init:this.state.limit_init-10},()=>this.controle())}>
+            <Pager.Item disabled={this.state.disabledp} previous onClick={()=>this.setState({limit_init:this.state.limit_init-15},()=>this.controle())}>
                 &larr; Previous Page
             </Pager.Item>
-            <Pager.Item disabled={this.state.disabledn} next onClick={()=>this.setState({limit_init:this.state.limit_init+10},()=>this.controle())}>
+            <Pager.Item disabled={this.state.disabledn} next onClick={()=>this.setState({limit_init:this.state.limit_init+15},()=>this.controle())}>
                 Next Page &rarr;
             </Pager.Item>
             </Pager>
@@ -206,10 +206,12 @@ export class Gprodutos extends Component {
         fetch(`http://localhost:4000/show?table=produtos&where=id=${id}`)
             .then(response => response.json())
             .then(response => this.setState({ remove: response.data }, () => {
+
                 this.state.remove.map(obj => {
                     imgremove = obj.img
                     idremove = obj.id
                 })
+
                 this.setState({
                     imgremove: imgremove,
                     idreomve: idremove
@@ -314,6 +316,46 @@ export class Gprodutos extends Component {
     //Novo Produto
     renderModalNew() {
         const { produto } = this.state;
+
+        const popover = (
+            <Popover id="popover-trigger-hover-focus" title="Customização">
+                <p>Para a customização da descrição,<br/>
+                 você pode utilizar dos seguintes artifícios:</p>
+                <p><i>Obs.: Os simbolos serão substituídos pelas tags na renderização</i></p>
+                <p><i>Obs. 2: Não use %</i></p>
+                <table className='table'>
+                    <thead>
+                        <tr>
+                            <th>Simbolos</th>
+                            <th>Tags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>@br</strong></td>
+                            <td>{`<br/>`}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>@b</strong></td>
+                            <td>{`<b>`}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>~b</strong></td>
+                            <td>{`</b>`}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>@i</strong></td>
+                            <td>{`<i>`}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>~i</strong></td>
+                            <td>{`</i>`}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </Popover>
+        );
+
         return (
             <div>
                 <Modal show={this.state.showNew} onHide={this.handleClose}>
@@ -352,7 +394,7 @@ export class Gprodutos extends Component {
                                     <option>PCs</option>
                                     <option>Notebook</option>
                                     <option>Smartphones</option>
-                                    <option>Gaddets</option>
+                                    <option>Gadgets</option>
                                     <option>Perifericos</option>
                                 </select>
                             </div>
@@ -376,7 +418,7 @@ export class Gprodutos extends Component {
                             </div>
 
                         </div>
-                        <div className='row'>
+                        <div className='row' style={{marginTop:10}}>
                             <div className='col-md-6 '>
                                 <div>
                                 { this.state.errUpload === true && < span  style={{position:"absolute",zIndex:999,marginTop:-6,padding:10,marginLeft:25}}><i style={{color:'orange'}} className="fas fa-exclamation-triangle"></i> Selecione um arquivo</span>}
@@ -403,7 +445,17 @@ export class Gprodutos extends Component {
                             </div>
                             
                                 <div className='col-md-6'>
-                                    <label>Descrição:</label>
+                                    <div style={{display:'flex', justifyContent:'space-between'}}>
+                                        <label>Descrição: </label>
+                                        <OverlayTrigger
+                                            style={{marginTop:1000}}
+                                            trigger={['hover', 'focus']}
+                                            placement="left"
+                                            overlay={popover}
+                                        >
+                                            <i className="fa fa-question"></i>
+                                        </OverlayTrigger>
+                                    </div>
                                     <FormControl style={{ resize: "none", width: 270, height: 180 }} componentClass="textarea" value={produto.descricao} onChange={(e) =>
                                         this.setState({
                                             produto: { ...produto, descricao: e.target.value }
@@ -463,7 +515,7 @@ export class Gprodutos extends Component {
                                     <option>PCs</option>
                                     <option>Notebook</option>
                                     <option>Smartphones</option>
-                                    <option>Gaddets</option>
+                                    <option>Gadgets</option>
                                     <option>Perifericos</option>
                                 </select>
                             </div>

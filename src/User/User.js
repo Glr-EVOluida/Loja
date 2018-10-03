@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button,Image } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
 import Md5 from 'md5';
 export class User extends Component {
     constructor(){
@@ -62,7 +62,11 @@ export class User extends Component {
         const { id } = this.state;
         fetch(`http://localhost:4000/show?table=clientes&where=id=${id}`)
         .then(response =>response.json())
-        .then(response => this.setState({users:response.data}, ()=> this.renderUser()))
+        .then(response => this.setState({users:response.data}, ()=> { 
+            this.renderUser(); 
+            sessionStorage.setItem('usuario', JSON.stringify(this.state.users));
+            this.props.handleUser(this.state.users)
+        }))
         .catch(err => console.error(err))
     }
    
@@ -77,7 +81,7 @@ export class User extends Component {
     updateUser = _ =>{
         const { id,nome,endereco,cep,telefone,email,newpass,oldpass,passcontrol,img } = this.state;
         if(Md5(passcontrol)===oldpass&&newpass!==''){
-            fetch(`http://localhost:4000/update?table=clientes&alt=nome='${nome}',endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${Md5(newpass)}',img='${img}'&id='${id}'`)
+            fetch(`http://localhost:4000/update?table=clientes&alt=nome='${nome}',admin=0,endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${Md5(newpass)}',img='${img}'&id='${id}'`)
             .then(this.getUser)
             .then(this.setState({newpass:'',passcontrol:''},()=>alert('Usuário atualizado com sucesso!!')))
             .catch(err => console.error(err))
@@ -88,12 +92,11 @@ export class User extends Component {
             if(this.uploadInput.files[0] === undefined){
                 
 
-            fetch(`http://localhost:4000/update?table=clientes&alt=nome='${nome}',endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${oldpass}',img='${img}'&id='${id}'`)
+            fetch(`http://localhost:4000/update?table=clientes&alt=nome='${nome}',admin=0,endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${oldpass}',img='${img}'&id='${id}'`)
             .then(this.getUser)
             .catch(err => console.error(err))
                 
             }else{
-             console.log(img);
                 fetch(`http://localhost:4000/remove/${img}`, {
                     method: 'POST',
                 })
@@ -120,7 +123,7 @@ export class User extends Component {
     
             }
 
-        }else if(Md5(passcontrol)===""){
+        }else if(!passcontrol){
             alert('Para salvar as alterações confirme sua senha')
         }
     }
@@ -248,7 +251,6 @@ export class User extends Component {
 
 
     render(){
-        const { user } = this.state;
         let { view } = "";
         
         if (this.state.imagePreviewUrl === "") {

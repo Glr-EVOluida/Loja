@@ -59,6 +59,7 @@ export class Register extends React.Component {
                                 }
                             });
                         })
+                        .then(this.props.handleChangePage(''))
                         .catch(err => console.error(err))
 
                 });

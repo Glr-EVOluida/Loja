@@ -24,13 +24,13 @@ export class MainProdutos extends Component {
   componentWillReceiveProps(nextProps){
 
     let pesquisa = '';
-    let categoria = '';
+    let categoria = 'home';
     
     if(nextProps.pesquisa && (nextProps.pesquisa !== '')){
       pesquisa = nextProps.pesquisa;
     }
     
-    if(nextProps.categoria && nextProps.categoria !== ''){
+    if(nextProps.categoria && nextProps.categoria !== 'home'){
       categoria = nextProps.categoria;
     }
 
@@ -43,19 +43,20 @@ export class MainProdutos extends Component {
   componentDidMount(){
     
     let pesquisa = '';
-    let categoria = '';
+    let categoria = 'home';
     
     if(this.props.pesquisa && (this.props.pesquisa !== '')){
       pesquisa = this.props.pesquisa;
     }
     
-    if(this.props.categoria && this.props.categoria !== ''){
+    if(this.props.categoria && this.props.categoria !== 'home'){
       categoria = this.props.categoria;
     }
+    
 
     this.setState({
       pesquisa: pesquisa
-    }, () => {this.handleCategoriaChange(categoria);})
+    }, () => {this.handleCategoriaChange(categoria)})
     
     sessionStorage.getItem('carrinho') && this.getCarrinhoSession();
   }

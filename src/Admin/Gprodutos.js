@@ -46,7 +46,7 @@ export class Gprodutos extends Component {
     }
 
     controle= _ =>{
-        if((this.state.limit_init+20)>=this.state.pagination.length){
+        if((this.state.limit_init+15)>=this.state.pagination.length){
             this.setState({
                 disabledn:true
             },this.getProdutos())
@@ -69,10 +69,10 @@ export class Gprodutos extends Component {
     renderPagination = _ =>{
         return(
             <Pager>
-            <Pager.Item disabled={this.state.disabledp} previous onClick={()=>this.setState({limit_init:this.state.limit_init-10},()=>this.controle())}>
+            <Pager.Item disabled={this.state.disabledp} previous onClick={()=>this.setState({limit_init:this.state.limit_init-15},()=>this.controle())}>
                 &larr; Previous Page
             </Pager.Item>
-            <Pager.Item disabled={this.state.disabledn} next onClick={()=>this.setState({limit_init:this.state.limit_init+10},()=>this.controle())}>
+            <Pager.Item disabled={this.state.disabledn} next onClick={()=>this.setState({limit_init:this.state.limit_init+15},()=>this.controle())}>
                 Next Page &rarr;
             </Pager.Item>
             </Pager>

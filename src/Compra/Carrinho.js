@@ -15,11 +15,11 @@ export class Carrinho extends Component {
     sessionStorage.getItem('carrinho') ? this.getCarrinhoSession() : this.setState({empty:true});
 
   }
-  
   getCarrinhoSession = _ => {
     let value = sessionStorage.getItem('carrinho');
     value = JSON.parse(value);
     this.setState({carrinho: value}, () => {
+      this.props.changeQnt(value.length)
       if(this.state.carrinho.length < 1){
         this.setState({empty:true})
       }
@@ -28,7 +28,7 @@ export class Carrinho extends Component {
 
   getProdutos = _ => {
 
-    fetch(`http://192.168.200.147:4000/show?table=produtos`)
+    fetch(`http://localhost:4000/show?table=produtos`)
     .then(response => response.json())
     .then(response => this.setState( {produtos: response.data }) )
     .catch(err => console.error(err))
@@ -38,7 +38,10 @@ export class Carrinho extends Component {
   handleChange = (id,e) => {
     const { carrinho } = this.state;
 
-    let valor = e.target.value;
+    let valor = 0;
+    if(parseInt(e.target.value,10)>0){
+      valor = parseInt(e.target.value,10);
+    }
 
     if( !(valor < 0) ){
       const produtos = carrinho.map( (prod) => {
@@ -75,33 +78,12 @@ export class Carrinho extends Component {
   
   }
 
-  handleBlur = (id,e) => {
-    const { carrinho } = this.state;
-
-    let quantidade = 1;
-
-    if(e.target.value>1){
-      quantidade = e.target.value
-    }
-
-
-    const produtos = carrinho.map( (prod) => {
-      if(prod.id === id){
-        return {id:id , quantidade: quantidade}
-      }else{
-        return prod;
-      }
-    })
-    this.setState({carrinho: produtos}, () => {
-      sessionStorage.setItem('carrinho', JSON.stringify(this.state.carrinho));
-      this.getCarrinhoSession()
-    })
-  }
-
   handleFinishBuy = _ => {
     const { carrinho } = this.state;
 
     sessionStorage.setItem('compra', JSON.stringify(carrinho));
+    this.props.handleChangePage('finish')
+    
   }
 
   Total = _ => {
@@ -137,7 +119,7 @@ export class Carrinho extends Component {
       return(
         <tr key={i}>
           <td width='70'>
-            <img src={item.img} alt={item.nome}/>
+            <img src={`http://localhost:3000/uploads/${item.img}`} style={{borderRadius:'3px'}} alt={item.nome}/>
           </td>
           <td>
             <span>{item.nome}</span>
@@ -156,7 +138,6 @@ export class Carrinho extends Component {
               className='form-control' 
               value={carrinho.quantidade} 
               onChange={(e) => this.handleChange(item.id,e)}
-              onBlur={(e) => this.handleBlur(item.id,e)}
               maxLength='3'
             />
 
@@ -167,13 +148,24 @@ export class Carrinho extends Component {
       )
     }
   }
+
+  checkLogin = _ => {
+    if((!sessionStorage.getItem('usuario')) && (this.props.logar === false)){
+      return true
+    }else{
+      return false
+    }
+  }
     
   render() {
 
     const { carrinho,empty } = this.state;
 
+    const logado =this.checkLogin();
+
+
     return (
-      <div className='col-md-10'>
+      <div className='col-md-12 col-sm-12 col-xs-12'>
         <Headline headline={`Carrinho`}/>
         <div>
           <table className="table tabela table-striped">
@@ -201,10 +193,10 @@ export class Carrinho extends Component {
         
         <div className='col-md-6'></div>
         <div className='col-md-3'><span style={{color:'#005b88'}}> <b> Total:</b> <i>R$</i> {this.Total()}</span></div>
-        <div className='col-md-3'>
+        <div className='bo col-md-3'>
           { !empty &&
-            <button 
-              className='btn btn-success'
+            <button disabled={logado}
+              className=' btn btn-success'
               onClick={() => this.handleFinishBuy()}>
                 <i className='fas fa-money-bill-alt'></i>
                 Finalizar Compra

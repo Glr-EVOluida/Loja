@@ -51,19 +51,27 @@ export class Produtos extends Component {
     }
 
     renderProducts = ({id, nome, preco, descricao, categoria, img}) => {
+
+        descricao = descricao.replace(/@br/g, "<br/>");
+        descricao = descricao.replace(/@b/g, "<b>");
+        descricao = descricao.replace(/~b/g, "</b>");
+        descricao = descricao.replace(/@i/g, "<i>");
+        descricao = descricao.replace(/~i/g, "</i>");
+
         return (
-            <div className='col-md-3 col-sm-12 col-xs-12' key={id}>
+            <div className='col-md-3 col-sm-12 col-xs-12' style={{zIndex:19}} key={id}>
                 <div className='produtos'>
-                    <div style={{textAlign:'center'}} >
-                        <a href="#!" onClick={()=> this.props.handleDetalhesClick(id)}>
-                            <img src={img} alt={nome}/>
+                    <div style={{textAlign:'center'}}>
+                        <a href="#!" className="DivImg" onClick={()=> this.props.handleChangePage('detalhes',id)}>
+                            <img src={`http://localhost:3000/uploads/`+img} alt={nome}/>
+                            <i id={`cifrao${id}`} className="fas fa-dollar-sign dollar none" style={{color:'#229b22'}}></i>
                         </a>
                     </div> <br/>
 
                     <div className='NomeDesc'>
 
                         <span className='titulo'>
-                            <a href="#!" onClick={()=> this.props.handleDetalhesClick(id)}>{nome}</a>
+                            <a href="#!" onClick={()=> this.props.handleChangePage('detalhes',id)}>{nome}</a>
                         </span>
                         <p className='desc'>{this.limitDesc(descricao)}</p> 
 
@@ -86,15 +94,13 @@ export class Produtos extends Component {
                             <i className='fas fa-shopping-cart'></i> Comprar
                         </button>
 
-                        <i id={`cifrao${id}`} className="fas fa-dollar-sign dollar none" style={{color:'#229b22'}}></i>
-
                         <button 
                             className='btn btn-warning btn-sm'
-                            onClick={()=> this.props.handleDetalhesClick(id)}>
+                            onClick={()=> this.props.handleChangePage('detalhes',id)}>
                             <i className='fas fa-plus'></i> Detalhes
                         </button>
 
-                        <p className='categoria'><a href="#!" onClick={() => this.props.handleCategoriaChange(categoria) }>+ {categoria}</a></p>
+                        <p className='categoria'><a href="#!" onClick={() => this.props.handleChangePage('',categoria) }>+ {categoria}</a></p>
 
                     </div>
 

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { Headline } from './Headline';
+import MaskedInput from 'react-text-mask';
 import $ from 'jquery';
 
 export class DetailsProdutos extends Component {  
 
     state = {
-        cep:'',
-        cifraoB:true,
+        cep: '',
+        cifraoB: true,
     }
 
     renderTable = preco => {
@@ -50,30 +51,12 @@ export class DetailsProdutos extends Component {
                         document.getElementById(cifrao).classList.add('none');
                         document.getElementById(cifrao).style.animation = "";
                         setTimeout(() => {
-                            this.props.handleCarrinhoClick();
+                            this.props.handleChangePage('carrinho')
                         },100);
                     }, 1000);
                 }, 5);
             })
         }
-    }
-
-    handleCEP = e => {
-        let value = e.target.value;
-        let array = value.split('');
-        let word = '';
-
-        for(let i=0; i<array.length; i++){
-            if(i===5){
-                word += '-'
-            }
-
-            if(array[i] !== '-'){
-                word += array[i];
-            }
-        }
-        
-        this.setState({cep:word});
     }
 
     calcFrete = _ => {
@@ -98,23 +81,32 @@ export class DetailsProdutos extends Component {
 
     render(){
 
-        const {id, nome, preco, descricao, categoria, img, quantidade} = this.props.produto;
+        const {id, nome, preco, categoria, img, quantidade} = this.props.produto;
+
+        let {descricao} = this.props.produto;
+
+        descricao = descricao.replace(/@br/g, "<br/>");
+        descricao = descricao.replace(/@b/g, "<b>");
+        descricao = descricao.replace(/~b/g, "</b>");
+        descricao = descricao.replace(/@i/g, "<i>");
+        descricao = descricao.replace(/~i/g, "</i>");
 
         return (
 
-            <div>
+            <div className='col-md-12 col-sm-12 col-xs-12'>
 
                 <Headline headline={`${categoria} > #${id}`}/>     
                 
-                <div className='produtosDetalhes col-md-12'>
+                <div className='produtosDetalhes col-md-12 col-sm-12 col-xs-12'>
 
                     <div className='col-md-7'>
                         <span className='titulo'>{nome}</span> <br/> 
                         <div className='img' style={{textAlign:'center'}} >
-                            <img src={img} alt={nome}/>
+                            <img src={`http://localhost:3000/uploads/`+img} alt={nome}/>
+                            <i id={`cifrao${id}`} className="fas fa-dollar-sign dollar none" style={{color:'#229b22'}}></i>
                         </div> <br/>
                         <p className='categoria'>
-                            <a href="#!" onClick={() => this.props.handleCategoriaClick(categoria)}>+ {categoria}</a>
+                            <a href="#!" onClick={() => this.props.handleChangePage('',categoria)}>+ {categoria}</a>
                         </p>
                     </div>
 
@@ -156,8 +148,6 @@ export class DetailsProdutos extends Component {
 
                         <p className='parcelamento'><i className="fas fa-credit-card"></i>Parcelamento</p>
 
-                        <i id={`cifrao${id}`} className="fas fa-dollar-sign dollar none" style={{color:'#229b22'}}></i>
-
                         <table className="table table-striped">
                             <tbody>
                                 {this.renderTable(preco)}
@@ -169,16 +159,16 @@ export class DetailsProdutos extends Component {
                                 <label htmlFor="frete">CEP</label>
                             </div>
                             <div className='col-md-8'>
-                                <input type="text" 
+                                <MaskedInput 
                                     className="form-control" 
                                     id="frete"
                                     value={this.state.cep} 
                                     placeholder="00000-000"
-                                    onChange={ (e) => this.handleCEP(e)} 
-                                    maxLength="9"
+                                    mask={[/[1-9]/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/]}
+                                    onChange={ (e) => this.setState({cep:e.target.value})} 
                                 />
                             </div>
-                            <div className='col-md-4'>
+                            <div className='col-md-4' style={{marginTop:'5px'}}>
                                 <button 
                                     type='submit'
                                     className='btn btn-success btn-sm'
@@ -192,7 +182,7 @@ export class DetailsProdutos extends Component {
 
                 </div>
 
-                <div className='produtosDetalhes desc col-md-12'>
+                <div className='produtosDetalhes desc col-md-12 col-sm-12 col-xs-12'>
                     <span className='descri'>DESCRIÇÃO</span>
                     <br/>
                     {$.parseHTML(descricao).map((i,a) => {return this.formatDesc(i,a)} )}

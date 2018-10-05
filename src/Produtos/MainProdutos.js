@@ -16,23 +16,47 @@ export class MainProdutos extends Component {
       limitClause: '0,16',
       where: 'quantidade>0',
       headline: 'Produtos Destaques',
-      page: 1
+      page: 1,
+      pesquisa: '',
     }
   }
 
   componentWillReceiveProps(nextProps){
-    if(nextProps.categoria !== ''){
-      this.handleCategoriaChange(nextProps.categoria);
+
+    let pesquisa = '';
+    let categoria = 'home';
+    
+    if(nextProps.pesquisa && (nextProps.pesquisa !== '')){
+      pesquisa = nextProps.pesquisa;
     }
+    
+    if(nextProps.categoria && nextProps.categoria !== 'home'){
+      categoria = nextProps.categoria;
+    }
+
+    this.setState({
+      pesquisa: pesquisa
+    }, () => {this.handleCategoriaChange(categoria);})
+
   }
 
   componentDidMount(){
     
-    if(this.props.categoria !== ''){
-      this.handleCategoriaChange(this.props.categoria);
-    }else{
-      this.getProdutos();
+    let pesquisa = '';
+    let categoria = 'home';
+    
+    if(this.props.pesquisa && (this.props.pesquisa !== '')){
+      pesquisa = this.props.pesquisa;
     }
+    
+    if(this.props.categoria && this.props.categoria !== 'home'){
+      categoria = this.props.categoria;
+    }
+    
+
+    this.setState({
+      pesquisa: pesquisa
+    }, () => {this.handleCategoriaChange(categoria)})
     
     sessionStorage.getItem('carrinho') && this.getCarrinhoSession();
   }
@@ -40,13 +64,13 @@ export class MainProdutos extends Component {
   getCarrinhoSession = _ => {
     let value = sessionStorage.getItem('carrinho');
     value = JSON.parse(value);
-    this.setState({carrinho: value});
+    this.setState({carrinho: value},() => this.props.changeQnt(value.length));
   }
 
   getProdutos = _ => {
     const { order,limitClause,where } = this.state;
 
-    fetch(`http://192.168.200.147:4000/show?table=produtos&order=${order}&limit=${limitClause}&where=${where}`)
+    fetch(`http://localhost:4000/show?table=produtos&order=${order}&limit=${limitClause}&where=${where}`)
     .then(response => response.json())
     .then(response => this.setState( {produtos: response.data }) )
     .catch(err => console.error(err))
@@ -67,6 +91,7 @@ export class MainProdutos extends Component {
     if(!bool){
       this.setState({carrinho: [...carrinho, {id:id, quantidade:1}]}, () => {
         sessionStorage.setItem('carrinho', JSON.stringify(this.state.carrinho))
+        this.getCarrinhoSession()
       })
     }
 
@@ -80,6 +105,7 @@ export class MainProdutos extends Component {
       })
       this.setState({carrinho: produtos}, () => {
         sessionStorage.setItem('carrinho', JSON.stringify(this.state.carrinho))
+        this.getCarrinhoSession()
       })
     }
 
@@ -94,7 +120,7 @@ export class MainProdutos extends Component {
 
   handleCategoriaChange = cat => {
 
-    let { where, order,limit } = this.state;
+    let { where, order,limit, pesquisa } = this.state;
     let limitClause = '';
 
     where = `quantidade>0 AND categoria='${cat}'`;
@@ -105,6 +131,9 @@ export class MainProdutos extends Component {
       order = 'views DESC';
       limitClause = '0,16';
       limit = 16;
+    }else if(cat === 'all'){
+      where = `quantidade>0 AND nome LIKE '@@@${pesquisa}@@@'`;
+      cat='você pesquisou > '+pesquisa;
     }else{
       cat='você está em > '+cat;
       limitClause = `${this.state.limit*(this.state.page - 1)},${this.state.limit}`;
@@ -116,6 +145,7 @@ export class MainProdutos extends Component {
       order: order,
       limitClause: limitClause,
       limit: limit,
+      pesquisa: '',
       page: 1,
     }, () => {this.getProdutos()})
   }
@@ -151,8 +181,8 @@ export class MainProdutos extends Component {
   render() {
     const { produtos,headline,order,limit,where,page } = this.state;
 
-    return (
-      <div className='col-md-10'>
+    return ( 
+      <div className='col-md-12 col-sm-12 col-xs-12'>
         
           <Headline headline={headline}/>
 
@@ -160,9 +190,8 @@ export class MainProdutos extends Component {
 
           <Produtos 
             prod={produtos} 
-            handleDetalhesClick={this.props.handleDetalhesClick} 
             handleComprarClick={this.handleComprarClick}
-            handleCategoriaChange={this.handleCategoriaChange}
+            handleChangePage={this.props.handleChangePage}
           />
 
           {this.state.headline !== 'Produtos Destaques' && <div><Pagination where={where} limit={limit} page={page} handlePaginationClick={this.handlePaginationClick}  changePage={this.changePage}/> <FilterFields order={order} limit={limit} handleChange={this.handleChange}/> </div>}

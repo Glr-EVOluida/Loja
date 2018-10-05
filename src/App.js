@@ -1,72 +1,50 @@
 import React, { Component } from 'react';
 import './index.css';
-import { User } from './User/User';
+import { Head } from './Head';
+import { Body } from './Body';
+import { Footer } from './Footer';
 import { Admin } from './Admin/Admin';
-import { Register } from './User/Register'
-
-import { MainProdutos } from './Produtos/MainProdutos';
-import { Details } from './Produtos/Details';
-import { Carrinho } from './Compra/Carrinho';
-
-import { Categorias } from './Categorias';
-import { Produtos } from './Produtos/Produtos';
-
 export class App extends Component {
 
-  state = { 
-    detailsId: 0, 
-    categoria:'',
-    carrinho: false
+  state = {
+    page:'',
+    info:'',
+    pesquisa:'',
+    qntCart:0,
+    admin:false,
+    logar:false,
+    user:[]
   }
 
-  handleDetalhesClick = id => {
-    this.setState({
-      detailsId: id,
-      categoria: '',
-      carrinho: false
-    })
-  }
+  handleChangePage = (page,info) => {this.setState({page:page, info:info})}
 
-  handleCarrinhoClick = _ => {
-    this.setState({
-      carrinho: true,
-      detailsId: 0, 
-      categoria:''
-    })
-  }
+  handleSearch = (pesquisa) => {this.setState({page:'', pesquisa:pesquisa, info:'all'})}
 
-  handleCategoriaClick = cat => {
-    this.setState({
-      categoria: cat,
-      detailsId: 0,
-      carrinho:false
-    })
-  }
+  changeQnt = (qnt) => {this.setState({qntCart:qnt})}
+
+  handleAdmin = (a) =>{this.setState({admin:a},() => {if(this.state.admin === false){window.location.reload()}})}
+
+  handleLogar = () =>{this.setState({logar:true})}
+
+  handleUser = (user) =>{this.setState({user:user})}
 
   render() {
 
-    return(
-      <User />
+    const {admin,page, pesquisa, qntCart, logar, info, user} = this.state;
+
+    return (
+      <div className="App">
+
+      {!admin ?
+            <div className='notAdmin'>
+              <Head handleLogar={this.handleLogar} user={user} handleAdmin={this.handleAdmin} handleChangePage={this.handleChangePage} changeQnt={this.changeQnt} qntCart={qntCart} handleSearch={this.handleSearch}/>
+              <Body logar={logar} handleUser={this.handleUser} handleChangePage={this.handleChangePage} page={page} info={info} pesquisa={pesquisa} changeQnt={this.changeQnt}/>
+              <Footer/>
+            </div>
+          :
+            <Admin handleAdmin={this.handleAdmin} handleChangePage={this.handleChangePage}/>
+          }    
+      </div>
     )
-
-    // const {detailsId,categoria,carrinho} = this.state;
-
-    // return (
-    //   <div className="container">
-
-    //     <Categorias handleCategoriaClick={this.handleCategoriaClick}/>
-
-    //     <div className='col-md-1'></div>
-    //     {carrinho === true ? 
-    //       <Carrinho/> : (
-    //         detailsId !== 0 ? 
-    //           <Details id={detailsId} handleCarrinhoClick={this.handleCarrinhoClick} handleCategoriaClick={this.handleCategoriaClick}/> :
-    //           <MainProdutos categoria={categoria} handleDetalhesClick={this.handleDetalhesClick}/>
-    //       )
-    //     }
-    //     <div className='col-md-1'></div>
-
-    //   </div>
-    // );
   }
 }

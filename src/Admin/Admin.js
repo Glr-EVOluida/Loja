@@ -8,10 +8,7 @@ export class Admin extends Component{
     constructor(){
         super()
         this.state={
-            v1:'',
-            v2:'active',
-            v3:'',
-            show:<Gprodutos />
+            show:<Home />
         }
     }
     render(){
@@ -20,15 +17,12 @@ export class Admin extends Component{
                 <Navbar inverse collapseOnSelect style={{borderRadius:0}}>
                     <Navbar.Header>
                         <Navbar.Brand>
-                            <a onClick={()=>this.setState({show:<Home />})}>Admin</a>
+                            <a onClick={()=>this.setState({show:<Home />})}>Home</a>
                         </Navbar.Brand>
                         <Navbar.Toggle />
                     </Navbar.Header>
                     <Navbar.Collapse>
                         <Nav>
-                            <NavItem onClick={()=>this.setState({show:<Home />})}>
-                                Home
-                            </NavItem>
                             <NavItem onClick={()=>this.setState({ v1:'',v2:'active',v3:'',show:<Gprodutos />})}>
                                 Gerênciar Produtos
                             </NavItem>
@@ -37,7 +31,7 @@ export class Admin extends Component{
                             </NavItem>
                         </Nav>
                         <Nav pullRight>
-                            <NavItem eventKey={1} href="#">
+                            <NavItem onClick={() => {this.props.handleAdmin(false);this.props.handleChangePage('')}} eventKey={1} href="#">
                                 Sair
                             </NavItem>  
                         </Nav>                      

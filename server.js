@@ -90,5 +90,54 @@ app.get('/remove', (req, res) => {
 });
 
 
+const fileUpload = require("express-fileupload");
+const bodyParcer = require("body-parser");
+
+//npm install file-system --save
+var fs = require('file-system');
+
+app.use(fileUpload());
+app.use(bodyParcer.json());
+app.use(bodyParcer .urlencoded({ extended: false }));
+
+app.use('/public/uploads', express.static(__dirname + '/uploads'));
+
+//remover imagem da pasta do diretorio
+app.post('/remove/:name',(req,res,next) => {
+    // nome do arquivo que serar removido
+    const filename = req.params.name;
+
+    // verificação se existe o arquivo na pasta 
+    fs.stat(`public/uploads/${filename}`, function (err, stats) {
+        // console.log(stats); aqui temos todas as informações do arquivo na variável stats
+     
+        if (err) {
+            return console.error(err);
+        }
+        // remover arquivo
+        fs.unlink(`public/uploads/${filename}`,function(err){
+             if(err) return console.log(err);
+        });  
+     });
+});
+
+app.post('/upload', (req, res, next) => {
+    let imageFile = req.files.file;
+    // Constante para gerar um nome unico para a imagem.
+    const fileName =  Date.now();
+    // local para onde é copiada a imagem
+    imageFile.mv(`${__dirname}/public/uploads/${fileName}.jpg`,
+
+    function (err){
+        if(err){    
+            return res.status(500).send(err)
+        }
+        // retornar o caminho da imagem
+        res.json({ file : `${fileName}.jpg`});
+        
+    });
+
+});
+
 app.listen(4000, () => {})
 console.log("4000");

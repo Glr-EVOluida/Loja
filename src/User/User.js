@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
-import { Modal, Button,Image } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
 import Md5 from 'md5';
 export class User extends Component {
     constructor(){
         super()
         this.state={
+            errUpload : false,
+            imagePreview: "",
+            cliente:[],
             users:[],
-            id:174,
+            id:'',
             nome:'',
             endereco:'',
             cep:'',
@@ -29,7 +32,11 @@ export class User extends Component {
     }
 
     componentDidMount(){
-        this.getUser()
+        
+        if(sessionStorage.getItem('usuario')){
+            let value = JSON.parse(sessionStorage.getItem('usuario'));
+            this.setState({id:value[0].id},() => this.getUser());
+        }
     }
 
     handleClose = _ =>{
@@ -53,15 +60,19 @@ export class User extends Component {
     
     getUser = _ =>{
         const { id } = this.state;
-        fetch(`http://192.168.200.147:4000/show?table=clientes&where=id=${id}`)
+        fetch(`http://localhost:4000/show?table=clientes&where=id=${id}`)
         .then(response =>response.json())
-        .then(response => this.setState({users:response.data}, ()=> this.renderUser()))
+        .then(response => this.setState({users:response.data}, ()=> { 
+            this.renderUser(); 
+            sessionStorage.setItem('usuario', JSON.stringify(this.state.users));
+            this.props.handleUser(this.state.users)
+        }))
         .catch(err => console.error(err))
     }
    
     removeUser = _ =>{
         const { id } = this.state;
-        fetch(`http://192.168.200.147:4000/remove?table=clientes&id=${id}`)
+        fetch(`http://localhost:4000/remove?table=clientes&id=${id}`)
         .then(this.getUser)
         .then(this.handleClose)
         .catch(err => console.error(err))
@@ -69,16 +80,51 @@ export class User extends Component {
 
     updateUser = _ =>{
         const { id,nome,endereco,cep,telefone,email,newpass,oldpass,passcontrol,img } = this.state;
-        if(Md5(passcontrol)===oldpass){
-            fetch(`http://192.168.200.147:4000/update?table=clientes&alt=nome='${nome}',endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${Md5(newpass)}',img='${img}'&id='${id}'`)
+        if(Md5(passcontrol)===oldpass&&newpass!==''){
+            fetch(`http://localhost:4000/update?table=clientes&alt=nome='${nome}',admin=0,endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${Md5(newpass)}',img='${img}'&id='${id}'`)
             .then(this.getUser)
             .then(this.setState({newpass:'',passcontrol:''},()=>alert('Usuário atualizado com sucesso!!')))
             .catch(err => console.error(err))
             
-        }else{
-            fetch(`http://192.168.200.147:4000/update?table=clientes&alt=nome='${nome}',endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${oldpass}',img='${img}'&id='${id}'`)
+        }else if(Md5(passcontrol)===oldpass){
+            
+            
+            if(this.uploadInput.files[0] === undefined){
+                
+
+            fetch(`http://localhost:4000/update?table=clientes&alt=nome='${nome}',admin=0,endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${oldpass}',img='${img}'&id='${id}'`)
             .then(this.getUser)
             .catch(err => console.error(err))
+                
+            }else{
+                fetch(`http://localhost:4000/remove/${img}`, {
+                    method: 'POST',
+                })
+                .catch(err => console.error(err))
+ 
+             const data = new FormData();
+
+             data.append('file', this.uploadInput.files[0]);
+            // upload de imagem
+            fetch('http://localhost:4000/upload', {
+                method: 'POST',
+                body: data,
+            }).then((response) => {
+                response.json().then((body) => {
+
+
+            fetch(`http://localhost:4000/update?table=clientes&alt=nome='${nome}',endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${oldpass}',img='${body.file}'&id='${id}'`)
+            .then(this.getUser)
+          
+            .catch(err => console.error(err))
+                });
+
+            });
+    
+            }
+
+        }else if(!passcontrol){
+            alert('Para salvar as alterações confirme sua senha')
         }
     }
 
@@ -95,6 +141,8 @@ export class User extends Component {
         }else{
             this.updateUser()
             this.setState({
+                passcontrol:'',
+                newpass:'',
                 editar:{
                     label:'Editar',
                     color:'warning'
@@ -124,34 +172,14 @@ export class User extends Component {
         );
     }
     
-    renderUpdateImg = _ =>{
-        return (
-            <div>     
-            <Modal show={this.state.showImg} onHide={this.handleClose}>              
-                <Modal.Header closeButton>
-                    <Modal.Title>Mudar Imagem de Perfil</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <center>
-                        <input id='file' type='file' style={{display:'none'}}/>
-                        <label for='file'>
-                        <Image src={'uploads/1537897931749.jpg'} thumbnail  style={{height:250,width:250}}/><br/>
-                        Mudar imagem</label>
-                    </center>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button onClick={()=>alert('')}>Confirmar</Button>
-                    <Button onClick={this.handleClose}>Cancelar</Button>
-                </Modal.Footer>
-            </Modal>
-            </div>
-        );
-    }
+    
 
     renderUser = _ =>{
         const { users } = this.state;
         users.map(obj =>{
-            
+        
+        let valueimg = "http://localhost:3000/uploads/"+obj.img;
+       
         let valuecep = obj.cep;
         let valuetel = obj.telefone;
 
@@ -192,6 +220,7 @@ export class User extends Component {
             }
         }
             return this.setState({
+                    imagePreviewUrl:valueimg,
                     nome:obj.nome,
                     endereco:obj.endereco,
                     cep:wordcep,
@@ -204,31 +233,57 @@ export class User extends Component {
 
     }
 
+
+    _handleImageChange(e) {
+
+        let reader = new FileReader();
+        let file = e.target.files[0];
+       
+
+        reader.onloadend = () => {
+            this.setState({
+                imagePreviewUrl: reader.result,
+                errUpload:false
+            })
+        }
+        reader.readAsDataURL(file)
+    }
+
+
     render(){
+        let { view } = "";
+        
+        if (this.state.imagePreviewUrl === "") {
+            view = <i style={{ zIndex:999}} className='icon-user  fas fa-user-circle'></i>;
+        } else {
+            view = <img  src={this.state.imagePreviewUrl} alt='Perfil' />;
+        }
         return(
             <div className='container-fluid' style={{marginTop:20}}>
                 {this.renderRemoveUser()}
-                {this.renderUpdateImg()}
                 <div className='row'>
                 <center>
-                    <div className='col-md-3' style={{height:250,borderRadius:150}}>
-                    <Image src={'uploads/1537897931749.jpg'} circle  style={{height:250,width:250,position:'relative',zIndex:2}} onMouseOver={e=> e.target.style.zIndex=0} onMouseOut={e=> e.target.style.zIndex=2}/>
-                        <div id='hover' style={{
-                                backgroundColor:'rgba(5,5,5,0.5)',
-                                color:'white',
-                                width:250,
-                                height:133,
-                                marginTop:-140,
-                                zIndex:1,
-                                position:'relative',
-                                textAlign:'center',                        
-                                borderBottomLeftRadius:125,
-                                borderBottomRightRadius:125,
-                                cursor:'pointer'}} onMouseOver={e=> e.target.style.zIndex=4} onMouseOut={e=> e.target.style.zIndex=0} onClick={this.handleShowImg}>
-                                Mudar
+                        <div className='col-md-3' style={{height:250,borderRadius:150}}>
+                            <div className="select-main">
+
+                                <label className="select-image"  htmlFor="file">
+                                <i className="fas fa-camera"></i>  Carregar  foto do Perfil 
+                                </label>  
+
+                                <div className="imagePreview" >
+                                    {view}
+                                    { this.state.errUpload === true && < span  style={{position:"relative"}}><i style={{color:'orange'}} className="fas fa-exclamation-triangle"></i> Selecione um arquivo</span>}
+                                </div>
                             </div>
-                    </div>
-                    </center>                   
+                        </div>
+                        <input  
+                                    style={{ display: "none" }}
+                                    id="file"
+                                    type="file"
+                                    onChange={(e) => this._handleImageChange(e)}
+                                    ref={(ref) => { this.uploadInput = ref; }}
+                                />
+                    </center>                 
                     <div className='col-md-9'>
                     <form>                   
                         <div className='col-md-6' style={{marginTop:30}}>

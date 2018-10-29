@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Headline } from '../Produtos/Headline';
+import cookie from 'react-cookies'
 
 export class Carrinho extends Component {
 
@@ -12,12 +13,11 @@ export class Carrinho extends Component {
   componentDidMount(){
     
     this.getProdutos();
-    sessionStorage.getItem('carrinho') ? this.getCarrinhoSession() : this.setState({empty:true});
+    cookie.load('carrinho') ? this.getCarrinhoCookie() : this.setState({empty:true});
 
   }
-  getCarrinhoSession = _ => {
-    let value = sessionStorage.getItem('carrinho');
-    value = JSON.parse(value);
+  getCarrinhoCookie = _ => {
+    let value = cookie.load('carrinho');
     this.setState({carrinho: value}, () => {
       this.props.changeQnt(value.length)
       if(this.state.carrinho.length < 1){
@@ -52,8 +52,11 @@ export class Carrinho extends Component {
         }
       })
       this.setState({carrinho: produtos}, () => {
-        sessionStorage.setItem('carrinho', JSON.stringify(this.state.carrinho));
-        this.getCarrinhoSession()
+        const expires = new Date()
+        expires.setDate(expires.getDate() + 14)
+ 
+        cookie.save('carrinho', this.state.carrinho, { path: '/', expires });
+        this.getCarrinhoCookie()
       })
     }
   
@@ -71,8 +74,12 @@ export class Carrinho extends Component {
     }
 
     this.setState({carrinho: produtos}, () => {
-      sessionStorage.setItem('carrinho', JSON.stringify(this.state.carrinho));
-      this.getCarrinhoSession()
+      const expires = new Date()
+      expires.setDate(expires.getDate() + 14)
+      
+      cookie.save('carrinho', this.state.carrinho, { path: '/', expires });
+      
+      this.getCarrinhoCookie()
     })
   
   
@@ -81,7 +88,10 @@ export class Carrinho extends Component {
   handleFinishBuy = _ => {
     const { carrinho } = this.state;
 
-    sessionStorage.setItem('compra', JSON.stringify(carrinho));
+    const expires = new Date()
+    expires.setDate(expires.getDate() + 14)
+
+    cookie.save('compra', carrinho, { path: '/', expires});
     this.props.handleChangePage('finish')
     
   }
@@ -150,7 +160,7 @@ export class Carrinho extends Component {
   }
 
   checkLogin = _ => {
-    if((!sessionStorage.getItem('usuario')) && (this.props.logar === false)){
+    if((!cookie.load('usuario')) && (this.props.logar === false)){
       return true
     }else{
       return false
@@ -161,7 +171,7 @@ export class Carrinho extends Component {
 
     const { carrinho,empty } = this.state;
 
-    const logado =this.checkLogin();
+    const logado = this.checkLogin();
 
 
     return (

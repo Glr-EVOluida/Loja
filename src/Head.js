@@ -5,6 +5,7 @@ import BT from './img/BT.png';
 import $ from 'jquery';
 import 'jquery-ui-bundle';
 import md5 from 'md5';
+import cookie from 'react-cookies'
 
 import {Modal,Button,FormGroup,ControlLabel,FormControl} from 'react-bootstrap';
 
@@ -25,8 +26,8 @@ export class Head extends React.Component{
 
     componentDidMount() {
         this.getProducts();
-        if(sessionStorage.getItem('usuario')){
-            let valor = JSON.parse(sessionStorage.getItem('usuario'));
+        if(cookie.load('usuario')){
+            let valor = cookie.load('usuario');
             this.setState({cliente:valor},() => {
                 this.state.cliente.map(this.Verificacao);
             });
@@ -34,21 +35,11 @@ export class Head extends React.Component{
     }
 
     componentWillReceiveProps(nextProps){
-        if(nextProps.user === "apagou"){
-            this.setState({
-                user:'',
-                pass:'',
-                nome:'',
-                senha:'',
-                img:'',
-                cliente:[],
-                login:false,
-            });
-        }else if((nextProps.user !== this.state.cliente) && nextProps.user.length > 0){
-            this.setState({cliente:nextProps.user},() => {
-                 this.state.cliente.map(this.Verificacao);
-                 console.log(this.state.cliente)
-            });
+        if((nextProps.user !== this.props.cliente) && nextProps.user.length > 0){
+           this.setState({cliente:nextProps.user},() => {
+                this.state.cliente.map(this.Verificacao);
+                console.log(this.state.cliente)
+           });
         }
     }
 
@@ -89,7 +80,7 @@ export class Head extends React.Component{
         })
         .autocomplete( "instance" )._renderItem = function( ul, item ) {
         return $( "<li>" )
-            .append( "<div> <img style='border-radius:3px' src='http://localhost:3000/uploads/"+item.icon+"'/><span>"+ item.label + "</span></div>" )
+            .append( "<div> <img style='border-radius:3px' src='http://192.168.200.163:3000/uploads/"+item.icon+"'/><span>"+ item.label + "</span></div>" )
             .appendTo( ul );
         };
     }
@@ -110,11 +101,15 @@ export class Head extends React.Component{
 
     Verificacao = ({nome,email,img}) =>{
         const {cliente} = this.state;
-        if(sessionStorage.getItem('usuario')){
+        if(cookie.load('usuario')){
             this.setState({nome:nome,email:email,img:img,login:true});
         }else{
             this.setState({nome:nome,email:email,img:img,login:true},() => {
-                sessionStorage.setItem('usuario', JSON.stringify(cliente));
+
+                const expires = new Date()
+                expires.setDate(expires.getDate() + 14)
+
+                cookie.save('usuario', cliente, { path: '/', expires })
                 this.props.handleLogar()
             });
         }
@@ -128,7 +123,7 @@ export class Head extends React.Component{
                     <div className='logPc' id="dropdown">
                         <div className="dropdown">
                             <a href="#!">
-                                <img src={`http://localhost:3000/uploads/`+img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUser"/>
+                                <img src={`http://192.168.200.163:3000/uploads/`+img} alt={img} style={{width:'50px',height:'50px'}} className="fotoUser"/>
                             </a>
                         </div>
                         <div className="dropdown-content">
@@ -143,8 +138,7 @@ export class Head extends React.Component{
                             <hr/>
                             <div className="center">
                                 <button onClick={() => this.setState({login:false,user:'',pass:'',nome:'',senha:'',img:''}, () => {
-                                    sessionStorage.clear();
-                                    this.props.changeQnt(0)
+                                    cookie.remove('usuario', { path: '/' })
                                     this.props.handleChangePage('')
                                 })} type="submit" className="form-control btn btn-danger"><i className="fas fa-sign-out-alt"></i> Sair</button>
                             </div>
@@ -164,8 +158,7 @@ export class Head extends React.Component{
                                     <ControlLabel>{cliente[0].admin === 1 ? <a className="menuUser" onClick={() => this.props.handleAdmin(true)}><i className="fas fa-user-tie"></i> Admin</a> : ""}</ControlLabel>
                                     <hr/>
                                     <Button className="form-control center" bsStyle="danger" type="submit" onClick={() => this.setState({login:false,user:'',pass:''}, () => {
-                                        sessionStorage.clear();
-                                        this.props.changeQnt(0)
+                                        cookie.remove('usuario', { path: '/' })
                                         this.props.handleChangePage('')
                                     })}><i className="fas fa-sign-out-alt"></i> Sair</Button>
                                 </Modal.Body>

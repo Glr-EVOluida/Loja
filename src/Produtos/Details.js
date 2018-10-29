@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { DetailsProdutos } from './DetailsProdutos';
+import cookie from 'react-cookies'
 
 export class Details extends Component {
       
@@ -13,13 +14,12 @@ export class Details extends Component {
 
   componentDidMount(){
     this.getProdutos();
-    sessionStorage.getItem('carrinho') && this.getCarrinhoSession();
+    cookie.load('carrinho') && this.getCarrinhoCookie();
     
   }
   
-  getCarrinhoSession = _ => {
-    let value = sessionStorage.getItem('carrinho');
-    value = JSON.parse(value);
+  getCarrinhoCookie = _ => {
+    let value = cookie.load('carrinho');
     this.setState({carrinho: value});
   }
 
@@ -50,7 +50,10 @@ export class Details extends Component {
 
     if(!bool){
       this.setState({carrinho: [...carrinho, {id:id, quantidade:1}]}, () => {
-        sessionStorage.setItem('carrinho', JSON.stringify(this.state.carrinho))
+        const expires = new Date()
+        expires.setDate(expires.getDate() + 14)
+
+        cookie.save('carrinho', this.state.carrinho, { path: '/', expires })
       })
     }
 
@@ -63,7 +66,10 @@ export class Details extends Component {
         }
       })
       this.setState({carrinho: produtos}, () => {
-        sessionStorage.setItem('carrinho', JSON.stringify(this.state.carrinho))
+        const expires = new Date()
+        expires.setDate(expires.getDate() + 14)
+
+        cookie.save('carrinho', this.state.carrinho, { path: '/', expires })
       })
     }
 

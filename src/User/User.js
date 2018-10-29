@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import Md5 from 'md5';
+import cookie from 'react-cookies'
+
 export class User extends Component {
     constructor(){
         super()
@@ -34,8 +36,8 @@ export class User extends Component {
 
     componentDidMount(){
         
-        if(sessionStorage.getItem('usuario')){
-            let value = JSON.parse(sessionStorage.getItem('usuario'));
+        if(cookie.load('usuario')){
+            let value = cookie.load('usuario');
             this.setState({id:value[0].id},() => this.getUser());
         }
     }
@@ -66,7 +68,12 @@ export class User extends Component {
         .then(response =>response.json())
         .then(response => this.setState({users:response.data}, ()=> { 
             this.renderUser(); 
-            sessionStorage.setItem('usuario', JSON.stringify(this.state.users));
+
+            const expires = new Date()
+            expires.setDate(expires.getDate() + 14)
+
+            cookie.save('usuario', this.state.users, { path: '/', expires })
+            
             this.props.handleUser(this.state.users)
         }))
         .catch(err => console.error(err))

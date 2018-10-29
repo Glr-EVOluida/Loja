@@ -3,6 +3,7 @@ import { Headline } from './Headline';
 import { Produtos } from './Produtos';
 import { FilterFields } from './FilterFields';
 import { Pagination } from './Pagination';
+import cookie from 'react-cookies'
 
 export class MainProdutos extends Component {
   
@@ -58,19 +59,18 @@ export class MainProdutos extends Component {
       pesquisa: pesquisa
     }, () => {this.handleCategoriaChange(categoria)})
     
-    sessionStorage.getItem('carrinho') && this.getCarrinhoSession();
+    cookie.load('carrinho') && this.getCarrinhoCookie();
   }
   
-  getCarrinhoSession = _ => {
-    let value = sessionStorage.getItem('carrinho');
-    value = JSON.parse(value);
+  getCarrinhoCookie = _ => {
+    let value = cookie.load('carrinho');
     this.setState({carrinho: value},() => this.props.changeQnt(value.length));
   }
 
   getProdutos = _ => {
     const { order,limitClause,where } = this.state;
 
-    fetch(`http://localhost:4000/show?table=produtos&order=${order}&limit=${limitClause}&where=${where}`)
+    fetch(`http://192.168.200.163:4000/show?table=produtos&order=${order}&limit=${limitClause}&where=${where}`)
     .then(response => response.json())
     .then(response => this.setState( {produtos: response.data }) )
     .catch(err => console.error(err))
@@ -90,8 +90,11 @@ export class MainProdutos extends Component {
 
     if(!bool){
       this.setState({carrinho: [...carrinho, {id:id, quantidade:1}]}, () => {
-        sessionStorage.setItem('carrinho', JSON.stringify(this.state.carrinho))
-        this.getCarrinhoSession()
+        const expires = new Date()
+        expires.setDate(expires.getDate() + 14)
+ 
+        cookie.save('carrinho', this.state.carrinho, { path: '/', expires })
+        this.getCarrinhoCookie()
       })
     }
 
@@ -104,8 +107,11 @@ export class MainProdutos extends Component {
         }
       })
       this.setState({carrinho: produtos}, () => {
-        sessionStorage.setItem('carrinho', JSON.stringify(this.state.carrinho))
-        this.getCarrinhoSession()
+        const expires = new Date()
+        expires.setDate(expires.getDate() + 14)
+
+        cookie.save('carrinho', this.state.carrinho, { path: '/', expires })
+        this.getCarrinhoCookie()
       })
     }
 

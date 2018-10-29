@@ -1,6 +1,7 @@
 import React from 'react';
 import {Modal,Button,FormControl} from 'react-bootstrap';
-import MaskedInput from 'react-text-mask';
+import MaskedInput from 'react-text-mask';  
+import cookie from 'react-cookies'
 
 export class Finish extends React.Component{
     state = {
@@ -15,14 +16,13 @@ export class Finish extends React.Component{
         
         this.getProdutos();
 
-        if(sessionStorage.getItem('usuario')){
-            let valor = JSON.parse(sessionStorage.getItem('usuario'));
+        if(cookie.load('usuario')){
+            let valor = cookie.load('usuario');
             this.setState({cliente:valor})
             
         }
-        if(sessionStorage.getItem('compra')){
-            let value = sessionStorage.getItem('compra');
-            value = JSON.parse(value);
+        if(cookie.load('compra')){
+            let value = cookie.load('compra');
             this.setState({compra: value});
         }   
     }
@@ -156,8 +156,8 @@ export class Finish extends React.Component{
                         .then(this.setState({show:false}))
                         .then(this.props.handleChangePage(''))
                         .then(this.props.changeQnt(0))
-                        .then(sessionStorage.clear())
-                        .then(sessionStorage.setItem('usuario',JSON.stringify(cliente)))
+                        .then(cookie.remove('compra', { path: '/' }))
+                        .then(cookie.remove('carrinho', { path: '/' }))
                         .catch(err => console.error(err))
                     
                     }
@@ -169,6 +169,17 @@ export class Finish extends React.Component{
             .catch(err => console.error(err))
         }
         
+    }
+    Boleto = () =>{
+
+        let dataC = new Date();
+        let d = dataC.getDate();
+        let m = dataC.getMonth();
+        let y = dataC.getFullYear();
+        
+
+
+
     }
     
     Cartao =_=>{
@@ -270,7 +281,7 @@ export class Finish extends React.Component{
                         </tr>
                     </thead>
                     <tbody>
-                        {sessionStorage.getItem('compra') && compra.map( (compra, i) => {return this.renderCompra(compra,i)} )}
+                        {cookie.load('compra') && compra.map( (compra, i) => {return this.renderCompra(compra,i)} )}
                     </tbody>
                 </table>
                 <div className="total col-md-12 col-sm-12 col-xs-12">
@@ -279,7 +290,7 @@ export class Finish extends React.Component{
                     </div>
                     <div className="col-md-2 col-sm-2 col-xs-6" style={{textAlign:'left'}}>
                         <input id="total" type="hidden" value={this.Total()}></input>
-                        <h4>{sessionStorage.getItem('compra') ?`R$` + this.Total() : 'R$ 0.00'}</h4>
+                        <h4>{cookie.load('compra') ?`R$` + this.Total() : 'R$ 0.00'}</h4>
                     </div>
                 </div>
                 <div className="fin col-md-12 col-sm-12 col-xs-12">
@@ -287,7 +298,10 @@ export class Finish extends React.Component{
                         {this.Cartao()}
                     </div>
                     <div className="col-md-6 col-sm-6 col-xs-6">
-                        <button className=" btn btn-primary form-control"><i className="fas fa-barcode"></i> <label>Boleto</label></button>
+                        <button className=" btn btn-primary form-control" onClick={() => this.Boleto()}>
+                            <i className="fas fa-barcode"></i> 
+                            <label>Boleto</label>
+                        </button>
                     </div>
                 </div>
             </div>

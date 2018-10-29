@@ -261,11 +261,11 @@ export class User extends Component {
         return(
             <div className='container-fluid' style={{marginTop:20}}>
                 {this.renderRemoveUser()}
+                
                 <div className='row'>
                 <center>
-                        <div className='col-md-3' style={{height:250,borderRadius:150}}>
+                        <div className='col-md-3'>
                             <div className="select-main">
-
                                 <label className="select-image"  htmlFor="file">
                                 <i className="fas fa-camera"></i>  Carregar  foto do Perfil 
                                 </label>  

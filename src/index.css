@@ -367,28 +367,40 @@ ul li{
  text-align: end;
 }
 
-.select-image:hover{
-  opacity: 0.8;
+
+
+.select-main{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  height: 180px;
 }
+
 .select-image{
-  padding-top: 60px;
+ padding-top: 60px;
  z-index: 90;
  opacity: 0;
- margin-left:-89px !important;
  color:white !important;
- font-size: 16px !important;
+ font-size: 16px ;
  position: absolute;
  width: 180px;
  height: 180px;
  background: #333;
- border-radius: 100px;
+ border-radius: 100%;
 }
 
-@media only screen and (max-width: 1199px ) and (min-width: 992px) {
- .select-image{
-   margin-left: -42% !important;
- }
+.select-image:hover{
+  opacity: 0.8;
 }
+
+.imagePreview { 
+  position: relative;
+  height: 180px;
+  width: 180px;
+  border-radius: 100%;
+}
+
 
 .imagePreview img{
   width: 180px;
@@ -396,14 +408,10 @@ ul li{
   border-radius: 100%;
 }
 
-.imagePreview { 
-  margin-top: 10px;
-  margin-bottom: 30px;
-  position: relative;
-  border-radius: 100%;
-  height: 180px;
-  width: 180px;
-}
+
+
+
+
 
 /* Rudinilly*/
 
@@ -469,8 +477,7 @@ ul li{
 	border-bottom: 13px solid #333;
 	border-left: 13px solid transparent;
   border-right: 13px solid transparent;
-
-	border-radius: 0%;
+  border-radius: 0%;
 
 }
 

@@ -367,28 +367,71 @@ ul li{
  text-align: end;
 }
 
-.select-image:hover{
-  opacity: 0.8;
+
+
+.select-main{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  height: 180px;
 }
+
 .select-image{
-  padding-top: 60px;
+ padding-top: 60px;
  z-index: 90;
  opacity: 0;
- margin-left:-89px !important;
  color:white !important;
- font-size: 16px !important;
+ font-size: 16px ;
  position: absolute;
  width: 180px;
  height: 180px;
  background: #333;
- border-radius: 100px;
+ border-radius: 100%;
 }
 
-@media only screen and (max-width: 1199px ) and (min-width: 992px) {
- .select-image{
-   margin-left: -42% !important;
- }
+.select-image-edit:hover{
+  opacity: 0.8;
 }
+.select-image-edit{
+position: relative;
+ padding-top: 70px;
+ z-index: 90;
+ opacity: 0;
+ color:white !important;
+ font-size: 16px !important;
+ width: 180px;
+ height: 180px;
+ background: #333;
+ border-radius: 100%;
+}
+
+.imagePreview-edit img{
+  width: 180px;
+  height: 180px;
+  border-radius: 100%;
+}
+
+.imagePreview-edit { 
+  margin-top: -185px;
+  margin-bottom: 30px;
+  position: relative;
+  border-radius: 100%;
+  height: 180px;
+  width: 180px;
+}
+
+.select-image:hover{
+  opacity: 0.8;
+}
+
+.imagePreview { 
+  position: relative;
+  height: 180px;
+  width: 180px;
+  border-radius: 100%;
+}
+
 
 .imagePreview img{
   width: 180px;
@@ -396,14 +439,10 @@ ul li{
   border-radius: 100%;
 }
 
-.imagePreview { 
-  margin-top: 10px;
-  margin-bottom: 30px;
-  position: relative;
-  border-radius: 100%;
-  height: 180px;
-  width: 180px;
-}
+
+
+
+
 
 /* Rudinilly*/
 
@@ -469,8 +508,7 @@ ul li{
 	border-bottom: 13px solid #333;
 	border-left: 13px solid transparent;
   border-right: 13px solid transparent;
-
-	border-radius: 0%;
+  border-radius: 0%;
 
 }
 
@@ -607,6 +645,11 @@ ul li{
 .center{
   text-align: center;
 }
+.centerDiv{
+  display: flex;
+  justify-content: center;
+  align-items: center
+}
 .fotoUser{
   margin-top: 20px;
   left: 50%;
@@ -696,11 +739,17 @@ ul li{
 .in{
   padding-bottom:30px; 
 }
+.prodi span{
+  font-size:9px;
+  padding-left:0px
+}
+.prodi{
+  width:100%
+}
 .headprod{
   background: #212529;
   color: white;
   font-family: 'Exo',sans-serif;
-  border-radius: 5px;
 }
 .pad{
   padding-top: 10px;
@@ -723,31 +772,37 @@ ul li{
   color: #005B88;
   font-weight: bold;
   margin:0px;
-  padding: 20px
+  padding-top: 23.5px;
+  padding-bottom: 23.5px;
+  text-align: left
 }
 
 .prodcarte{
   background: #005b88;
   color:white;
   font-size: 15px;
-  position: absolute;
   border-radius: 2px;
-  bottom:0;
   padding-right: 4px;
   padding-left: 4px;
   padding-top: 1px;
-  right:19px;
   z-index: 1;
+  position: relative;
+  right: 16%;
 }
+
+.carrinho {
+  position: relative;
+  text-decoration: none
+}
+
 .ico{
   font-size: 40px;
   color: white;
   padding-top: 27px; 
   z-index: 0;
   position: relative;
-  left:50%;
-  transform: translateX(-50%);
   bottom:0;
+  left: 16%;
 }
 .icoL{
   font-size: 40px;
@@ -757,18 +812,15 @@ ul li{
 }
 
 .logPc{
-  display: block
+  display: block;
 }
 .logMobile{
-  display: none
+  display: none;
+  text-align: center
 }
 
 .dropdownMobile{
   display:none;
-}
-
-.logMobile .carro{
-  text-align: center
 }
 
 @media only screen and (max-width:992px){
@@ -778,12 +830,6 @@ ul li{
   }
   .logMobile{
     display: block
-  }
-
-  .carro {
-    position: relative;
-    left:50%;
-    transform: translateX(-50%);
   }
 
   .head{
@@ -891,7 +937,7 @@ ul li{
       display: none;
       position: absolute;
       min-width: 175px;
-      z-index: 1;
+      z-index: 99;
       padding: 20px;
       background:white;
       border-radius:5px;

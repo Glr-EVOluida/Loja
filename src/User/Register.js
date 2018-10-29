@@ -115,14 +115,13 @@ export class Register extends React.Component {
             <div className="container-fluid">
                 <div className="col-md-12 col-sm-12 col-xs-12"  >
                     <form  className="col-md-12 main"  onSubmit={this.handleRegister}>
+                    
                         <div className="row">
                             <center>
                                 <div className="select-main">
-
-                                 <label className="select-image"  htmlFor="file">
-                                 <i className="fas fa-camera"></i>  Carregar  foto do Perfil 
-                                    
-                                </label>  
+                                    <label className="select-image"  htmlFor="file">
+                                        <i className="fas fa-camera"></i>  Carregar  foto do Perfil 
+                                    </label>  
 
                                     <div className="imagePreview" >
                                         {view}
@@ -131,6 +130,7 @@ export class Register extends React.Component {
                                  </div>
                             </center>
                         </div>
+
                         <div className="row">
                             <center>
                                 <input  

@@ -69,27 +69,23 @@ export class Finish extends React.Component{
         if(bool){
         let total = (compra.quantidade * item.preco).toFixed(2);
           return(
-            <div key={compra.id}>
-                <div className="col-md-12 col-sm-12 col-xs-12" style={{padding:"10px"}}> 
-                    <div className="col-md-12 col-sm-12 col-xs-12">
-                        <div className="col-md-2 col-sm-2 col-xs-2">
-                            <img src={`http://localhost:3000/uploads/${item.img}`} alt={item.nome} style={{width:"30px",height:"30px",padding:"0px",borderRadius:'3px'}}/>
-                        </div>
-                        <div className="col-md-4 col-sm-4 col-xs-4" style={{paddingTop:"8px"}}>
-                            <span>{item.nome}</span>
-                        </div>
-                        <div className="center col-md-2 col-sm-2 col-xs-2" style={{paddingTop:"8px"}}>
-                            <span>{compra.quantidade}</span>
-                        </div>
-                        <div className="center col-md-2 col-sm-2 col-xs-2" style={{paddingTop:"8px"}}>
-                            <span>R$ {(item.preco).toFixed(2)}</span>
-                        </div>
-                        <div className="center col-md-2 col-sm-2 col-xs-2" style={{paddingTop:"8px"}}>
-                            <span>R$ {total}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                <tr key={compra.id} className="prodi"> 
+                    <th className="center">
+                        <img src={`http://localhost:3000/uploads/${item.img}`} alt={item.nome} style={{width:"30px",height:"30px",padding:"0px",borderRadius:'3px'}}/>
+                    </th>
+                    <th className="center">
+                        <span>{item.nome}</span>
+                    </th>
+                    <th className="center">
+                        <span>{compra.quantidade}</span>
+                    </th>
+                    <th className="center">
+                        <span>R${(item.preco).toFixed(2)}</span>
+                    </th>
+                    <th className="center">
+                        <span>R${total}</span>
+                    </th>
+                </tr>
           )
         }
       }
@@ -247,20 +243,6 @@ export class Finish extends React.Component{
                         <label>CEP: </label><span> {cep}</span><br/>
                     </div>
                 </div>
-                <div className="headprod col-md-12 col-sm-12 col-xs-12">
-                    <div className="col-md-6 col-sm-6 col-xs-6">
-                        <h5>Produto</h5>
-                    </div>
-                    <div className="center col-md-2 col-sm-2 col-xs-2">
-                        <h5>Quant.</h5>
-                    </div>
-                    <div className="center col-md-2 col-sm-2 col-xs-2">
-                        <h5>Valor Uni.</h5>
-                    </div>
-                    <div className="center col-md-2 col-sm-2 col-xs-2">
-                        <h5>Total</h5>
-                    </div>
-                </div>
             </div>
         )
     }
@@ -270,12 +252,32 @@ export class Finish extends React.Component{
         return(
             <div className="tudo">
                 {this.state.cliente.map(this.Dados)}
-                {sessionStorage.getItem('compra') && compra.map( (compra, i) => {return this.renderCompra(compra,i)} )}
+                <table style={{border:'1px solid black'}} className="table table-striped">
+                    <thead>
+                        <tr className="headprod">
+                            <th colSpan='2'>
+                                <h5>Produto</h5>
+                            </th>
+                            <th className="center">
+                                <h5>Quant.</h5>
+                            </th>
+                            <th className="center">
+                                <h5>Valor Uni.</h5>
+                            </th>
+                            <th className="center">
+                                <h5>Total</h5>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {sessionStorage.getItem('compra') && compra.map( (compra, i) => {return this.renderCompra(compra,i)} )}
+                    </tbody>
+                </table>
                 <div className="total col-md-12 col-sm-12 col-xs-12">
-                    <div className="col-md-10 col-sm-10 col-xs-8">
+                    <div className="col-md-10 col-sm-10 col-xs-6" >
                         <h3>Total</h3>
                     </div>
-                    <div className="col-md-2 col-sm-2 col-xs-4">
+                    <div className="col-md-2 col-sm-2 col-xs-6" style={{textAlign:'left'}}>
                         <input id="total" type="hidden" value={this.Total()}></input>
                         <h4>{sessionStorage.getItem('compra') ?`R$` + this.Total() : 'R$ 0.00'}</h4>
                     </div>
@@ -285,7 +287,7 @@ export class Finish extends React.Component{
                         {this.Cartao()}
                     </div>
                     <div className="col-md-6 col-sm-6 col-xs-6">
-                        <button className="op btn btn-primary form-control"><i className="fas fa-barcode"></i> <label>Boleto</label></button>
+                        <button className=" btn btn-primary form-control"><i className="fas fa-barcode"></i> <label>Boleto</label></button>
                     </div>
                 </div>
             </div>

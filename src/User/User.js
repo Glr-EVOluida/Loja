@@ -19,12 +19,13 @@ export class User extends Component {
             newpass:'',
             passcontrol:'',
             img:'',
+            confirmar:'',
             confirmarSenha:'',
             editar:{
                 label:'Editar',
                 color:'warning',
             },
-            showDel:false,
+            showCon:false,
             showImg:false,
             disabled:true,
             edit:false            
@@ -41,14 +42,15 @@ export class User extends Component {
 
     handleClose = _ =>{
         this.setState({
-            showDel:false,
+            showCon:false,
             showImg:false
         })
     }
 
-    handleShowDel = _ =>{
+    handleShowCon = (i) =>{
         this.setState({
-            showDel:true
+            showCon:true,
+            confirmar:i
         })
     }
 
@@ -71,11 +73,17 @@ export class User extends Component {
     }
    
     removeUser = _ =>{
-        const { id } = this.state;
-        fetch(`http://localhost:4000/remove?table=clientes&id=${id}`)
-        .then(this.getUser)
-        .then(this.handleClose)
-        .catch(err => console.error(err))
+        const { id, passcontrol, oldpass } = this.state;
+        if(Md5(passcontrol)===oldpass){
+            fetch(`http://localhost:4000/remove?table=clientes&id=${id}`)
+            .then(this.props.handleUser('apagou'))
+            .then(this.props.handleChangePage(''))
+            .catch(err => console.error(err))
+        }else if(!passcontrol){
+            alert('Para excluir a conta confirme sua senha')
+        }else if(Md5(passcontrol)!==oldpass){
+            alert("Senha incorreta")
+        }
     }
 
     updateUser = _ =>{
@@ -83,48 +91,40 @@ export class User extends Component {
         if(Md5(passcontrol)===oldpass&&newpass!==''){
             fetch(`http://localhost:4000/update?table=clientes&alt=nome='${nome}',admin=0,endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${Md5(newpass)}',img='${img}'&id='${id}'`)
             .then(this.getUser)
+            .then(this.handleClose)
             .then(this.setState({newpass:'',passcontrol:''},()=>alert('Usuário atualizado com sucesso!!')))
-            .catch(err => console.error(err))
-            
-        }else if(Md5(passcontrol)===oldpass){
-            
-            
-            if(this.uploadInput.files[0] === undefined){
-                
-
-            fetch(`http://localhost:4000/update?table=clientes&alt=nome='${nome}',admin=0,endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${oldpass}',img='${img}'&id='${id}'`)
-            .then(this.getUser)
-            .catch(err => console.error(err))
-                
-            }else{
-                fetch(`http://localhost:4000/remove/${img}`, {
-                    method: 'POST',
-                })
+            .catch(err => console.error(err))    
+        }else if(Md5(passcontrol)===oldpass&&!newpass){
+            if(this.uploadInput.files[0] === undefined){ 
+                fetch(`http://localhost:4000/update?table=clientes&alt=nome='${nome}',admin=0,endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${oldpass}',img='${img}'&id='${id}'`)
+                .then(this.getUser)
+                .then(()=>this.setState({passcontrol:''},this.handleClose))
+                .then(alert('Usuário atualizado com sucesso!!'))
                 .catch(err => console.error(err))
- 
-             const data = new FormData();
+            }else{
+                fetch(`http://localhost:4000/remove/${img}`, {method: 'POST',})
+                .catch(err => console.error(err))
+                const data = new FormData();
 
-             data.append('file', this.uploadInput.files[0]);
-            // upload de imagem
-            fetch('http://localhost:4000/upload', {
-                method: 'POST',
-                body: data,
-            }).then((response) => {
-                response.json().then((body) => {
-
-
-            fetch(`http://localhost:4000/update?table=clientes&alt=nome='${nome}',endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${oldpass}',img='${body.file}'&id='${id}'`)
-            .then(this.getUser)
-          
-            .catch(err => console.error(err))
+                data.append('file', this.uploadInput.files[0]);
+                // upload de imagem
+                fetch('http://localhost:4000/upload', {
+                    method: 'POST',
+                    body: data,
+                }).then((response) => {
+                    response.json().then((body) => {
+                        fetch(`http://localhost:4000/update?table=clientes&alt=nome='${nome}',endereco='${endereco}',cep='${cep}',telefone='${telefone}',email='${email}',senha='${oldpass}',img='${body.file}'&id='${id}'`)
+                        .then(this.getUser)
+                        .then(()=>this.setState({passcontrol:''},this.handleClose))
+                        .then(alert('Usuário atualizado com sucesso!!'))
+                        .catch(err => console.error(err))
+                    });
                 });
-
-            });
-    
             }
-
         }else if(!passcontrol){
             alert('Para salvar as alterações confirme sua senha')
+        }else if(Md5(passcontrol)!==oldpass){
+            alert("Senha incorreta")
         }
     }
 
@@ -139,10 +139,9 @@ export class User extends Component {
                 disabled:!this.state.disabled
             })
         }else{
-            this.updateUser()
+            this.handleShowCon("Atualizar")
             this.setState({
                 passcontrol:'',
-                newpass:'',
                 editar:{
                     label:'Editar',
                     color:'warning'
@@ -153,18 +152,24 @@ export class User extends Component {
         }
     }
 
-    renderRemoveUser = () =>{
+    renderConfirmar = () =>{
+        const { confirmar } = this.state;
         return (
             <div>     
-            <Modal show={this.state.showDel} onHide={this.handleClose}>              
+            <Modal show={this.state.showCon} onHide={this.handleClose}>              
                 <Modal.Header closeButton>
-                    <Modal.Title>Remover Conta</Modal.Title>
+                    <Modal.Title>{confirmar} Conta</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <h5>Realmente deseja remover sua Conta?</h5>
+                    <h3>Para {confirmar.toLocaleLowerCase()} a conta confirme sua senha</h3>
+                    <input autoComplete='' type='password'className='form-control' value={this.state.passcontrol} onChange={(e)=> this.setState({passcontrol:e.target.value})}/>        
                 </Modal.Body>
                 <Modal.Footer>
+                    {confirmar==='Atualizar' ?
+                    <Button onClick={()=>this.updateUser()}>Confirmar</Button>
+                    :
                     <Button onClick={()=>this.removeUser()}>Confirmar</Button>
+                    }
                     <Button onClick={this.handleClose}>Cancelar</Button>
                 </Modal.Footer>
             </Modal>
@@ -172,8 +177,6 @@ export class User extends Component {
         );
     }
     
-    
-
     renderUser = _ =>{
         const { users } = this.state;
         users.map(obj =>{
@@ -233,7 +236,6 @@ export class User extends Component {
 
     }
 
-
     _handleImageChange(e) {
 
         let reader = new FileReader();
@@ -260,30 +262,23 @@ export class User extends Component {
         }
         return(
             <div className='container-fluid' style={{marginTop:20}}>
-                {this.renderRemoveUser()}
+                {this.renderConfirmar()}
                 <div className='row'>
                 <center>
-                        <div className='col-md-3' style={{height:250,borderRadius:150}}>
+                        <div className='col-md-3'  style={{margin:0,padding:0}} >
                             <div className="select-main">
 
-                                <label className="select-image"  htmlFor="file">
+                                <label className="select-image-edit"  htmlFor="file" onClick={()=>{if(!this.state.disabled===false){alert('Ative o modo de edição para alterar a imagem')}}}>
                                 <i className="fas fa-camera"></i>  Carregar  foto do Perfil 
                                 </label>  
 
-                                <div className="imagePreview" >
+                                <div className="imagePreview-edit" >
                                     {view}
-                                    { this.state.errUpload === true && < span  style={{position:"relative"}}><i style={{color:'orange'}} className="fas fa-exclamation-triangle"></i> Selecione um arquivo</span>}
                                 </div>
                             </div>
                         </div>
-                        <input  
-                                    style={{ display: "none" }}
-                                    id="file"
-                                    type="file"
-                                    onChange={(e) => this._handleImageChange(e)}
-                                    ref={(ref) => { this.uploadInput = ref; }}
-                                />
                     </center>                 
+                    <input   style={{ display: "none" }}   id="file"  type="file" onChange={(e) => this._handleImageChange(e)} ref={(ref) => { this.uploadInput = ref; }} disabled={this.state.disabled} />
                     <div className='col-md-9'>
                     <form>                   
                         <div className='col-md-6' style={{marginTop:30}}>
@@ -296,13 +291,7 @@ export class User extends Component {
                         </div>
                         <div className='col-md-6' style={{marginTop:10}}>
                             <label>Nova Senha</label>
-                            <input autoComplete='' type='text'className='form-control' value={this.state.newpass} onChange={(e)=> this.setState({newpass:e.target.value})} disabled={this.state.disabled}/>
-                            
-                        </div>
-                        <div className='col-md-6' style={{marginTop:10}}>
-                            <label>Senha Antiga</label>
-                            <input autoComplete='' type='text'className='form-control' value={this.state.passcontrol} onChange={(e)=> this.setState({passcontrol:e.target.value})} disabled={this.state.disabled}/>
-                            
+                            <input autoComplete='' type='password'className='form-control' value={this.state.newpass} onChange={(e)=> this.setState({newpass:e.target.value})} disabled={this.state.disabled}/>
                         </div>
                         <div className='col-md-7' style={{marginTop:10}}>
                             <label>Endereço</label>
@@ -352,8 +341,8 @@ export class User extends Component {
                             this.setState({telefone:word})}} maxLength={16} disabled={this.state.disabled}/>
                         </div>
                         <div className='col-md-7' style={{marginTop:10,marginBottom:10}}>
-                        <Button bsStyle={this.state.editar.color} onClick={()=>this.editUser(this.state.edit)}>{this.state.editar.label}</Button>                            
-                        <Button bsStyle='danger' onClick={this.handleShowDel} style={{marginLeft:10}}>Remover Conta</Button>
+                            <Button bsStyle={this.state.editar.color} onClick={()=>this.editUser(this.state.edit)}>{this.state.editar.label}</Button>                            
+                            <Button bsStyle='danger' onClick={()=>this.handleShowCon('Remover')} style={{marginLeft:10}}>Remover Conta</Button>
                         </div>        
                     </form>
                     </div>

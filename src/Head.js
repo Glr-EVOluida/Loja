@@ -34,11 +34,21 @@ export class Head extends React.Component{
     }
 
     componentWillReceiveProps(nextProps){
-        if((nextProps.user !== this.props.cliente) && nextProps.user.length > 0){
-           this.setState({cliente:nextProps.user},() => {
-                this.state.cliente.map(this.Verificacao);
-                console.log(this.state.cliente)
-           });
+        if(nextProps.user === "apagou"){
+            this.setState({
+                user:'',
+                pass:'',
+                nome:'',
+                senha:'',
+                img:'',
+                cliente:[],
+                login:false,
+            });
+        }else if((nextProps.user !== this.state.cliente) && nextProps.user.length > 0){
+            this.setState({cliente:nextProps.user},() => {
+                 this.state.cliente.map(this.Verificacao);
+                 console.log(this.state.cliente)
+            });
         }
     }
 
@@ -170,7 +180,7 @@ export class Head extends React.Component{
             <div>
                 <div className='logPc' id="dropdown">
                     <div className="dropdown">
-                        <a className="carro" href="#!">
+                        <a href="#!">
                             <i className="fas fa-user-circle icoL"></i> 
                         </a>
                     </div>
@@ -193,7 +203,7 @@ export class Head extends React.Component{
                     </div>
                 </div>
                 <div className='logMobile'>
-                    <a className="carro" href="#!" onClick={() => this.setState({show:true})}>
+                    <a href="#!" onClick={() => this.setState({show:true})}>
                         <i className="fas fa-user-circle icoL"></i>
                     </a>
                     <div className="static-modal">
@@ -266,17 +276,17 @@ export class Head extends React.Component{
                         </div>
                     </div>
 
-                    <div className="col-md-1 col-xs-3"></div>
 
-                    <div className="nada col-md-1 col-xs-2">
-                        <a href="#!" className='carro' onClick={() => this.props.handleChangePage('carrinho')}>
+                    <div className="col-md-2 col-xs-6 centerDiv">
+                        
+                        <a href="#!" className='carrinho' onClick={() => this.props.handleChangePage('carrinho')}>
                             <i className="fas fa-shopping-cart ico"></i>
                             <span className="prodcarte">{this.props.qntCart}</span>
                         </a>
 
                     </div>
 
-                    <div  className="col-md-2 col-xs-7" >
+                    <div  className="col-md-2 col-xs-6">
                         {this.detectarLogin()}
                     </div>
                 </div>

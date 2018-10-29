@@ -82,7 +82,7 @@ export class Body extends React.Component{
             case "signup":
                 return <Register handleChangePage={this.props.handleChangePage}/>
             case "perfil":
-                return <User handleUser={this.props.handleUser}/>
+                return <User handleUser={this.props.handleUser} handleChangePage={this.props.handleChangePage}/>
 
             default:
                 return <MainProdutos changeQnt={this.props.changeQnt} pesquisa={pesquisa} categoria={info} handleChangePage={this.props.handleChangePage}/>

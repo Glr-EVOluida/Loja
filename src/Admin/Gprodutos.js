@@ -116,10 +116,19 @@ export class Gprodutos extends Component {
 
     getBusca = () => {
         const { busca } = this.state;
-        fetch(`http://localhost:4000/show?table=produtos&${busca.buscar}${busca.value}`)
-            .then(response => response.json())
-            .then(response => { !response.data ? this.setState({disabledn:false, disabledp:true },()=>this.getProdutos()) : this.setState({ produtos: response.data, disabledn:true, disabledp:true }) })
-            .catch(err => console.error(err))
+        let value = " '@@@"+busca.value+"@@@'";
+           
+        if(!parseInt(busca.value, 10)){
+                fetch(`http://localhost:4000/show?table=produtos&${busca.buscar}${value}`)
+                .then(response => response.json())
+                .then(response => { !response.data ? this.setState({disabledn:false, disabledp:true },()=>this.getProdutos()) : this.setState({ produtos: response.data, disabledn:true, disabledp:true }) })
+                .catch(err => console.error(err))
+            }else{
+                fetch(`http://localhost:4000/show?table=produtos&${busca.buscar}${busca.value}`)
+                .then(response => response.json())
+                .then(response => { !response.data ? this.setState({disabledn:false, disabledp:true },()=>this.getProdutos()) : this.setState({ produtos: response.data, disabledn:true, disabledp:true }) })
+                .catch(err => console.error(err))
+            }
     }
 
     addProduto = _ => {
@@ -210,6 +219,7 @@ export class Gprodutos extends Component {
                 this.state.remove.map(obj => {
                     imgremove = obj.img
                     idremove = obj.id
+                    return null;
                 })
 
                 this.setState({
@@ -602,60 +612,39 @@ export class Gprodutos extends Component {
     }
 
     render() {
-        const { produtos } = this.state;
+        const { produtos, busca } = this.state;
         return (
             <div className='container-fluid'>
                 {this.renderModalEdit()}
                 {this.renderModalDel()}
                 {this.renderModalNew()}
-                <div className='row' style={{ marginTop: 20 }}>
-                    <div className='col-md-2 col-xs-6'>
-                        <label> Buscar Id</label>
-                        <FormGroup>
-                            <InputGroup>
-                                <FormControl type="text" onChange={
-                                    (e) => this.setState({
-                                        busca: {
-                                            buscar: 'where=id=',
-                                            value: e.target.value
-                                        }
-                                    },() => this.getBusca())
-                                } />
-                            </InputGroup>
-                        </FormGroup>
-                    </div>
-                    <div className='col-md-3 col-xs-6'>
-                        <label>Buscar Nome</label>
-                        <FormGroup>
-                            <InputGroup>
-                                <FormControl type="text" onChange={
-                                    (e) => this.setState({
-                                        busca: {
-                                            buscar: 'where=nome LIKE',
-                                            value: "'@@@" + e.target.value + "@@@'"
-                                        }
-                                    },() => this.getBusca())
-                                } />
-                            </InputGroup>
-                        </FormGroup>
-                    </div>
-                    <div className='col-md-4 col-xs-6'>
-                        <label>Buscar Marca</label>
-                        <FormGroup>
-                            <InputGroup>
-                                <FormControl type="text" onChange={
-                                    (e) => this.setState({
-                                        busca: {
-                                            buscar: 'where=marca LIKE',
-                                            value: '"@@@' + e.target.value + '@@@"'
-                                        }
-                                    },() => this.getBusca())
-                                } />
-                            </InputGroup>
-                        </FormGroup>
-                    </div>
-                    <div className='col-md-1 col-xs-6' style={{alignItems:'right'}}>
-                        <button className="btn btn-success" style={{ marginTop: 25 }} onClick={() => this.handleShowNew()}>Novo Produto <i className="fas fa-plus"></i></button>
+                <div className='row' style={{ marginTop: 10 }}>
+                        <div className='col-md-3 col-xs-7' style={{marginTop:10}}>
+                            <select id="calc" className='form-control'onChange={(e)=>this.setState({
+                                busca: {...busca, buscar: e.target.value, value:""}
+                            })}>
+                                <option value='Busca'>Selecione a Busca...</option>
+                                <option value='where=id='>Id</option>
+                                <option value='where=nome LIKE'>Nome</option>
+                                <option value='where=marca LIKE'>Marca</option>
+                                <option value='where=quantidade <='>Estoque (Máximo)</option>
+                                <option value='where=preco <='>Preço (Máximo)</option>
+                            </select>
+                        </div>
+                        <div className='col-md-3 col-xs-5' style={{marginTop:10}}>
+                            <FormGroup>
+                                <InputGroup>
+                                    <FormControl type="text" value={this.state.busca.value} placeholder='Buscar...' onChange={(e)=>this.setState({
+                                busca:{...busca , value:e.target.value}
+                            })}/>
+                                    <InputGroup.Button>
+                                        <Button onClick={()=>this.getBusca()}><i className='fa fa-search'></i></Button>
+                                    </InputGroup.Button>
+                                </InputGroup>
+                            </FormGroup>
+                        </div>
+                    <div className='col-md-1 col-xs-2' style={{marginTop:10}}>
+                        <button className="btn btn-success" onClick={() => this.handleShowNew()}>Novo Produto <i className="fas fa-plus"></i></button>
                     </div>
                 </div>
                 <table className='gprodutos table table-hover table-striped table-responsive'>

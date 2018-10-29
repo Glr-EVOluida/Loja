@@ -38,7 +38,7 @@ export class App extends Component {
       {!admin ?
             <div className='notAdmin'>
               <Head handleLogar={this.handleLogar} user={user} handleAdmin={this.handleAdmin} handleChangePage={this.handleChangePage} changeQnt={this.changeQnt} qntCart={qntCart} handleSearch={this.handleSearch}/>
-              <Body logar={logar} handleUser={this.handleUser} handleChangePage={this.handleChangePage} page={page} info={info} pesquisa={pesquisa} changeQnt={this.changeQnt}/>
+              <Body logar={logar} handleUser={this.handleUser} handleLogar={this.handleLogar} handleChangePage={this.handleChangePage} page={page} info={info} pesquisa={pesquisa} changeQnt={this.changeQnt}/>
               <Footer/>
             </div>
           :

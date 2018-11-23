@@ -70,7 +70,7 @@ export class MainProdutos extends Component {
   getProdutos = _ => {
     const { order,limitClause,where } = this.state;
 
-    fetch(`http://192.168.200.163:4000/show?table=produtos&order=${order}&limit=${limitClause}&where=${where}`)
+    fetch(`http://localhost:4000/show?table=produtos&order=${order}&limit=${limitClause}&where=${where}`)
     .then(response => response.json())
     .then(response => this.setState( {produtos: response.data }) )
     .catch(err => console.error(err))

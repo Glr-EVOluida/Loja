@@ -77,6 +77,8 @@ app.get('/update', (req, res) => {
     })
 });
 
+
+
 app.get('/remove', (req, res) => {
     const { table, id } = req.query;
     const remove = `DELETE FROM ${table} WHERE id=${id}`;
@@ -139,5 +141,7 @@ app.post('/upload', (req, res, next) => {
 
 });
 
-app.listen(4000, () => {})
-console.log("4000");
+app.listen( 4000, () => {
+    console.log(`Started server  port 4000`);
+})
+

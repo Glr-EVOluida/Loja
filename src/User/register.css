@@ -1,0 +1,112 @@
+/* css -  Register */
+
+.main label{
+    font-size: 20px;
+  color:#776;
+}
+
+.main{
+    padding-left: 16%;
+    padding-right: 16%;
+  }
+
+  
+.input-line{
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none;
+  border-left:none;
+  border-right:none;
+  border-top:none;
+}
+.input-line:focus{
+ border-bottom: solid 2px lightseagreen;
+}
+
+
+
+.main-submit{
+    display: flex;
+    justify-content: center;
+}
+
+.btn-submit{
+  height: 40px;
+  width: auto;
+  padding: 0px 15% 0px 15%;
+ 
+}
+
+.icon-user{
+  margin-top:-2px;
+  font-size: 186px;
+}
+
+.hoverLabel{
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    display: flex
+}
+
+.select-main{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.select-image{
+font-size: 13px !important;
+color:white !important;
+ z-index: 90;
+ opacity: 0;
+ position: absolute;
+ width: 180px ;
+ height: 180px;
+ background:#333;
+ border-radius: 100%;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+}
+
+.select-image:hover{
+  opacity: 0.8;
+}
+
+.imagePreview { 
+  position: relative;
+  height: 180px;
+  width: 180px;
+  border-radius: 100%;
+}
+
+
+.imagePreview img{
+  width: 180px;
+  height: 180px;
+  border-radius: 100%;
+  
+}
+
+@media screen and (max-width: 320px){
+ 
+.imagePreview img{
+  width: 155px;
+  height: 155px;
+}
+
+.icon-user{
+  font-size: 157px;
+  margin-left: 1px;
+}
+.imagePreview, .select-image {
+    width: 155px;
+    height: 155px;
+  }
+
+}
+
+
+
+

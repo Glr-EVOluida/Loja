@@ -33,11 +33,38 @@
 
     <script>         
         $(document).ready(function(){
-            $(".dropdown").click(function(){
+
+            $(".dropdown").click(function(event){
                 $(".dropdown-content").slideToggle("slow");
+                 //Evita que o evento seja notificado aos outros elementos.
+                event.stopPropagation();
             });
-            $(".cate").click(function(){
+
+            //Clicando no html vai fechar o dorpDown
+            $('html').on('click', function(event){
+                // verificar se foi clicado em algum elemento do dropdown
+                if($(event.target).closest('#dropdown').length)
+                return;
+                
+                 $(".dropdown-content").slideUp();
+                
+            });
+            
+            // fechar dropdown quando clicar para se cadastrar
+             $('.btn-warning').on('click', function(event){
+                 $(".dropdown-content").slideUp();
+            });
+            
+
+            $(".cate").click(function(event){
                 $(".dropdown-cate").slideToggle("slow");
+                 //Evita que o evento seja notificado aos outros elementos.
+                event.stopPropagation();
+            });
+
+            //Clicando no html vai fechar o dorpDown
+            $('html').on('click', function(){
+                $(".dropdown-cate").slideUp();
             });
         });
         

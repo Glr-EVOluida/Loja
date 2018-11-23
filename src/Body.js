@@ -51,9 +51,7 @@ export class Body extends React.Component{
                 </div>
                 <div className="col-xs-12 dropdownMobile">
                     <div className="cate">
-                        <a href="#!">
-                            Categorias
-                        </a>
+                        <label style={{color:'white'}}>  Categorias </label>
                     </div>
                     <div className="dropdown-cate">
                         <a href="#!" onClick={() => this.props.handleChangePage('','console')}>Console</a><br/>

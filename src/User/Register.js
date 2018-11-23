@@ -1,7 +1,7 @@
 import React from 'react';
 import MaskedInput from 'react-text-mask';
 import Md5 from 'md5';
-
+import './register.css';
 
 export class Register extends React.Component {
     constructor(props) {
@@ -113,22 +113,23 @@ export class Register extends React.Component {
 
         return (
             <div className="container-fluid">
-                <div className="col-md-12 col-sm-12 col-xs-12"  >
+               
                     <form  className="col-md-12 main"  onSubmit={this.handleRegister}>
                     
                         <div className="row">
-                            <center>
-                                <div className="select-main">
-                                    <label className="select-image"  htmlFor="file">
-                                        <i className="fas fa-camera"></i>  Carregar  foto do Perfil 
-                                    </label>  
-
-                                    <div className="imagePreview" >
-                                        {view}
-                                        { this.state.errUpload === true && < span  style={{position:"relative"}}><i style={{color:'orange'}} className="fas fa-exclamation-triangle"></i> Selecione um arquivo</span>}
+                            <div className="col-md-12 select-main">
+                                <label className="select-image"  htmlFor="file">
+                                    <div className="hoverLabel">
+                                        <span><i className="fas fa-camera"></i></span>
+                                        <span>Carregar  foto do Perfil </span>
                                     </div>
-                                 </div>
-                            </center>
+                                </label>  
+
+                                <div className="imagePreview" >
+                                    {view}
+                                    { this.state.errUpload === true && < span  style={{position:"relative"}}><i style={{color:'orange'}} className="fas fa-exclamation-triangle"></i> Selecione um arquivo</span>}
+                                </div>
+                            </div>
                         </div>
 
                         <div className="row">
@@ -244,17 +245,14 @@ export class Register extends React.Component {
                         </div>
 
                         <div className="row">
-                            <center>
-                                <div className="col-md-12 ">
-                                    <button onClick={this.handleDelete} className="btn btn-primary  btn-submit" type="submit" name="action">
+                            <div className="col-md-12 main-submit">
+                                <button onClick={this.handleDelete} className="btn btn-primary  btn-submit" type="submit" name="action">
                                         CADASTRAR-SE
                                 </button>
-                                </div>
-                                <b className="slogan">Fique tranquilo, nosso site é seguro!</b>
-                            </center>
+                            </div>
                         </div>
                     </form>
-                </div>
+              
             </div>
         );
     }

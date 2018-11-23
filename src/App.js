@@ -4,6 +4,7 @@ import { Head } from './Head';
 import { Body } from './Body';
 import { Footer } from './Footer';
 import { Admin } from './Admin/Admin';
+
 export class App extends Component {
 
   state = {
@@ -31,11 +32,28 @@ export class App extends Component {
   render() {
 
     const {admin,page, pesquisa, qntCart, logar, info, user} = this.state;
-
+    
     return (
       <div className="App">
-
       {!admin ?
+        <div className='notAdmin'>
+          <Head handleLogar={this.handleLogar} user={user} handleAdmin={this.handleAdmin} handleChangePage={this.handleChangePage} changeQnt={this.changeQnt} qntCart={qntCart} handleSearch={this.handleSearch}/>
+          <Body logar={logar} handleUser={this.handleUser} handleLogar={this.handleLogar} handleChangePage={this.handleChangePage} page={page} info={info} pesquisa={pesquisa} changeQnt={this.changeQnt}/>
+          <Footer/>
+        </div>
+      :
+        <Admin handleAdmin={this.handleAdmin} handleChangePage={this.handleChangePage}/>
+      }      
+       
+         
+      </div>
+    )
+  }
+}
+
+{/*
+
+        {!admin ?
             <div className='notAdmin'>
               <Head handleLogar={this.handleLogar} user={user} handleAdmin={this.handleAdmin} handleChangePage={this.handleChangePage} changeQnt={this.changeQnt} qntCart={qntCart} handleSearch={this.handleSearch}/>
               <Body logar={logar} handleUser={this.handleUser} handleLogar={this.handleLogar} handleChangePage={this.handleChangePage} page={page} info={info} pesquisa={pesquisa} changeQnt={this.changeQnt}/>
@@ -43,8 +61,6 @@ export class App extends Component {
             </div>
           :
             <Admin handleAdmin={this.handleAdmin} handleChangePage={this.handleChangePage}/>
-          }    
-      </div>
-    )
-  }
-}
+          }      
+
+*/}

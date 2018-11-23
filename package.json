@@ -3,14 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "chart.js": "^2.7.2",
     "cors": "^2.8.4",
+    "downshift": "^3.1.5",
     "express": "^4.16.3",
     "express-fileupload": "^0.4.0",
     "file-system": "^2.2.2",
     "jquery": "^3.3.1",
     "jquery-ui-bundle": "^1.12.1-migrate",
+    "match-sorter": "^2.3.0",
     "md5": "^2.2.1",
     "mysql": "^2.16.0",
     "popper.js": "^1.14.4",
@@ -20,7 +23,8 @@
     "react-cookies": "^0.1.0",
     "react-dom": "^16.5.0",
     "react-scripts": "1.1.5",
-    "react-text-mask": "^5.4.3"
+    "react-text-mask": "^5.4.3",
+    "starwars-names": "^1.6.0"
   },
   "scripts": {
     "start": "react-scripts start",

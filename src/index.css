@@ -10,6 +10,118 @@ body {
   font-family: 'Exo',sans-serif;
 }
 
+/* Register */
+/* css -  Register */
+
+.main label{
+  font-size: 20px;
+color:#776;
+}
+
+.main{
+  padding-left: 16%;
+  padding-right: 16%;
+}
+
+
+.input-line{
+border-radius: 0 !important;
+box-shadow: none !important;
+outline: none;
+border-left:none;
+border-right:none;
+border-top:none;
+}
+.input-line:focus{
+border-bottom: solid 2px lightseagreen;
+}
+
+
+
+.main-submit{
+  display: flex;
+  justify-content: center;
+}
+
+.btn-submit{
+height: 40px;
+width: auto;
+padding: 0px 15% 0px 15%;
+
+}
+
+.icon-user{
+font-size: 187px;
+text-align: end;
+}
+
+.hoverLabel{
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  display: flex
+}
+
+.select-main{
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.select-image{
+font-size: 13px !important;
+color:white !important;
+z-index: 90;
+opacity: 0;
+position: absolute;
+width: 180px ;
+height: 180px;
+background:#333;
+border-radius: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+.select-image:hover{
+opacity: 0.8;
+}
+
+.imagePreview { 
+position: relative;
+height: 180px;
+width: 180px;
+border-radius: 100%;
+}
+
+
+.imagePreview img{
+width: 180px;
+height: 180px;
+border-radius: 100%;
+
+}
+
+@media screen and (max-width: 320px){
+
+  .imagePreview img{
+  width: 155px;
+  height: 155px;
+  }
+
+  .imagePreview, .select-image {
+  width: 155px;
+  height: 155px;
+  }
+
+}
+
+
+
+
+
+/* end register*/
+
 .notAdmin{
   background-image: url('img/pattern.jpg'); 
 }
@@ -330,88 +442,6 @@ ul li{
   cursor: pointer;
 }
 
-/* css -  Register */
-
-.main label{
-  font-size: 20px;
-  color:#776;
-}
-.main{
-  padding-left: 16%;
-  padding-right: 16%;
-}
-.slogan{
-  margin-top: 10px;
-}
-.input-line{
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  outline: none;
-  border-left:none;
-  border-right:none;
-  border-top:none;
-}
-.input-line:focus{
- border-bottom: solid 2px lightseagreen;
-}
-
-.btn-submit{
-  margin: 10px 0px 10px 0px;
-  height: 40px;
-  width: auto;
-  padding: 0px 15% 0px 15%;
-}
-
-.icon-user{
- font-size: 187px;
- text-align: end;
-}
-
-
-
-.select-main{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 180px;
-  height: 180px;
-}
-
-.select-image{
- padding-top: 60px;
- z-index: 90;
- opacity: 0;
- color:white !important;
- font-size: 16px ;
- position: absolute;
- width: 180px;
- height: 180px;
- background: #333;
- border-radius: 100%;
-}
-
-.select-image:hover{
-  opacity: 0.8;
-}
-
-.imagePreview { 
-  position: relative;
-  height: 180px;
-  width: 180px;
-  border-radius: 100%;
-}
-
-
-.imagePreview img{
-  width: 180px;
-  height: 180px;
-  border-radius: 100%;
-}
-
-
-
-
-
 
 /* Rudinilly*/
 
@@ -529,19 +559,7 @@ ul li{
 .head {
   background: #212529;
 }
-.bus{
-  padding-top: 30px
-}
-.busca{
-  color:#005B88;
-  font-size: 20px;
-  position: absolute;   
-  top: 0; 
-  right: 20px;
-  background: none; 
-  border: none;
-  padding-top: 37px
-}
+
 .dropdown i{
   font-size: 40px;
   color: white;
@@ -761,6 +779,7 @@ ul li{
 
 .carrinho {
   position: relative;
+  margin-left: 25px;  
   text-decoration: none
 }
 
@@ -912,4 +931,106 @@ ul li{
       border-radius:5px;
       box-shadow: 0px 0.5px 0.5px 0.5px #212529; 
   }
+}
+
+/* css head*/
+
+
+.inputSearch{
+  width: 500px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.list-ul{
+  margin-top: -3px;
+  list-style-type: none;
+  max-height: 200px;
+  overflow-y: scroll;
+  padding-left:1px;
+  width: 500px;
+  border-radius: 0px 0px 4px 4px;
+  border: rgba(0,127, 255, 1) 1px solid ;
+  border-top: none;
+  background: white;
+  z-index: 99;
+  position: absolute;
+
+
+  
+  
+}
+
+
+.list-ul::-webkit-scrollbar {
+  display: none;
+}
+
+
+.list-li {
+  margin-top:1px;
+  color: black;
+}
+
+
+
+.list-li:hover{
+  color:white;
+  background: rgba(21, 25, 25, 0.8);
+}
+
+
+
+
+.img-products{
+  width: 40px;
+  height: 40px;
+  margin: 2px;
+  
+}
+
+@media screen and (max-width: 600px){
+  .inputSearch, .list-ul {
+    width: 400px;
+  }
+}
+
+
+@media screen and (max-width: 400px){
+  .inputSearch, .list-ul {
+    width: 250px;
+  }
+}
+
+/* and css head*/
+
+.bus{
+  padding-top: 30px;
+  display: flex;
+  justify-content: center;
+  
+}
+
+
+.busca{
+  background: none;
+  border: none;
+  color: #005B88;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+ 
+ 
+}
+
+.search:active{
+  border: none;
+}
+
+.search{
+  margin-top:8px;
+  z-index: 99;
+  font-size: 20px;
+  margin-left: -30px;
 }

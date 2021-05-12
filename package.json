@@ -5,7 +5,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
-    "chart.js": "^2.7.2",
+    "chart.js": "^2.9.4",
     "cors": "^2.8.4",
     "downshift": "^3.1.5",
     "express": "^4.16.3",
